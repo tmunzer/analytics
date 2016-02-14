@@ -1,0 +1,276 @@
+doctype html
+html
+    head
+        title= title
+        script(language="JavaScript" type="text/javascript" src='/js/jquery-2.1.1.min.js')
+        script(language="JavaScript" type="text/javascript" src='/js/highstock.js')
+        script(language="JavaScript" type="text/javascript" src='/js/modules/heatmap.js')
+        link(rel='stylesheet' href='/css/font-awesome.min.css')
+        script(language="JavaScript" type="text/javascript" src='/js/bootstrap.min.js')
+        link(rel='stylesheet' href='/css/bootstrap.min.css')
+        link(rel='stylesheet' href='/css/ah-styles.min.css')
+        link(rel='stylesheet' href='/css/ah-tm.dashboard.css')
+        link(rel='stylesheet' href='/css/borderContainer.css')
+        script(language="JavaScript" type="text/javascript" src='/js/clienttimeseries.js')
+        script(language="JavaScript" type="text/javascript" src='/js/dashboard/update.js')
+        script(language="JavaScript" type="text/javascript" src='/js/dashboard/locations.js')
+        script(language="JavaScript" type="text/javascript" src='/js/dashboard/init.js')
+        script(language="JavaScript" type="text/javascript" src='/js/dashboard/timeline.js')
+        script(language="JavaScript" type="text/javascript" src='/js/dashboard/widget.js')
+    body.claro.fullaccess
+        div.header(id="header")
+            div.head-inner
+                h1.logo
+                    img.app-logo(src="/images/logo_nav.png" alt="Aerohive")
+                div.login-area(id="appHeader")
+                    ul.head-nav
+                div.login-area
+                    ul.head-nav
+                        li.nav-item.cur
+                            a.nav-dashboard Dashboard
+                        li.nav-item
+                            a.nav-dashboard Compare
+                        li.nav-item
+                            a.nav-dashboard Performance
+            div.head-bottom
+                div(style="width:1220px; margin: auto")
+                    div.sub-tabs
+        div.clearfix(id="main")
+            div.pt-r
+                div(id="container")
+                    div.line.clearfix
+                        div.view-section.clearfix
+                            div.leftNavIconMain(style="width: 220px; margin-right: 10px; height: 100%; float: left;")
+                                div.filterArea.leftNavItem.show(style="margin-top: 35px")
+                                    div.filter-panel.clearfix
+                                        div.filter-con-header
+                                            div.filter-con-title(style='width:100%') Filter By
+                                                div.ui-filter-categ
+                                                    h3.ui-filter-categ-tle Location
+                                                    div.ui-filter-dtl-area
+                                                        div.ui-filter-dtl
+                                                            ul.entity-loading(id="location-tree")
+
+                            div.dashboard-main
+                                div.clearfix.mt20.mb15
+                                div.dashboard-container.dashboard-cards
+                                    div.dashboard-card(style="margin-right: 33px;")
+                                        div.dashboard-title Maps
+                                        ul
+                                            li
+                                                div.dashboard-card-icon.dashboard-card-rogue-ap.mb15
+                                                    a.n1.ah-disable-link(id="maps-folders") 0
+                                                span.dashboard-span
+                                                    i.fa.fa-map-marker
+                                                    span Folders
+                                                    div.card-arrow
+                                            li
+                                                div.dashboard-card-icon.dashboard-card-rogue-ap.mb15
+                                                    a.n1.ah-disable-link(id="maps-buildings") 0
+                                                span.dashboard-span
+                                                    i.fa.fa-building
+                                                    span Buildings
+                                                    div.card-arrow
+                                            li
+                                                div.dashboard-card-icon.dashboard-card-rogue-ap.mb15
+                                                    a.n1.ah-disable-link(id="maps-floors") 0
+                                                span.dashboard-span
+                                                    i.fa.fa-map
+                                                    span Floors
+                                                    div.card-arrow
+                                    div.dashboard-card(style="margin-right: 33px;")
+                                        div.dashboard-title Devices
+                                        ul
+                                            li
+                                                div.dashboard-card-icon.dashboard-card-rogue-ap.mb15
+                                                    a.n1.ah-disable-link(id="devices-sensors") 0
+                                                span.dashboard-span
+                                                    i.fa.fa-user
+                                                    span Sensors
+                                                    div.card-arrow
+                                            li
+                                                div.dashboard-card-icon.dashboard-card-rogue-ap.mb15
+                                                    a.n1.ah-disable-link(id="devices-connected") 0
+                                                span.dashboard-span
+                                                    i.fa.fa-link
+                                                    span Connected
+                                                    div.card-arrow
+                                            li
+                                                div.dashboard-card-icon.dashboard-card-rogue-ap.mb15
+                                                    a.n1.ah-disable-link(id="devices-all") 0
+                                                span.dashboard-span
+                                                    i.fa.fa-wifi
+                                                    span Devices
+                                                    div.card-arrow
+
+                                div.dashboard-main
+                                    div.clearfix
+                                        div.line.clearfix.pt-r
+                                            div.entity-timeline-loading
+                                                div.clearfix
+                                                    div.entity-timeline-column.entity-timeline-choose(style="width: 100%;")
+                                                        div.clearfix
+                                                            div.entity-timeline-column
+                                                                div.entity-timeline-show-label Show
+                                                            div.entity-timeline-column
+                                                                div.dropdown
+                                                                    button(id="timeline-button" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
+                                                                        span.init-text(id="span-range") Day
+                                                                        span.caret
+                                                                    ul.dropdown-menu(aria-labelledby="timeline-button" id="myLoc")
+                                                                        li(onclick="timelineRange(0, \'Day\')")
+                                                                            span Day
+                                                                        li(onclick="timelineRange(1, \'Week\')")
+                                                                            span Week
+                                                                        li(onclick="timelineRange(2, \'Month\')")
+                                                                            span Month
+                                                                        li(onclick="timelineRange(3, \'Year\')")
+                                                                            span Year
+                                                            div.entity-timeline-column
+                                                                div.entity-timeline-show-range Select Range
+                                                            div.entity-timeline-column
+                                                                div.entity-timeline-show-tab.entity-radioset-list
+                                                                    ul(id="timeline-range")
+                                                                        li.timeline-range(onclick="changeRange('Day', 1)" id="timeline-1") 1H
+                                                                        li.timeline-range.entity-radioset-cur(onclick="changeRange('Day', 2)" id="timeline-2") 2H
+                                                                        li.timeline-range(onclick="changeRange('Day', 8)" id="timeline-8") 8H
+                                                                        li.timeline-range(onclick="changeRange('Day', 0)" id="timeline-0") Last 24H
+                                                    div.clearfix(style="height:200px; min-height: 100px;")
+                                                        div.entity-timeline-bar-time(id="timeline" style="height: 150px; ")
+                                            div.clearfix
+                                                div.entity-timeline-show-time='Showing data from '
+                                                    span(id="span-from-date")
+                                                    span(style="font-weight: normal;")=' to '
+                                                    span(id="span-to-date")
+                                        div.entity-page-body-top-border
+                                            div.entity-page-body-top-border-arrow
+                                        div.dashboard-container.dojoDndSource.dojoDndTarget.dojoDndContainer(id="dashboard-widgets")
+                                            div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
+                                                div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
+                                                    div.widget-loading.topApplicationGroup(style="height: 300px;")
+                                                        div.widget-content
+                                                            div.widget-label
+                                                                span(style="margin-bottom: 2px;")
+                                                                span.widget-label-title(style="width: 90% ! important; padding-top: 5px; padding-left: 5px;") Passers By
+                                                            div.clearfix(id="passersByEmpty")
+                                                                div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
+                                                            div.entity-loading-widget(id="passersByLoading" style="display:none;")
+                                                            div(id="passersByData" style="display:none;")
+                                                                div.column.grid_4.first(style="position: relative;display: inline-flex;")
+                                                                    div.grid_4.column(style="height: 250px;" id="passersByChart")
+                                                                    div.column.grid_4.last
+                                                                        div.topAppGroupTitle Progress Compared to
+                                                                        div.usageSection.widget-section
+                                                                            span.num-indicator.widget-number(id="passersByWeek")
+                                                                            span.num-label.tagBlockTitle.widget-info Previous Week
+                                                                        div.usageSection.widget-section
+                                                                            span.num-indicator.widget-number(id="passersByMonth")
+                                                                            span.num-label.tagBlockTitle.widget-info Previous Month
+                                                                        div.usageSection.widget-section
+                                                                            span.num-indicator.widget-number(id="passersByYear")
+                                                                            span.num-label.tagBlockTitle.widget-info Previous Year
+                                            div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
+                                                div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
+                                                    div.widget-loading.topApplicationGroup(style="height: 300px;")
+                                                        div.widget-content
+                                                            div.widget-label
+                                                                span(style="margin-bottom: 2px;")
+                                                                span.widget-label-title(style="width: 90% ! important; padding-top: 5px; padding-left: 5px;") Engaged
+                                                            div.clearfix(id="engagedEmpty")
+                                                                div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
+                                                            div.entity-loading-widget(id="engagedLoading" style="display:none;")
+                                                            div(id="engagedData" style="display:none")
+                                                                div.column.grid_4.first(style="position: relative;display: inline-flex;")
+                                                                    div.grid_4.column(style="height: 250px;" id="engagedChart")
+                                                                    div.column.grid_4.last
+                                                                        div.topAppGroupTitle Progress Compared to
+                                                                        div.usageSection.widget-section
+                                                                            span.num-indicator.widget-number(id="engagedWeek")
+                                                                            span.num-label.tagBlockTitle.widget-info Previous Week
+                                                                        div.usageSection.widget-section
+                                                                            span.num-indicator.widget-number(id="engagedMonth")
+                                                                            span.num-label.tagBlockTitle.widget-info Previous Month
+                                                                        div.usageSection.widget-section
+                                                                            span.num-indicator.widget-number(id="engagedYear")
+                                                                            span.num-label.tagBlockTitle.widget-info Previous Year
+                                            div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
+                                                div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
+                                                    div.widget-loading.topApplicationGroup(style="height: 300px;")
+                                                        div.widget-content
+                                                            div.widget-label
+                                                                span(style="margin-bottom: 2px;")
+                                                                span.widget-label-title(style="width: 90% ! important; padding-top: 5px; padding-left: 5px;") Storefront Conversion
+                                                            div.clearfix(id="storeFrontEmpty")
+                                                                div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
+                                                            div.entity-loading-widget(id="storeFrontLoading" style="display:none;")
+                                                            div(id="storeFrontData" style="display:none")
+                                                                div.column.grid_4.first(style="position: relative;display: inline-flex;")
+                                                                    div.grid_4.column(style="height: 250px;" id="storeFrontChart")
+                                                                    div.column.grid_4.last
+                                                                        div.topAppGroupTitle Progress Compared to
+                                                                        div.usageSection.widget-section
+                                                                            span.num-indicator.widget-number(id="storeFrontWeek")
+                                                                            span.num-label.tagBlockTitle.widget-info Previous Week
+                                                                        div.usageSection.widget-section
+                                                                            span.num-indicator.widget-number(id="storeFrontMonth")
+                                                                            span.num-label.tagBlockTitle.widget-info Previous Month
+                                                                        div.usageSection.widget-section
+                                                                            span.num-indicator.widget-number(id="storeFrontYear")
+                                                                            span.num-label.tagBlockTitle.widget-info Previous Year
+                                            div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
+                                                div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
+                                                    div.widget-loading.topApplicationGroup(style="height: 300px;")
+                                                        div.widget-content
+                                                            div.widget-label
+                                                                span(style="margin-bottom: 2px;")
+                                                                span.widget-label-title(style="width: 90% ! important; padding-top: 5px; padding-left: 5px;") Test
+                                                            div.clearfix
+                                                                div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
+
+
+        script.
+            var locations = {};
+            var locationAnalytics = [];
+            var range = 0;
+
+            init();
+
+            function timelineRange(id, name) {
+                $("#span-range").html(name);
+                var htmlSrting;
+                switch (name) {
+                    case "Day":
+                        range = 0;
+                        htmlSrting =
+                                '<li onclick="changeRange(\'Day\', 1)" id="timeline-1" class="timeline-range">1H</li>' +
+                                '<li onclick="changeRange(\'Day\', 2)" id="timeline-2" class="timeline-range entity-radioset-cur">2H</li>' +
+                                '<li onclick="changeRange(\'Day\', 8)" id="timeline-8" class="timeline-range">8H</li>' +
+                                '<li onclick="changeRange(\'Day\', 0)" id="timeline-0" class="timeline-range">Last 24H</li>';
+                        break;
+                    case "Week":
+                        range = 1;
+                        htmlSrting =
+                                '<li onclick="changeRange(\'Week\', 1)" id="timeline-1" class="timeline-range entity-radioset-cur">1D</li>' +
+                                '<li onclick="changeRange(\'Week\', 2)" id="timeline-2" class="timeline-range">2D</li>' +
+                                '<li onclick="changeRange(\'Week\', 0)" id="timeline-0" class="timeline-range">Last 7D</li>';
+                        break;
+                    case "Month":
+                        range = 2;
+                        htmlSrting =
+                                '<li onclick="changeRange(\'Month\', 1)" id="timeline-1" class="timeline-range entity-radioset-cur">1D</li>' +
+                                '<li onclick="changeRange(\'Month\', 2)" id="timeline-2" class="timeline-range">7D</li>' +
+                                '<li onclick="changeRange(\'Month\', 14)" id="timeline-14" class="timeline-range">14D</li>' +
+                                '<li onclick="changeRange(\'Month\', 0)" id="timeline-0" class="timeline-range">Last 1M</li>';
+                        break;
+                    case "Year":
+                        range = 3;
+                        htmlSrting =
+                                '<li onclick="changeRange(\'Year\', 1)" id="timeline-1" class="timeline-range entity-radioset-cur">1M</li>' +
+                                '<li onclick="changeRange(\'Year\', 2)" id="timeline-2" class="timeline-range">2M</li>' +
+                                '<li onclick="changeRange(\'Year\', 8)" id="timeline-8" class="timeline-range">6M</li>' +
+                                '<li onclick="changeRange(\'Year\', 0)" id="timeline-0" class="timeline-range">Last 12M</li>';
+                        break;
+                }
+                $("#timeline-range").html(htmlSrting);
+                updateTimeline();
+            }

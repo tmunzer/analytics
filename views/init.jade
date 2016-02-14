@@ -1,0 +1,70 @@
+doctype html
+html
+    head
+        title= title
+        script(language="JavaScript" type="text/javascript" src='/js/jquery-2.1.1.min.js')
+        script(language="JavaScript" type="text/javascript" src='/js/bootstrap.min.js')
+        link(rel='stylesheet' href='/css/ah-styles.min.css')
+        link(rel='stylesheet' href='/css/bootstrap.min.css')
+        link(rel='stylesheet' href='/css/ah-tm.init.css')
+    body
+        div(style="border-top: 2px solid rgb(255, 195, 15);" class="user-home-wrap")
+        div.clearfix(id='main')
+            div.pt-r
+                div(id="container")
+                    div.grid_20.LoginPage
+                        img(src="images/login_page_logo.png" alt="Aerohive" class="ah-logo")
+                        div.ah-growing-hives
+                        div.page-footer
+                            span © 2016 Aerohive Networks. All Rights Reserved.
+
+
+
+                        div.login-box.grid_15
+                            div.login-box-login
+                                div.leftColumn.grid_7_2.box-flip
+                                    div.front.flip-position
+                                        div
+                                            h1.font-aaux-thin Already have your<br> API Access Token?
+
+                                            if errorcode
+                                                div.wrong-password.font-aaux
+                                                    case errorcode
+                                                        when "1"
+                                                            div Please select a server.
+                                                        when "2"
+                                                            div Owner ID is invalid.
+                                                        when "3"
+                                                            div Access Token is invalid.
+                                            div.login-form
+                                                form(id="test" action="dashboard/" method="post")
+                                                    div.dropdown
+                                                        button(id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
+                                                            span.init-text(id="server") Select Server
+                                                            span.caret
+                                                        ul.dropdown-menu(aria-labelledby="dLabel")
+                                                            li(onclick="selectServer('cloud-va.aerohive.com')") cloud-va.aerohive.com
+                                                            li(onclick="selectServer('cloud-ie.aerohive.com')") cloud-ie.aerohive.com
+                                                    input(id="vpcUrl" name="vpcUrl" required="required" type="hidden")
+                                                    input(placeholder="Owner ID" required="required" autocorrect="off" autocapitalize="none" name="ownerID" type="text")
+                                                    input(placeholder="Access Token" required="required" name="accessToken" type="text")
+                                                    input.blue-button(value="See Data" type="submit")
+
+                                div.rightColumn.grid_7_2
+                                    div
+                                        h1.font-aaux-thin You want to see your analytics charts?
+
+                                        span For now, you will have to manaually generate an access token on your HiveManager NG account. <br><br>
+                                        span On your HiveManager NG account,
+                                        ul
+                                            li - go to API Token Management
+                                            li - click <b>+</b><br>
+                                            li - Use the Client ID
+                                                span(style="color: #3694D1") <b> f4d129a2</b>
+
+
+        script.
+            function selectServer(server) {
+                $("#server").html(server);
+                $("#vpcUrl").val(server);
+            }

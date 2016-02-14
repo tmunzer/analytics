@@ -1,0 +1,52 @@
+.login-form button {
+    width: 323px;
+    border: 1px solid #5897FB;
+    padding: 1em 1em 1em 18px;
+    background-color: #799EB7;
+    color: #FFF;
+}
+
+.login-form input {
+    width: 323px !important;
+}
+
+.login-form button:hover {
+    background-color: #4C7D99;
+}
+.LoginPage .login-box {
+    height: 520px;
+}
+
+.LoginPage .leftColumn h1 {
+    margin-left: 38px;
+    margin-bottom: 58px;
+    margin-top: 30px;
+}
+
+.init-text {
+    float: left;
+}
+
+.caret {
+    float: right;
+}
+
+
+ul.dropdown-menu {
+    margin: 0;
+    padding: 0;
+    top: 49px;
+    left: 54px;
+    width: 323px;
+}
+
+.dropdown-menu > li {
+    padding: 1em;
+    border-bottom: 1px solid #789FB6;
+}
+
+.dropdown-menu > li:hover {
+    background-color: #4C7D99;
+    color: #FFF;
+    cursor: pointer;
+}
