@@ -50,12 +50,9 @@ function displayTree(folder, parent) {
 }
 
 function selectLocation(locationId){
-    var id;
     var checked = $("#checkbox-"+locationId).prop('checked');
-
     changeChilds(locationId, checked);
     if (!checked) uncheckParents(locationId);
-
     updateLocationAnalytics();
     updateDashboard();
 }

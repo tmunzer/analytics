@@ -1,0 +1,151 @@
+-var dashboard = "nav-item"
+-var location = "nav-item"
+-var performance = "nav-item"
+case current_page
+    when "dashboard"
+        - var dashboard = "nav-item cur"
+    when "location"
+        - var location = "nav-item cur"
+    when "performance"
+        - var performance = "nav-item cur"
+
+
+doctype html
+html
+    head
+        title= title
+        script(language="JavaScript" type="text/javascript" src='/js/jquery-2.1.1.min.js')
+        script(language="JavaScript" type="text/javascript" src='/js/highstock.js')
+        link(rel='stylesheet' href='/css/font-awesome.min.css')
+        script(language="JavaScript" type="text/javascript" src='/js/bootstrap.min.js')
+        link(rel='stylesheet' href='/css/bootstrap.min.css')
+        link(rel='stylesheet' href='/css/ah-styles.min.css')
+        link(rel='stylesheet' href='/css/ah-tm.dashboard.css')
+        link(rel='stylesheet' href='/css/borderContainer.css')
+        script(language="JavaScript" type="text/javascript" src='/js/common/locations.js')
+        script(language="JavaScript" type="text/javascript" src='/js/common/timeline.js')
+        block include
+
+    body.claro.fullaccess
+        div.header(id="header")
+            div.head-inner
+                h1.logo
+                    img.app-logo(src="/images/logo_nav.png" alt="Aerohive")
+                div.login-area(id="appHeader")
+                    ul.head-nav
+                div.login-area
+                    ul.head-nav
+                        li(class = dashboard)
+                            a.nav-dashboard(href="/dashboard/") Dashboard
+                        li(class = location)
+                            a.nav-dashboard Compare
+                        li(class = performance)
+                            a.nav-dashboard(href="/performance/") Performance
+            div.head-bottom
+                div(style="width:1220px; margin: auto")
+                    div.sub-tabs
+        div.clearfix(id="main")
+            div.pt-r
+                div(id="container")
+                    div.line.clearfix
+                        div.view-section.clearfix
+                            div.leftNavIconMain(style="width: 220px; margin-right: 10px; height: 100%; float: left;")
+                                div.filterArea.leftNavItem.show(style="margin-top: 35px")
+                                    div.filter-panel.clearfix
+                                        div.filter-con-header
+                                            div.filter-con-title(style='width:100%') Filter By
+                                                div.ui-filter-categ
+                                                    h3.ui-filter-categ-tle Location
+                                                    div.ui-filter-dtl-area
+                                                        div.ui-filter-dtl
+                                                            ul.entity-loading(id="location-tree")
+                            div.dashboard-main
+                                block dashboard-cards
+                                div.dashboard-main
+                                    div.clearfix
+                                        div.line.clearfix.pt-r
+                                            div.entity-timeline-loading
+                                                div.clearfix
+                                                    div.entity-timeline-column.entity-timeline-choose(style="width: 100%;")
+                                                        div.clearfix
+                                                            div.entity-timeline-column
+                                                                div.entity-timeline-show-label Show
+                                                            div.entity-timeline-column
+                                                                div.dropdown
+                                                                    button(id="timeline-button" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
+                                                                        span.init-text(id="span-range") Day
+                                                                        span.caret
+                                                                    ul.dropdown-menu(aria-labelledby="timeline-button" id="myLoc")
+                                                                        li(onclick="timelineRange(0, \'Day\')")
+                                                                            span Day
+                                                                        li(onclick="timelineRange(1, \'Week\')")
+                                                                            span Week
+                                                                        li(onclick="timelineRange(2, \'Month\')")
+                                                                            span Month
+                                                                        li(onclick="timelineRange(3, \'Year\')")
+                                                                            span Year
+                                                            div.entity-timeline-column
+                                                                div.entity-timeline-show-range Select Range
+                                                            div.entity-timeline-column
+                                                                div.entity-timeline-show-tab.entity-radioset-list
+                                                                    ul(id="timeline-range")
+                                                                        li.timeline-range(onclick="changeRange('Day', 1)" id="timeline-1") 1H
+                                                                        li.timeline-range.entity-radioset-cur(onclick="changeRange('Day', 2)" id="timeline-2") 2H
+                                                                        li.timeline-range(onclick="changeRange('Day', 8)" id="timeline-8") 8H
+                                                                        li.timeline-range(onclick="changeRange('Day', 0)" id="timeline-0") Last 24H
+                                                    div.clearfix(style="height:200px; min-height: 100px;")
+                                                        div.entity-timeline-bar-time(id="timeline" style="height: 150px; ")
+                                            div.clearfix
+                                                div.entity-timeline-show-time='Showing data from '
+                                                    span(id="span-from-date")
+                                                    span(style="font-weight: normal;")=' to '
+                                                    span(id="span-to-date")
+                                            div.entity-page-body-top-border
+                                                div.entity-page-body-top-border-arrow
+                                            block content
+        block scriptAbove
+        script.
+            var locations = {};
+            var locationAnalytics = [];
+            var range = 0;
+            function timelineRange(id, name) {
+                $("#span-range").html(name);
+                var htmlSrting;
+                switch (name) {
+                    case "Day":
+                        range = 0;
+                        htmlSrting =
+                                '<li onclick="changeRange(\'Day\', 1)" id="timeline-1" class="timeline-range">1H</li>' +
+                                '<li onclick="changeRange(\'Day\', 2)" id="timeline-2" class="timeline-range entity-radioset-cur">2H</li>' +
+                                '<li onclick="changeRange(\'Day\', 8)" id="timeline-8" class="timeline-range">8H</li>' +
+                                '<li onclick="changeRange(\'Day\', 0)" id="timeline-0" class="timeline-range">Last 24H</li>';
+                        break;
+                    case "Week":
+                        range = 1;
+                        htmlSrting =
+                                '<li onclick="changeRange(\'Week\', 1)" id="timeline-1" class="timeline-range entity-radioset-cur">1D</li>' +
+                                '<li onclick="changeRange(\'Week\', 2)" id="timeline-2" class="timeline-range">2D</li>' +
+                                '<li onclick="changeRange(\'Week\', 0)" id="timeline-0" class="timeline-range">Last 7D</li>';
+                        break;
+                    case "Month":
+                        range = 2;
+                        htmlSrting =
+                                '<li onclick="changeRange(\'Month\', 1)" id="timeline-1" class="timeline-range">1D</li>' +
+                                '<li onclick="changeRange(\'Month\', 7)" id="timeline-2" class="timeline-range entity-radioset-cur">7D</li>' +
+                                '<li onclick="changeRange(\'Month\', 14)" id="timeline-14" class="timeline-range">14D</li>' +
+                                '<li onclick="changeRange(\'Month\', 0)" id="timeline-0" class="timeline-range">Last 1M</li>';
+                        break;
+                    case "Year":
+                        range = 3;
+                        htmlSrting =
+                                '<li onclick="changeRange(\'Year\', 1)" id="timeline-1" class="timeline-range entity-radioset-cur">1M</li>' +
+                                '<li onclick="changeRange(\'Year\', 2)" id="timeline-2" class="timeline-range">2M</li>' +
+                                '<li onclick="changeRange(\'Year\', 8)" id="timeline-8" class="timeline-range">6M</li>' +
+                                '<li onclick="changeRange(\'Year\', 0)" id="timeline-0" class="timeline-range">Last 12M</li>';
+                        break;
+                }
+                $("#timeline-range").html(htmlSrting);
+                updateTimeline();
+            }
+            init();
+        block scriptBelow

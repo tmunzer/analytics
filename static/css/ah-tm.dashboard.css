@@ -20,6 +20,11 @@ body {
     padding: 1em 1em 1em 18px;
 
 }
+.dropdown.medium button {
+    width: 200px;
+    padding: 1em 1em 1em 18px;
+
+}
 
 .dropdown button:hover {
     background-color: #4C7D99;
@@ -27,6 +32,9 @@ body {
 
 .dropdown {
     width: 100px;
+}
+.dropdown.medium {
+    width: 200px !important;
 }
 
 .dropdown.large,
@@ -55,10 +63,12 @@ ul.dropdown-menu {
     border-radius: 0;
 
 }
-ul.dropdown.large {
+ul.dropdown-menu.large {
     width: 323px;
 }
-
+ul.dropdown-menu.medium {
+    width: 200px;
+}
 .dropdown-menu > li {
     padding: 0.2em;
     border-bottom: 1px solid #789FB6;
@@ -66,9 +76,14 @@ ul.dropdown.large {
 .dropdown-menu.large > li {
     padding: 1em;
 }
+.dropdown-menu.medium > li {
+    padding: 2px 0 2px 15px;
+    font-size: 12px;
+}
 .dropdown-menu > li > span {
     margin-left: 15px;
 }
+
 .dropdown-menu > li:hover,
 .dropdown-menu > li:hover > i,
 .dropdown-menu > li:hover > div > i{
@@ -199,6 +214,8 @@ span.widget-label-title {
     height: 35px !important;
     width: 90% !important;
     text-align: left !important;
+    padding-top: 10px;
+    display: block;
 }
 
 .widget-content .widget-label {

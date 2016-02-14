@@ -1,6 +1,6 @@
 function updateCards() {
     var data = {};
-        if (locationAnalytics.length > 0) data = {locations: JSON.stringify(locationAnalytics)};
+    if (locationAnalytics.length > 0) data = {locations: JSON.stringify(locationAnalytics)};
     $.ajax({
         method: "POST",
         url: "/dashboard/api/update/cards/",
@@ -15,7 +15,6 @@ function updateCards() {
                 $("#devices-connected").html("<i class='fa fa-close'></i>");
                 $("#devices-all").html("<i class='fa fa-close'></i>");
             } else {
-                console.log(data);
                 $("#maps-folders").html(data.locationsCount.folder);
                 $("#maps-buildings").html(data.locationsCount.building);
                 $("#maps-floors").html(data.locationsCount.floor);
@@ -29,4 +28,8 @@ function updateCards() {
 function updateDashboard() {
     updateCards();
     updateTimeline();
+}
+
+function updateCharts(){
+    updateWidgets();
 }

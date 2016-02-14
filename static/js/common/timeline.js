@@ -33,7 +33,7 @@ function updateTimeline() {
     }
     $.ajax({
         method: 'POST',
-        url: '/dashboard/api/timeline/',
+        url: '/api/common/timeline/',
         data: {
             startTime: startTime.toISOString(),
             endTime: endTime.toISOString(),
@@ -128,19 +128,14 @@ function updateTimeline() {
             chart = $('#timeline').highcharts();
             max = chart.xAxis[0].getExtremes().max;
             min= chart.xAxis[0].getExtremes().min;
-            console.log(min);
-            console.log(max);
-            console.log(chart.xAxis[1].getExtremes().min);
-            console.log(chart.xAxis[1].getExtremes().max);
-            console.log(chart);
             $("#span-from-date").html(displayDate(chart.xAxis[1].categories[min]));
             $("#span-to-date").html(displayDate(chart.xAxis[1].categories[max]));
             $('.highcharts-container').mouseup(function(e){
                 if (min != (chart.xAxis[0].getExtremes().min).toFixed(0) || max != (chart.xAxis[0].getExtremes().max).toFixed(0)) {
-                    updateWidgets();
+                    updateCharts();
                 }
             });
-            updateWidgets();
+            updateCharts();
         });
 
 
@@ -165,10 +160,9 @@ function changeRange(period, range){
     //or calculate the value depending on the range and the step
     else min = max - (range * step);
     chart.xAxis[0].setExtremes(min, max);
-    console.log(chart);
     $("#span-from-date").html(displayDate(chart.xAxis[1].categories[min]));
     $("#span-to-date").html(displayDate(chart.xAxis[1].categories[max]));
-    updateWidgets();
+    updateCharts();
 
 }
 

@@ -56,12 +56,23 @@ router.post('/', function (req, res, next) {
         req.session.vpcUrl = req.body["vpcUrl"];
         req.session.ownerID = req.body["ownerID"];
         req.session.accessToken = req.body["accessToken"].trim();
-        res.render('dashboard', {title: 'Analytics'});
+        res.render('dashboard', {
+            title: 'Analytics',
+            current_page: 'dashboard'
+        });
     }
 }).get('/:vpcUrl/:ownerID/:accessToken', function (req, res, next) {
-    res.render('dashboard', {title: 'Analytics'});
+    res.render('dashboard', {
+        title: 'Analytics',
+        current_page: 'dashboard'
+    });
 }).get('/', function(req, res, next){
-    res.redirect("/");
+    if (req.session.vpcUrl && req.session.ownerID && req.session.accessToken) {
+        res.render('dashboard', {
+            title: 'Analytics',
+            current_page: 'dashboard'
+        })
+    } else res.redirect("/");
 });
 
 
@@ -88,46 +99,7 @@ router.post('/api/init/', function (req, res, next) {
 
     });
 });
-router.post('/api/timeline', function (req, res, next) {
-    var startTime, endTime, timeUnit, location, locations, locDone;
-    var timeline = [];
-    var series = [];
-    if (req.body.hasOwnProperty('startTime') && req.body.hasOwnProperty('endTime')) {
-        startTime = new Date(req.body['startTime']);
-        endTime = new Date(req.body['endTime']);
-        if (endTime - startTime <= 172800000) {
-            timeUnit = "FiveMinutes";
-        } else if (endTime - startTime <= 604800000) {
-            timeUnit = "OneHour";
-        } else {
-            timeUnit = "OneDay";
-        }
 
-        if (req.body.hasOwnProperty("locations")) {
-            locations = JSON.parse(req.body['locations']);
-            if (locations.length == 0) locations = [req.session.locations.id];
-        } else locations = [req.session.locations.id];
-        locDone = 0;
-        for (var i = 0; i < locations.length; i++) {
-            location = locations[i];
-            API.clientlocation.clienttimeseries(req.session.vpcUrl, req.session.accessToken, req.session.ownerID, location, startTime.toISOString(), endTime.toISOString(), timeUnit, function (err, result) {
-                if (err) res.json({error: err});
-                else {
-                    series = result.data['times'];
-                    for (var i in series) {
-                        if (timeline.hasOwnProperty(i)) {
-                            timeline[i]["uniqueClients"] += series[i]['uniqueClients'];
-                        } else timeline[i] = {time: series[i]['time'], uniqueClients: series[i]['uniqueClients']};
-                    }
-                }
-                locDone++;
-                if (locDone == locations.length) {
-                    res.json({error: null, data: timeline});
-                }
-            });
-        }
-    } else res.json({error: "missing parameters"});
-});
 router.post('/api/update/cards/', function (req, res, next) {
     var locations = [];
     if (req.body.hasOwnProperty('locations')) locations = JSON.parse(req.body['locations']);

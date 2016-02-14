@@ -1,0 +1,39 @@
+extends layout
+
+block include
+    script(language="JavaScript" type="text/javascript" src='/js/modules/heatmap.js')
+    script(language="JavaScript" type="text/javascript" src='/js/performance/heatmap-time.js')
+    script(language="JavaScript" type="text/javascript" src='/js/performance/update.js')
+    script(language="JavaScript" type="text/javascript" src='/js/performance/init.js')
+
+block dashboard-cards
+    div.clearfix(style="margin: 16px 0 0 0;")
+
+block content
+    div.dashboard-container.dojoDndSource.dojoDndTarget.dojoDndContainer(id="dashboard-widgets")
+        div.dojoDndItem.column.grid_16.dashboard-item(style="margin-right: 33px;height: 400px!important;")
+            div.dashboard-widget.dojoDndHandle
+                div.widget-loading.topApplicationGroup
+                    div.widget-content
+                        div.widget-label.clearfix
+                            span.widget-block
+                            span.widget-label-title Average Number of devices
+                            div.dropdown.medium(style="position: absolute;top: -5px;left: 300px;")
+                                button(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="height: 35px;")
+                                    span.init-text(id="button-heatmap") Engaged Clients
+                                    span.caret
+                                ul.dropdown-menu.medium(aria-labelledby="button-heatmap" id="myLoc")
+                                    li(onclick="displayHeatmap(heatmapUniqueClients, heatmapUniqueClientsRange, 'Unique Clients')") Unique Clients
+                                    li(onclick="displayHeatmap(heatmapEngagedClients, heatmapEngagedClientsRange, 'Engaged Clients')") Engaged Clients
+                                    li(onclick="displayHeatmap(heatmapPassersbyClients, heatmapPassersbyClientsRange, 'Passersby Clients')") Passersby Clients
+                                    li(onclick="displayHeatmap(heatmapAssociatedClients, heatmapAssociatedClientsRange, 'Associated Clients')") Associated Clients
+                                    li(onclick="displayHeatmap(heatmapUnassociatedClients, heatmapUnassociatedClientsRange, 'Unassociated Clients')") Unassociated Clients
+                        div.clearfix(id="heatmapEmpty")
+                            div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
+                        div.entity-loading-widget(id="heatmapLoading" style="display:none;")
+                        div(id="heatmapData" style="display:none;")
+                            div.grid_16(style="height: 250px;" id="heatmapChart")
+
+
+
+

@@ -1071,7 +1071,9 @@ a:focus,a:active {
 .widget-loading {
     background-image:url(../images/common/loading/grid_loading.gif);
     background-repeat:no-repeat;
-    background-position:center center
+    background-position:center center;
+    height: 100% !important;
+    width: 100% !important;
 }
 .chart-circle {
     width:8px;
@@ -16158,7 +16160,9 @@ span.progress-portion:after {
     background:#fff;
     margin-bottom:20px;
     position:relative;
-    clear:both
+    clear:both;
+    height: 100% !important;
+    width: 100% !important;
 }
 #dashboard-widgets .dashboard-item .dashboard-widget .widget-label {
     font-size:16px;
@@ -16175,7 +16179,7 @@ span.progress-portion:after {
     top:5px;
     right:5px
 }
-#dashboard-widgets .dashboard-item .dashboard-widget .widget-label span {
+#dashboard-widgets .dashboard-item .dashboard-widget .widget-label span.widget-block {
     display:inline-block;
     font-size:20px;
     color:#fff;
@@ -16184,10 +16188,10 @@ span.progress-portion:after {
     line-height:30px;
     text-align:center;
     margin-right:11px;
-    margin-bottom:-10px!important;
     width:0!important;
     overflow:hidden;
-    padding-left:15px
+    padding-left:15px;
+    float: left;
 }
 #dashboard-widgets .clearboth {
     clear:both
@@ -16678,10 +16682,12 @@ span.progress-portion:after {
     background-color:white;
     cursor:default;
     color:#393939;
-    overflow:hidden
+    overflow:hidden;
+    height: 100% !important;
+    width: 100% !important;
 }
 .widget-content .widget-label {
-    cursor:move
+    cursor:default;
 }
 .dashboard-app-link {
     text-decoration:none;

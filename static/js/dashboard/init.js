@@ -23,7 +23,6 @@ function init(){
                 locations = data.locations;
 
                 displayTree();
-
                 updateTimeline();
             }
         });
