@@ -60,18 +60,11 @@ router.post('/', function (req, res, next) {
     }
 }).get('/:vpcUrl/:ownerID/:accessToken', function (req, res, next) {
     res.render('dashboard', {title: 'Analytics'});
+}).get('/', function(req, res, next){
+    res.redirect("/");
 });
 
 
-function displayDashboard(req, res) {
-    API.configuration.location(vpcUrl, accessToken, ownerID, function (err, location) {
-        API.monitor.device(vpcUrl, accessToken, ownerID, function (err, location) {
-
-        })
-    });
-
-
-}
 /*================================================================
  API
  ================================================================*/
@@ -179,21 +172,16 @@ router.post('/api/update/widgets/', function (req, res, next) {
         "associatedClients": 0,
         "unassociatedClients": 0
     };
-    var compareToLastWeek = false;
-    var compareToLastMonth = false;
-    var compareToLastYear = true;
     if (req.body.hasOwnProperty('startTime') && req.body.hasOwnProperty('endTime')) {
         startTime = new Date(req.body['startTime']);
         endTime = new Date(req.body['endTime']);
         if (endTime - startTime <= 604800000) {
-            compareToLastWeek = true;
             startLastWeek = new Date(startTime);
             startLastWeek.setDate(startLastWeek.getDate() - 7);
             endLastWeek = new Date(endTime);
             endLastWeek.setDate(endLastWeek.getDate() - 7);
         }
-        if (endTime - startTime <= 18144000000) {
-            compareToLastMonth = true;
+        if (endTime - startTime <= 2678400000) {
             startLastMonth = new Date(startTime);
             startLastMonth.setMonth(startLastMonth.getMonth() - 1);
             endLastMonth = new Date(endTime);
@@ -228,25 +216,26 @@ router.post('/api/update/widgets/', function (req, res, next) {
                 startTime.toISOString(),
                 endTime.toISOString(),
                 "dashboard widget now", reqId);
-
-            API.clientlocation.clientcountWithEE(
-                req.session.vpcUrl,
-                req.session.accessToken,
-                req.session.ownerID,
-                location,
-                startLastWeek.toISOString(),
-                endLastWeek.toISOString(),
-                "dashboard widget lastWeek", reqId);
-
-            API.clientlocation.clientcountWithEE(
-                req.session.vpcUrl,
-                req.session.accessToken,
-                req.session.ownerID,
-                location,
-                startLastMonth.toISOString(),
-                endLastMonth.toISOString(),
-                "dashboard widget lastMonth", reqId);
-
+            if (endTime - startTime <= 604800000) {
+                API.clientlocation.clientcountWithEE(
+                    req.session.vpcUrl,
+                    req.session.accessToken,
+                    req.session.ownerID,
+                    location,
+                    startLastWeek.toISOString(),
+                    endLastWeek.toISOString(),
+                    "dashboard widget lastWeek", reqId);
+            } else locWeekDone = locations.length;
+            if (endTime - startTime <= 2678400000) {
+                API.clientlocation.clientcountWithEE(
+                    req.session.vpcUrl,
+                    req.session.accessToken,
+                    req.session.ownerID,
+                    location,
+                    startLastMonth.toISOString(),
+                    endLastMonth.toISOString(),
+                    "dashboard widget lastMonth", reqId);
+            } else locMonthDone = locations.length;
             API.clientlocation.clientcountWithEE(
                 req.session.vpcUrl,
                 req.session.accessToken,
@@ -261,7 +250,6 @@ router.post('/api/update/widgets/', function (req, res, next) {
 
     eventEmitter.on("dashboard widget now", function (enventId, err, data) {
         if (enventId == reqId) {
-            console.log("============================= NOW");
             if (err) res.json({error: err});
             else {
                 dataNow['uniqueClients'] += data.data['uniqueClients'];
@@ -276,7 +264,6 @@ router.post('/api/update/widgets/', function (req, res, next) {
     })
         .on("dashboard widget lastWeek", function (enventId, err, data) {
             if (enventId == reqId) {
-                console.log("============================= WEEK");
                 if (err) res.json({error: err});
                 else {
                     dataLastWeek['uniqueClients'] += data.data['uniqueClients'];
@@ -291,8 +278,6 @@ router.post('/api/update/widgets/', function (req, res, next) {
         })
         .on("dashboard widget lastMonth", function (enventId, err, data) {
             if (enventId == reqId) {
-
-                console.log("============================= MONTH");
                 if (err) res.json({error: err});
                 else {
                     dataLastMonth['uniqueClients'] += data.data['uniqueClients'];
@@ -307,7 +292,6 @@ router.post('/api/update/widgets/', function (req, res, next) {
         })
         .on("dashboard widget lastYear", function (enventId, err, data) {
             if (enventId == reqId) {
-                console.log("============================= YEAR");
                 if (err) res.json({error: err});
                 else {
                     dataLastYear['uniqueClients'] += data.data['uniqueClients'];
@@ -322,11 +306,11 @@ router.post('/api/update/widgets/', function (req, res, next) {
         })
         .on("dashboard widget finished", function (enventId) {
             if (enventId == reqId) {
-                console.log("============================= END");
                 if (locNowDone == locations.length
                     && locWeekDone == locations.length
                     && locMonthDone == locations.length
                     && locYearDone == locations.length) {
+                    console.log("============================= END");
                     res.json({
                         error: null,
                         dataNow: dataNow,

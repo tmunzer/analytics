@@ -1,74 +1,112 @@
 function updateWidgets() {
+
     var chart = $('#timeline').highcharts();
     var endTime = chart.xAxis[1].categories[max];
     var startTime = chart.xAxis[1].categories[min];
-    $("#passersByEmpty").hide();
-    $("#passersByData").hide();
+    // @TODO: Current API limitation
+    if (endTime - startTime <= 2678400000) {
 
-    $("#engagedEmpty").hide();
-    $("#engagedData").hide();
+        $("#passersByEmpty").hide();
+        $("#passersByData").hide();
 
-    $("#storeFrontEmpty").hide();
-    $("#storeFrontData").hide();
+        $("#engagedEmpty").hide();
+        $("#engagedData").hide();
 
-    $("#passersByLoading").show();
-    $("#engagedLoading").show();
-    $("#storeFrontLoading").show();
+        $("#storeFrontEmpty").hide();
+        $("#storeFrontData").hide();
 
-    $.ajax({
-        method: 'POST',
-        url: '/dashboard/api/update/widgets/',
-        data: {
-            startTime: startTime.toISOString(),
-            endTime: endTime.toISOString(),
-            locations: JSON.stringify(locationAnalytics)
-        }
-    }).done(function (data) {
-        if (data.error) console.log(data.error);
-        else {
-            var dataPassersBy = [data.dataLastYear.passersbyClients, data.dataLastMonth.passersbyClients, data.dataLastWeek.passersbyClients, data.dataNow.passersbyClients];
-            var dataEngaged = [data.dataLastYear.engagedClients, data.dataLastMonth.engagedClients, data.dataLastWeek.engagedClients, data.dataNow.engagedClients];
-            var dataStoreFront = [
-                getStoreFront(data.dataLastYear.engagedClients, data.dataLastYear.uniqueClients),
-                getStoreFront(data.dataLastMonth.engagedClients, data.dataLastMonth.uniqueClients),
-                getStoreFront(data.dataLastWeek.engagedClients, data.dataLastWeek.uniqueClients),
-                getStoreFront(data.dataNow.engagedClients, data.dataNow.uniqueClients)
-            ];
-            var xAxisData = ['Previous Year', 'Previous Month', 'Previous Week', 'Selected Period'];
+        $("#passersByLoading").show();
+        $("#engagedLoading").show();
+        $("#storeFrontLoading").show();
 
-            $("#passersByLoading").hide();
-            $("#passersByData").show();
-            displayWidgetChart("passersByChart", "Number of PassersBy Clients", xAxisData, dataPassersBy);
-            $("#passersByWeek").html(getHtmlPercentage(data.dataNow.passersbyClients, data.dataLastWeek.passersbyClients));
-            $("#passersByMonth").html(getHtmlPercentage(data.dataNow.passersbyClients, data.dataLastMonth.passersbyClients));
-            $("#passersByYear").html(getHtmlPercentage(data.dataNow.passersbyClients, data.dataLastYear.passersbyClients));
+        $.ajax({
+            method: 'POST',
+            url: '/dashboard/api/update/widgets/',
+            data: {
+                startTime: startTime.toISOString(),
+                endTime: endTime.toISOString(),
+                locations: JSON.stringify(locationAnalytics)
+            }
+        }).done(function (data) {
+            if (data.error) console.log(data.error);
+            else {
+                var dataPassersBy, dataEngaged, dataStoreFront, xAxisData;
+                //less than 1 week
+                if (endTime - startTime <= 604800000) {
+                    xAxisData = ['Previous Year', 'Previous Month', 'Previous Week', 'Selected Period'];
+                    dataPassersBy = [data.dataLastYear.passersbyClients, data.dataLastMonth.passersbyClients, data.dataLastWeek.passersbyClients, data.dataNow.passersbyClients];
+                    dataEngaged = [data.dataLastYear.engagedClients, data.dataLastMonth.engagedClients, data.dataLastWeek.engagedClients, data.dataNow.engagedClients];
+                    dataStoreFront = [
+                        getStoreFront(data.dataLastYear.engagedClients, data.dataLastYear.uniqueClients),
+                        getStoreFront(data.dataLastMonth.engagedClients, data.dataLastMonth.uniqueClients),
+                        getStoreFront(data.dataLastWeek.engagedClients, data.dataLastWeek.uniqueClients),
+                        getStoreFront(data.dataNow.engagedClients, data.dataNow.uniqueClients)
+                    ];
+                } else if (endTime - startTime <= 2678400000) {
+                    xAxisData = ['Previous Year', 'Previous Month', 'Selected Period'];
+                    dataPassersBy = [data.dataLastYear.passersbyClients, data.dataLastMonth.passersbyClients, data.dataNow.passersbyClients];
+                    dataEngaged = [data.dataLastYear.engagedClients, data.dataLastMonth.engagedClients, data.dataNow.engagedClients];
+                    dataStoreFront = [
+                        getStoreFront(data.dataLastYear.engagedClients, data.dataLastYear.uniqueClients),
+                        getStoreFront(data.dataLastMonth.engagedClients, data.dataLastMonth.uniqueClients),
+                        getStoreFront(data.dataNow.engagedClients, data.dataNow.uniqueClients)
+                    ];
+                } else {
+                    xAxisData = ['Previous Year', 'Selected Period'];
+                    dataPassersBy = [data.dataLastYear.passersbyClients, data.dataNow.passersbyClients];
+                    dataEngaged = [data.dataLastYear.engagedClients, data.dataNow.engagedClients];
+                    dataStoreFront = [
+                        getStoreFront(data.dataLastYear.engagedClients, data.dataLastYear.uniqueClients),
+                        getStoreFront(data.dataNow.engagedClients, data.dataNow.uniqueClients)
+                    ];
+                }
 
-            $("#engagedLoading").hide();
-            $("#engagedData").show();
-            displayWidgetChart("engagedChart", "Number of Engaged Clients", xAxisData, dataEngaged);
+                $("#passersByLoading").hide();
+                $("#passersByData").show();
+                displayWidgetChart("passersByChart", "Number of PassersBy Clients", xAxisData, dataPassersBy);
+                $("#passersByWeek").html(getHtmlPercentage(data.dataNow.passersbyClients, data.dataLastWeek.passersbyClients));
+                $("#passersByMonth").html(getHtmlPercentage(data.dataNow.passersbyClients, data.dataLastMonth.passersbyClients));
+                $("#passersByYear").html(getHtmlPercentage(data.dataNow.passersbyClients, data.dataLastYear.passersbyClients));
 
-            $("#engagedWeek").html(getHtmlPercentage(data.dataNow.engagedClients, data.dataLastWeek.engagedClients));
-            $("#engagedMonth").html(getHtmlPercentage(data.dataNow.engagedClients, data.dataLastMonth.engagedClients));
-            $("#engagedYear").html(getHtmlPercentage(data.dataNow.engagedClients, data.dataLastYear.engagedClients));
+                $("#engagedLoading").hide();
+                $("#engagedData").show();
+                displayWidgetChart("engagedChart", "Number of Engaged Clients", xAxisData, dataEngaged);
 
-            $("#storeFrontLoading").hide();
-            $("#storeFrontData").show();
-            displayWidgetChart("storeFrontChart", "StoreFront Conversion", xAxisData, dataStoreFront);
-            $("#storeFrontWeek").html(getHtmlPercentage(
-                getStoreFront(data.dataNow.engagedClients, data.dataNow.uniqueClients),
-                getStoreFront(data.dataLastWeek.engagedClients, data.dataLastWeek.uniqueClients)
-            ));
-            $("#storeFrontMonth").html(getHtmlPercentage(
-                getStoreFront(data.dataNow.engagedClients, data.dataNow.uniqueClients),
-                getStoreFront(data.dataLastMonth.engagedClients, data.dataLastMonth.uniqueClients)
-            ));
-            $("#storeFrontYear").html(getHtmlPercentage(
-                getStoreFront(data.dataNow.engagedClients, data.dataNow.uniqueClients),
-                getStoreFront(data.dataLastYear.engagedClients, data.dataLastYear.uniqueClients)
-            ));
-        }
-    });
+                $("#engagedWeek").html(getHtmlPercentage(data.dataNow.engagedClients, data.dataLastWeek.engagedClients));
+                $("#engagedMonth").html(getHtmlPercentage(data.dataNow.engagedClients, data.dataLastMonth.engagedClients));
+                $("#engagedYear").html(getHtmlPercentage(data.dataNow.engagedClients, data.dataLastYear.engagedClients));
 
+                $("#storeFrontLoading").hide();
+                $("#storeFrontData").show();
+                displayWidgetChart("storeFrontChart", "StoreFront Conversion", xAxisData, dataStoreFront);
+                $("#storeFrontWeek").html(getHtmlPercentage(
+                    getStoreFront(data.dataNow.engagedClients, data.dataNow.uniqueClients),
+                    getStoreFront(data.dataLastWeek.engagedClients, data.dataLastWeek.uniqueClients)
+                ));
+                $("#storeFrontMonth").html(getHtmlPercentage(
+                    getStoreFront(data.dataNow.engagedClients, data.dataNow.uniqueClients),
+                    getStoreFront(data.dataLastMonth.engagedClients, data.dataLastMonth.uniqueClients)
+                ));
+                $("#storeFrontYear").html(getHtmlPercentage(
+                    getStoreFront(data.dataNow.engagedClients, data.dataNow.uniqueClients),
+                    getStoreFront(data.dataLastYear.engagedClients, data.dataLastYear.uniqueClients)
+                ));
+            }
+        });
+    } else {
+        $("#passersByEmpty").show();
+        $("#passersByData").hide();
+
+        $("#engagedEmpty").show();
+        $("#engagedData").hide();
+
+        $("#storeFrontEmpty").show();
+        $("#storeFrontData").hide();
+
+        $("#passersByLoading").hide();
+        $("#engagedLoading").hide();
+        $("#storeFrontLoading").hide();
+    }
 
 }
 
@@ -119,7 +157,7 @@ function displayWidgetChart(containerId, title, xAxisData, data) {
 
 function getStoreFront(engaged, uniqueClient) {
     if (uniqueClient == 0) return 0;
-    else return parseInt(((engaged / uniqueClient)*100).toFixed(0));
+    else return parseInt(((engaged / uniqueClient) * 100).toFixed(0));
 }
 
 function getHtmlPercentage(num1, num2) {

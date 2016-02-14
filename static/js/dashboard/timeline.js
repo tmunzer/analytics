@@ -20,7 +20,7 @@ function updateTimeline() {
             break;
         case 2:
             startTime.setMonth(startTime.getMonth() - 1);
-            selectedRange = 1;
+            selectedRange = 7;
             step = 7;
             format = '{value:%Y-%m-%d}';
             break;
@@ -85,10 +85,10 @@ function updateTimeline() {
                         lineWidth: 0,
                         tickLength: 0,
                         range: selectedRange,
-                        categories: time,
                         labels: {
                             enabled: false
-                        }
+                        },
+                        minRange: 1
                     },
                     scrollbar : {
                         enabled : false
@@ -114,7 +114,6 @@ function updateTimeline() {
                         },
                         yAxis: {
                             min: 0,
-                            max: maxChart,
                             title: {
                                 text: 'Unique Clients'
                             },
@@ -129,7 +128,11 @@ function updateTimeline() {
             chart = $('#timeline').highcharts();
             max = chart.xAxis[0].getExtremes().max;
             min= chart.xAxis[0].getExtremes().min;
-
+            console.log(min);
+            console.log(max);
+            console.log(chart.xAxis[1].getExtremes().min);
+            console.log(chart.xAxis[1].getExtremes().max);
+            console.log(chart);
             $("#span-from-date").html(displayDate(chart.xAxis[1].categories[min]));
             $("#span-to-date").html(displayDate(chart.xAxis[1].categories[max]));
             $('.highcharts-container').mouseup(function(e){
@@ -162,6 +165,7 @@ function changeRange(period, range){
     //or calculate the value depending on the range and the step
     else min = max - (range * step);
     chart.xAxis[0].setExtremes(min, max);
+    console.log(chart);
     $("#span-from-date").html(displayDate(chart.xAxis[1].categories[min]));
     $("#span-to-date").html(displayDate(chart.xAxis[1].categories[max]));
     updateWidgets();
