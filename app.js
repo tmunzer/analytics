@@ -12,7 +12,7 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/init');
 var dashboard = require('./routes/dashboard');
-var performance = require('./routes/performance');
+var details = require('./routes/details');
 var api = require('./routes/api');
 
 var events = require('events');
@@ -41,7 +41,7 @@ app.use(express.static(path.join(__dirname, 'static')));
 
 app.use('/', routes);
 app.use('/dashboard/', dashboard);
-app.use('/performance/', performance);
+app.use('/details/', details);
 app.use('/api/', api);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

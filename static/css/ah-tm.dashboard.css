@@ -156,7 +156,9 @@ span.dashboard-span > i{
 }
 span.dashboard-span{
     font-weight: bold;
-
+    text-align: center;
+    width: 100%;
+    margin: 0;
 }
 .dashboard-card > ul {
     display: block;

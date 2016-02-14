@@ -2,10 +2,12 @@ function displayTree(folder, parent) {
     var subtree = '';
     var extendString = '';
     var htmlString = '';
+    var htmlMinHeight = '';
     var id, name, root, folderType;
     if (folder == null) {
         folder = locations;
-        root = true
+        htmlMinHeight = 'min-height: 100px;';
+        root = true;
     }
     for (var key in folder) {
         switch (key) {
@@ -32,7 +34,7 @@ function displayTree(folder, parent) {
         }
     }
     htmlString +=
-        '<li style="position:relative;"  class="location" data-parent-id="'+parent+'">' +
+        '<li style="position:relative; '+htmlMinHeight+'"  class="location" data-parent-id="'+parent+'">' +
         extendString +
         '<label class="checkbox ml10" style="margin: 0 0 0 10px;">' +
         '<input class="filter-loca-checked '+parent+'" type="checkbox" onclick="selectLocation(\''+id+'\')" ' +
@@ -78,10 +80,10 @@ function displaySubTree(locationId){
     var clicked = $('#span-'+locationId);
     if (clicked.hasClass("ui-filter-extextend-location-blue-cur")){
         clicked.removeClass("ui-filter-extextend-location-blue-cur");
-        $("li [data-parent='"+locationId+"']").show();
+        $("li [data-parent-id='"+locationId+"']").show();
     } else {
         clicked.addClass("ui-filter-extextend-location-blue-cur");
-        $("li [data-parent='"+locationId+"']").hide();
+        $("li[data-parent-id='"+locationId+"']").hide();
     }
 }
 

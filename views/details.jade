@@ -2,9 +2,11 @@ extends layout
 
 block include
     script(language="JavaScript" type="text/javascript" src='/js/modules/heatmap.js')
-    script(language="JavaScript" type="text/javascript" src='/js/performance/heatmap-time.js')
-    script(language="JavaScript" type="text/javascript" src='/js/performance/update.js')
-    script(language="JavaScript" type="text/javascript" src='/js/performance/init.js')
+    script(language="JavaScript" type="text/javascript" src='/js/details/heatmap-time.js')
+    script(language="JavaScript" type="text/javascript" src='/js/details/line-time.js')
+    script(language="JavaScript" type="text/javascript" src='/js/details/api.calls.js')
+    script(language="JavaScript" type="text/javascript" src='/js/details/update.js')
+    script(language="JavaScript" type="text/javascript" src='/js/details/init.js')
 
 block dashboard-cards
     div.clearfix(style="margin: 16px 0 0 0;")
@@ -33,6 +35,18 @@ block content
                         div.entity-loading-widget(id="heatmapLoading" style="display:none;")
                         div(id="heatmapData" style="display:none;")
                             div.grid_16(style="height: 250px;" id="heatmapChart")
+        div.dojoDndItem.column.grid_16.dashboard-item(style="margin-right: 33px;height: 400px!important;")
+            div.dashboard-widget.dojoDndHandle
+                div.widget-loading.topApplicationGroup
+                    div.widget-content
+                        div.widget-label.clearfix
+                            span.widget-block
+                            span.widget-label-title Number of devices
+                        div.clearfix(id="lineEmpty")
+                            div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
+                        div.entity-loading-widget(id="lineLoading" style="display:none;")
+                        div(id="lineData" style="display:none;")
+                            div.grid_16(style="height: 250px;" id="lineChart")
 
 
 

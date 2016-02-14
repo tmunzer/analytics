@@ -56,21 +56,21 @@ router.post('/', function (req, res, next) {
         req.session.vpcUrl = req.body["vpcUrl"];
         req.session.ownerID = req.body["ownerID"];
         req.session.accessToken = req.body["accessToken"].trim();
-        res.render('performance', {
+        res.render('details', {
             title: 'Analytics',
-            current_page: 'performance'
+            current_page: 'details'
         });
     }
 }).get('/:vpcUrl/:ownerID/:accessToken', function (req, res, next) {
-    res.render('performance', {
+    res.render('details', {
         title: 'Analytics',
-        current_page: 'performance'
+        current_page: 'details'
     });
 }).get('/', function(req, res, next){
     if (req.session.vpcUrl && req.session.ownerID && req.session.accessToken){
-        res.render('performance', {
+        res.render('details', {
             title: 'Analytics',
-            current_page: 'performance'
+            current_page: 'details'
         });
     } else res.redirect("/");
 });

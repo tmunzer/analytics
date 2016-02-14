@@ -1,13 +1,13 @@
 -var dashboard = "nav-item"
 -var location = "nav-item"
--var performance = "nav-item"
+-var details = "nav-item"
 case current_page
     when "dashboard"
         - var dashboard = "nav-item cur"
     when "location"
         - var location = "nav-item cur"
     when "performance"
-        - var performance = "nav-item cur"
+        - var details = "nav-item cur"
 
 
 doctype html
@@ -39,8 +39,8 @@ html
                             a.nav-dashboard(href="/dashboard/") Dashboard
                         li(class = location)
                             a.nav-dashboard Compare
-                        li(class = performance)
-                            a.nav-dashboard(href="/performance/") Performance
+                        li(class = details)
+                            a.nav-dashboard(href="/details/") Details
             div.head-bottom
                 div(style="width:1220px; margin: auto")
                     div.sub-tabs
