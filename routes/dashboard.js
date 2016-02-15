@@ -307,7 +307,6 @@ router.post("/api/update/widget-best/", function (req, res, next) {
         locDone = 0;
         bestLocations = {};
         locationsToGet = Location.getFilteredFloorsId(req.session.locations, locations, "BUILDING");
-        console.log(locationsToGet);
         for (i = 0; i < locationsToGet.length; i++) {
             location = locationsToGet[i];
 

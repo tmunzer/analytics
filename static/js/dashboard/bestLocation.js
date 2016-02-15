@@ -23,7 +23,7 @@ function updateBestLocation() {
             if (data.error) console.log(data.error);
             else {
                 bestLocations = data.data['bestLocations'];
-                displayBestLocation("storeFrontClients");
+                displayBestLocation("storeFrontClients", 'Storefront Conversion', true);
                 $("#bestLocationLoading").hide();
                 $("#bestLocationData").show();
                            }
@@ -37,7 +37,7 @@ function updateBestLocation() {
 
 }
 
-function displayBestLocation(param, title){
+function displayBestLocation(param, title, percentage){
     $("#button-bestLocation").html(title);
     var xAxisData = [];
     var data = [];
@@ -47,18 +47,16 @@ function displayBestLocation(param, title){
         sortable.push([bestLocations[locNum]['name'], bestLocations[locNum][param]]);
     }
     sortable.sort(function(a, b) {return b[1] - a[1]});
-    console.log(sortable);
-    var chartSize;
-    if (sortable.length < 5) chartSize = sortable.length;
-    else chartSize = 5;
 
-    console.log(sortable);
-    for (var i = 0; i < chartSize; i++){
+    for (var i = 0; i < 5; i++){
+        if (sortable.hasOwnProperty(i)){
         xAxisData.push(sortable[i][0]);
         data.push(parseInt(sortable[i][1]));
+        } else {
+            xAxisData.push("");
+            data.push(0);
+        }
     }
-    console.log(xAxisData);
-    console.log(data);
-    displayWidgetChart("bestLocationChart", "Best location By", xAxisData, data);
+    displayWidgetChart("bestLocationChart", title, xAxisData, data, percentage);
 
 }

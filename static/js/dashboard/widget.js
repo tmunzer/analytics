@@ -78,7 +78,7 @@ function updateWidgets() {
 
                 $("#storeFrontLoading").hide();
                 $("#storeFrontData").show();
-                displayWidgetChart("storeFrontChart", "StoreFront Conversion", xAxisData, dataStoreFront);
+                displayWidgetChart("storeFrontChart", "StoreFront Conversion", xAxisData, dataStoreFront, true);
                 $("#storeFrontWeek").html(getHtmlPercentage(
                     getStoreFront(data.dataNow.engagedClients, data.dataNow.uniqueClients),
                     getStoreFront(data.dataLastWeek.engagedClients, data.dataLastWeek.uniqueClients)
@@ -110,7 +110,15 @@ function updateWidgets() {
 
 }
 
-function displayWidgetChart(containerId, title, xAxisData, data) {
+function displayWidgetChart(containerId, title, xAxisData, data, percentage) {
+    var yAxisTitle, pointFormatPercentage;
+    if (percentage){
+        yAxisTitle = "% of Devices";
+        pointFormatPercentage = "%";
+    } else {
+        yAxisTitle = 'Number of devices';
+        pointFormatPercentage = "";
+    }
     var container = $('#' + containerId);
     if (container.highcharts()) container.highcharts().destroy();
     container.highcharts({
@@ -127,7 +135,7 @@ function displayWidgetChart(containerId, title, xAxisData, data) {
         yAxis: {
             min: 0,
             title: {
-                text: 'Number of devices'
+                text: yAxisTitle
             }
 
         },
@@ -145,7 +153,7 @@ function displayWidgetChart(containerId, title, xAxisData, data) {
 
         tooltip: {
             headerFormat: '<span style="font-size:11px">{point.x}</span><br>',
-            pointFormat: '<span style="color:{point.color}">{series.name}</span>: <b>{point.y}</b><br/>'
+            pointFormat: '<span style="color:{point.color}">{series.name}</span>: <b>{point.y}'+pointFormatPercentage+'</b><br/>'
         },
 
         series: [{

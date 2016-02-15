@@ -43,6 +43,14 @@ app.use('/', routes);
 app.use('/dashboard/', dashboard);
 app.use('/details/', details);
 app.use('/api/', api);
+app.get('/fail', function (req, res, next) {
+  setTimeout(function () {
+    var nu = null;
+    nu.access();
+
+    res.send('Hello World');
+  }, 1000);
+});
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
