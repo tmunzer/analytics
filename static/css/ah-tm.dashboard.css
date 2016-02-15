@@ -148,6 +148,10 @@ button.blue-button > i {
     color: #F7B60F;
 }
 
+.dashboard-item {
+    transition:all .2s ease-in-out;
+}
+
 span.dashboard-span,
 span.dashboard-span > i{
     text-align: center;
