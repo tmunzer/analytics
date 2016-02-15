@@ -13,29 +13,21 @@ function Location(apiData) {
 }
 
 
-Location.prototype.getSubLocationsId = function () {
-    var locationsId;
-    if (this.folderType == "BUILDING") locationsId = [this.id];
-    else locationsId = [];
-    for (var folderNum in this.folders) {
-        locationsId.concat(this.folders[folderNum].getSubLocationsId());
-    }
-    return locationsId;
-};
-
-function getFilteredFloorsId (folder, floorFilter) {
+function getFilteredFloorsId (folder, floorFilter, typeFilter) {
     var folderNum;
     var floorsSelected = [];
     var folderId = (folder.id).toString();
     if (floorFilter == [] || floorFilter.indexOf(folderId) >= 0) {
-        if (floorsSelected.indexOf(folderId) < 0) floorsSelected.push(folderId);
+        if (typeFilter == null || folder.folderType == typeFilter) {
+            if (floorsSelected.indexOf(folderId) < 0) floorsSelected.push(folderId);
+        }
         for (folderNum in folder.folders) {
             floorFilter.push(folder.folders[folderNum]['id']);
-            floorsSelected = floorsSelected.concat(getFilteredFloorsId(folder.folders[folderNum], floorFilter));
+            floorsSelected = floorsSelected.concat(getFilteredFloorsId(folder.folders[folderNum], floorFilter, typeFilter));
         }
     } else {
         for (folderNum in folder.folders) {
-            floorsSelected = floorsSelected.concat(getFilteredFloorsId(folder.folders[folderNum], floorFilter));
+            floorsSelected = floorsSelected.concat(getFilteredFloorsId(folder.folders[folderNum], floorFilter, typeFilter));
         }
     }
     return floorsSelected;
@@ -62,6 +54,22 @@ function countBuildings (folder, floorFilter) {
     return result;
 }
 
+function getLocationName (folder, locationId){
+    var name = "";
+    var tmpName = "";
+    if (folder.id == locationId) {
+        name = folder.name;
+    }
+    else {
+        for (var folderNum in folder.folders) {
+            tmpName = getLocationName(folder.folders[folderNum], locationId);
+            if (tmpName != "") name = tmpName;
+        }
+    }
+    return name;
+}
+
 module.exports = Location;
 module.exports.getFilteredFloorsId = getFilteredFloorsId;
 module.exports.countBuildings = countBuildings;
+module.exports.getLocationName = getLocationName;

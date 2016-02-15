@@ -32,4 +32,5 @@ function updateDashboard() {
 
 function updateCharts(){
     updateWidgets();
+    updateBestLocation();
 }

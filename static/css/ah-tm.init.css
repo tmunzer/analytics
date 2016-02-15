@@ -16,7 +16,25 @@
 .LoginPage .login-box {
     height: 520px;
 }
-
+.LoginPage .leftColumn input[type='text'] {
+    color:    #4C7D99 !important;
+}
+input::-webkit-input-placeholder
+{
+    color:    #909090;
+}
+input:-moz-placeholder
+{
+    color:    #909090;
+}
+input::-moz-placeholder
+{
+    color:    #909090;
+}
+input:-ms-input-placeholder
+{
+    color:    #909090;
+}
 .LoginPage .leftColumn h1 {
     margin-left: 38px;
     margin-bottom: 58px;
