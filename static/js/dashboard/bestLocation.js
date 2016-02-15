@@ -39,6 +39,26 @@ function updateBestLocation() {
 
 function displayBestLocation(param, title, percentage){
     $("#button-bestLocation").html(title);
+    switch (param){
+        case 'associatedClients':
+            $("#help-bestLocation").html("Number of clients that were associated with the network over the given time interval.");
+            break;
+        case 'engagedClients':
+            $("#help-bestLocation").html("Number of clients that were engaged over the time interval.");
+            break;
+        case 'passersbyClients':
+            $("#help-bestLocation").html("Number of clients that were determined to be passersby over the time interval.");
+            break;
+        case 'storeFrontClients':
+            $("#help-bestLocation").html("Percentage of clients seen outside that come into your store.");
+            break;
+        case 'unassociatedClients':
+            $("#help-bestLocation").html("The number of clients not associated with the network over the given time interval.");
+            break;
+        case 'uniqueClients':
+            $("#help-bestLocation").html("The number of unique clients over the time interval.");
+            break;
+    }
     var xAxisData = [];
     var data = [];
     var sortable = [];

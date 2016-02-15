@@ -65,19 +65,24 @@ block content
                     div.widget-loading.topApplicationGroup(style="height: 300px;")
                         div.widget-content
                             div.widget-label.clearfix
+                                span.health-progress-bar-help
+                                div.health-progress-help-info
+                                    span(id="help-bestLocation") Percentage of people seen outside that come into your store.
+                                    span.health-progress-help-info-rect
                                 span.widget-block
                                 span.widget-label-title Top 5 Locations By
                                 div.dropdown.medium(style="position: absolute;top: -5px;left: 250px;")
                                     button(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="height: 35px;")
                                         span.init-text(id="button-bestLocation") Storefront Conversion
                                         span.caret
-                                    ul.dropdown-menu.medium(aria-labelledby="button-heatmap" id="myLoc")
+                                    ul.dropdown-menu.medium(aria-labelledby="button-bestLocation" id="myLoc")
                                         li(onclick="displayBestLocation('associatedClients', 'Associated Clients')") Associated Clients
                                         li(onclick="displayBestLocation('engagedClients', 'Engaged Clients')") Engaged Clients
                                         li(onclick="displayBestLocation('passersbyClients', 'Passersby Clients')") Passersby Clients
                                         li(onclick="displayBestLocation('storeFrontClients', 'Storefront Conversion', true)") Storefront Conversion
                                         li(onclick="displayBestLocation('unassociatedClients', 'Unassociated Clients')") Unassociated Clients
                                         li(onclick="displayBestLocation('uniqueClients', 'Unique Clients')") Unique Clients
+
                             div.clearfix(id="bestLocationEmpty")
                                 div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
                             div.entity-loading-widget(id="bestLocationLoading" style="display:none;")
@@ -90,6 +95,10 @@ block content
                     div.widget-loading.topApplicationGroup(style="height: 300px;")
                         div.widget-content
                             div.widget-label
+                                span.health-progress-bar-help
+                                div.health-progress-help-info
+                                    span Percentage of people seen outside that come into your store.
+                                    span.health-progress-help-info-rect
                                 span.widget-block
                                 span.widget-label-title Storefront Conversion
                             div.clearfix(id="storeFrontEmpty")
@@ -115,6 +124,10 @@ block content
                     div.widget-loading.topApplicationGroup(style="height: 300px;")
                         div.widget-content
                             div.widget-label
+                                span.health-progress-bar-help
+                                div.health-progress-help-info
+                                    span Number of clients that were engaged over the time interval.
+                                    span.health-progress-help-info-rect
                                 span.widget-block
                                 span.widget-label-title Passers By
                             div.clearfix(id="passersByEmpty")
@@ -140,6 +153,10 @@ block content
                     div.widget-loading.topApplicationGroup(style="height: 300px;")
                         div.widget-content
                             div.widget-label
+                                span.health-progress-bar-help
+                                div.health-progress-help-info
+                                    span The number of clients that were determined to be passersby over the time interval.
+                                    span.health-progress-help-info-rect
                                 span.widget-block
                                 span.widget-label-title Engaged
                             div.clearfix(id="engagedEmpty")

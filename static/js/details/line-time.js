@@ -35,7 +35,7 @@ function displayLineChart(time, uniqueClients, engagedClients, passersbyClients,
             {
                 name: 'uniqueClients',
                 data: uniqueClients,
-                color: "#7a9fb8"
+                color: "#9cd2f1"
             }, {
                 name: 'engagedClients',
                 data: engagedClients,
@@ -44,17 +44,17 @@ function displayLineChart(time, uniqueClients, engagedClients, passersbyClients,
             {
                 name: 'passersbyClients',
                 data: passersbyClients,
-                color: '#d9534f'
+                color: '#155c8c'
             },
             {
                 name: 'associatedClients',
                 data: associatedClients,
-                color: "#3794d1"
+                color: "#106dab"
             },
             {
                 name: 'unassociatedClients',
                 data: unassociatedClients,
-                color: "#7b7c7f"
+                color: "#3095cf"
             }
         ]
     });
