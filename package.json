@@ -12,9 +12,11 @@
     "express": "~4.13.1",
     "express-session": "~1.13.0",
     "jade": "~1.11.0",
-    "morgan": "~1.6.1",
+    "letsencrypt-express": "^1.1.1",
     "parseurl": "~1.3.1",
+    "respawn": "~2.2.0",
+    "morgan": "~1.6.1",
     "serve-favicon": "~2.3.0",
-    "respawn": "~2.2.0"
+    "winston": "~2.1.1"
   }
 }
