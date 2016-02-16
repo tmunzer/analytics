@@ -1,7 +1,7 @@
 
 
 function displayHeatmap(data, range, title) {
-    $("#button-heatmap").html(title);
+    $("#heatmap-button").html(title);
     var chart = $("#heatmapChart");
     if (chart.highcharts()) chart.highcharts().destroy();
     chart.highcharts({
