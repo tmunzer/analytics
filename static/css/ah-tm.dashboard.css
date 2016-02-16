@@ -48,7 +48,7 @@ body {
 
 .caret {
     float: right;
-}
+    border-top: 4px solid #fff;}
 .dropdown .caret {
     margin-top: 4px;
 }
