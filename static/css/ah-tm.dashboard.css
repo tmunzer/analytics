@@ -1,6 +1,6 @@
 
 body {
-    font-family: Helvetica Neue, Helvetica, arial, sans-serif;
+    font: 12px helvetica,arial,san-serif;
 }
 
 .head-inner > .logo {
@@ -48,7 +48,7 @@ body {
 
 .caret {
     float: right;
-}
+    border-top: 4px solid #fff;}
 .dropdown .caret {
     margin-top: 4px;
 }
@@ -146,6 +146,10 @@ button.blue-button > i {
     margin-top: 8px;
     font-weight: 500;
     color: #F7B60F;
+}
+
+.dashboard-item {
+    transition:all .2s ease-in-out;
 }
 
 span.dashboard-span,
@@ -282,4 +286,26 @@ li.location {
     height: 20px;
     width: 60px;
     margin: auto;
+}
+
+.widget-label:hover .health-progress-bar-help {
+    display: block;
+}
+.health-progress-bar-help {
+    right: 3px;
+}
+.health-progress-help-info {
+    width: 250px;
+    left: 250px;
+    top: 30px;
+    z-index: 100;
+    font: 12px helvetica,arial,san-serif;
+    text-transform: none;
+}
+.health-progress-help-info-rect {
+    left: 208px;
+    top: -5px;
+    border-left: 8px solid transparent;
+    border-bottom: 10px solid #f2f7fa;
+    border-right: 8px solid transparent;
 }

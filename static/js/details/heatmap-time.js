@@ -1,10 +1,11 @@
 
 
 function displayHeatmap(data, range, title) {
-    $("#heatmap-button").html(title);
+    $("#button-heatmap").html(title);
     var chart = $("#heatmapChart");
     if (chart.highcharts()) chart.highcharts().destroy();
     chart.highcharts({
+        color: "#7a9fb8",
         chart: {
             type: 'heatmap',
             marginBottom: 80,

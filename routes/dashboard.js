@@ -66,7 +66,7 @@ router.post('/', function (req, res, next) {
         title: 'Analytics',
         current_page: 'dashboard'
     });
-}).get('/', function(req, res, next){
+}).get('/', function (req, res, next) {
     if (req.session.vpcUrl && req.session.ownerID && req.session.accessToken) {
         res.render('dashboard', {
             title: 'Analytics',
@@ -282,7 +282,6 @@ router.post('/api/update/widgets/', function (req, res, next) {
                     && locWeekDone == locations.length
                     && locMonthDone == locations.length
                     && locYearDone == locations.length) {
-                    console.log("============================= END");
                     res.json({
                         error: null,
                         dataNow: dataNow,
@@ -293,5 +292,60 @@ router.post('/api/update/widgets/', function (req, res, next) {
                 }
             }
         });
+});
+router.post("/api/update/widget-best/", function (req, res, next) {
+    var startTime, endTime, locDone, bestLocations, locations, location, locationsToGet, i;
+    if (req.body.hasOwnProperty('startTime') && req.body.hasOwnProperty('endTime')) {
+        startTime = new Date(req.body['startTime']);
+        endTime = new Date(req.body['endTime']);
+
+        if (req.body.hasOwnProperty("locations")) {
+            locations = JSON.parse(req.body['locations']);
+            if (locations.length == 0) locations = [req.session.locations.id];
+        } else locations = [req.session.locations.id];
+
+        locDone = 0;
+        bestLocations = {};
+        locationsToGet = Location.getFilteredFloorsId(req.session.locations, locations, "BUILDING");
+        for (i = 0; i < locationsToGet.length; i++) {
+            location = locationsToGet[i];
+
+            API.clientlocation.clientcount(
+                req.session.vpcUrl,
+                req.session.accessToken,
+                req.session.ownerID,
+                location,
+                startTime.toISOString(),
+                endTime.toISOString(),
+                function (err, data) {
+                    if (err) console.log(err);
+                    else {
+                        var storeFrontClients, name;
+                        if (data.data['unassociatedClients'] == 0) storeFrontClients = 0;
+                        else storeFrontClients = ((data.data['engagedClients']/data.data['unassociatedClients'])*100).toFixed(0);
+                        name = Location.getLocationName(req.session.locations, this.location);
+                        bestLocations[this.location] = {
+                            name: name,
+                            uniqueClients: data.data['uniqueClients'],
+                            engagedClients: data.data['engagedClients'],
+                            passersbyClients: data.data['passersbyClients'],
+                            associatedClients: data.data['associatedClients'],
+                            unassociatedClients: data.data['unassociatedClients'],
+                            storeFrontClients: storeFrontClients
+                        };
+                        locDone++;
+                    }
+                    if (locDone == locationsToGet.length) {
+                        res.json({
+                            error: null,
+                            data: {
+                                bestLocations: bestLocations
+                            }
+                        })
+                    }
+                }.bind({location: location}));
+
+        }
+    } else res.json({error: "missing parameters"});
 });
 module.exports = router;

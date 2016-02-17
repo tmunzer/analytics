@@ -5,7 +5,7 @@ var router = express.Router();
 router.get('/', function(req, res, next) {
   var errorcode;
   if (req.query.hasOwnProperty('errorcode')) errorcode = req.query["errorcode"];
-  res.render('init', { title: 'Express' , errorcode: errorcode});
+  res.render('init', { title: 'Analytics' , errorcode: errorcode});
 });
 
 module.exports = router;
