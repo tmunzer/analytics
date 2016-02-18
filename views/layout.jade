@@ -1,11 +1,11 @@
 -var dashboard = "nav-item"
--var location = "nav-item"
+-var compare = "nav-item"
 -var details = "nav-item"
 case current_page
     when "dashboard"
         - var dashboard = "nav-item cur"
-    when "location"
-        - var location = "nav-item cur"
+    when "compare"
+        - var compare = "nav-item cur"
     when "details"
         - var details = "nav-item cur"
 
@@ -37,13 +37,13 @@ html
                     ul.head-nav
                         li(class = dashboard)
                             a.nav-dashboard(href="/dashboard/") Dashboard
-                        li(class = location)
-                            a.nav-dashboard Compare
+                        li(class = compare)
+                            a.nav-dashboard(href="/compare/location/") Compare
                         li(class = details)
                             a.nav-dashboard(href="/details/") Details
             div.head-bottom
-                div(style="width:1220px; margin: auto")
-                    div.sub-tabs
+                div.sub-tabs
+                    block sub-tabs
         div.clearfix(id="main")
             div.pt-r
                 div(id="container")
@@ -94,7 +94,7 @@ html
                                                                         li.timeline-range(onclick="changeRange('Day', 8)" id="timeline-8") 8H
                                                                         li.timeline-range(onclick="changeRange('Day', 0)" id="timeline-0") Last 24H
                                                     div.clearfix(style="height:200px; min-height: 100px;")
-                                                        div.entity-timeline-bar-time(id="timeline" style="height: 150px; ")
+                                                        div.entity-timeline-bar-time(id="timeline" )
                                             div.clearfix
                                                 div.entity-timeline-show-time='Showing data from '
                                                     span(id="span-from-date")

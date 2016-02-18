@@ -309,3 +309,7 @@ li.location {
     border-bottom: 10px solid #f2f7fa;
     border-right: 8px solid transparent;
 }
+
+.entity-timeline-bar-time {
+    margin-top: 0;
+}
