@@ -10,12 +10,13 @@ function init(){
     var data = {};
     $.ajax({
         method: "POST",
-        url: "/dashboard/api/init/",
+        url: "/api/common/init/",
         data: data
     })
         .done(function (data) {
             if (data.error) displayModal("API", data.error);
-             else {
+            else if (data.warning) displayModal("CUSTOM", data.warning);
+            else {
                 locations = data.locations;
                 displayTree();
                 updateTimeline();

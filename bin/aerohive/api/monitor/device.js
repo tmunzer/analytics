@@ -12,7 +12,7 @@ module.exports = function (vpcUrl, accessToken, ownerId, callback) {
             callback(err, result);
         }
         else if (result){
-            var devicesFromAPI = result.data;
+            var devicesFromAPI = result;
             var deviceList = [];
 
             // for each device.js from the API response
