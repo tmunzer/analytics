@@ -1,4 +1,5 @@
 function init(){
+    filterFolder = "None";
     var data = {};
     $.ajax({
         method: "POST",

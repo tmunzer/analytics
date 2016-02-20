@@ -2,6 +2,7 @@ function displayTree(folder, parent) {
     var subtree = '';
     var extendString = '';
     var htmlString = '';
+    var typeString = '';
     var htmlMinHeight = '';
     var id, name, root, folderType;
     if (folder == null) {
@@ -19,6 +20,9 @@ function displayTree(folder, parent) {
                 break;
             case "folderType":
                 folderType = folder[key];
+                if (folderType == filterFolder || filterFolder == null) typeString = '<input class="filter-loca-checked '+parent+'" type="checkbox" onclick="selectLocation(\''+id+'\')" ' +
+                    'id="checkbox-' + id + '" data-parent-id="'+parent+'" data-id="' + id + '" data-folder-type="'+folderType+'"' +
+                    'style="margin: 0;"/>';
                 break;
             case "folders":
                 switch (folderType) {
@@ -37,9 +41,7 @@ function displayTree(folder, parent) {
         '<li style="position:relative; '+htmlMinHeight+'"  class="location" data-parent-id="'+parent+'">' +
         extendString +
         '<label class="checkbox ml10" style="margin: 0 0 0 10px;">' +
-        '<input class="filter-loca-checked '+parent+'" type="checkbox" onclick="selectLocation(\''+id+'\')" ' +
-        'id="checkbox-' + id + '" data-parent-id="'+parent+'" data-id="' + id + '" data-folder-type="'+folderType+'"' +
-        'style="margin: 0;"/>' +
+        typeString +
         '<span class="lbl fn-ellipsis" style="width: 80%;">' + name + '</span>' +
         '</label>' +
         '<ul style="margin-bottom: 0;">' +
@@ -50,6 +52,23 @@ function displayTree(folder, parent) {
         $("#location-tree").html(htmlString);
     } else return htmlString;
 }
+
+function filterFolderType(type){
+    if ($("#filter-"+type).prop("checked")) {
+        $("#filter-alert").hide();
+        $(".filter-folder").prop("checked", false);
+        $("#filter-"+type).prop("checked", true);
+            filterFolder = type;
+
+    } else {
+        filterFolder = "None";
+        $("#filter-alert").show();
+    }
+
+
+    if (locations.length != {}) displayTree();
+}
+
 
 function selectLocation(locationId){
     var checked = $("#checkbox-"+locationId).prop('checked');

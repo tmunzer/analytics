@@ -313,3 +313,11 @@ li.location {
 .entity-timeline-bar-time {
     margin-top: 0;
 }
+
+.modal,
+.btn {
+    border-radius: 0;
+}
+.btn-primary {
+    color: #fff !important;
+}

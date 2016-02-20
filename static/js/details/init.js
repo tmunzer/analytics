@@ -14,7 +14,7 @@ function init(){
         data: data
     })
         .done(function (data) {
-            if (data.error) console.log(error);
+            if (data.error) displayModal("API", data.error);
              else {
                 locations = data.locations;
                 displayTree();

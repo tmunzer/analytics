@@ -24,9 +24,17 @@ html
         link(rel='stylesheet' href='/css/borderContainer.css')
         script(language="JavaScript" type="text/javascript" src='/js/common/locations.js')
         script(language="JavaScript" type="text/javascript" src='/js/common/timeline.js')
+        script(language="JavaScript" type="text/javascript" src='/js/common/error.js')
         block include
 
     body.claro.fullaccess
+        div.modal.fade.bs-example-modal-lg(id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" style="height: 200px;")
+            div.modal-header
+                h4.modal-title(id="modalLabel" style="text-transform: capitalize") Modal title
+            div.modal-body(id="modalBody")
+            div.modal-footer(id="modalFooter" style="position: absolute; bottom: 0px; width: 100%;")
+
+
         div.header(id="header")
             div.head-inner
                 h1.logo
@@ -50,15 +58,16 @@ html
                     div.line.clearfix
                         div.view-section.clearfix
                             div.leftNavIconMain(style="width: 220px; margin-right: 10px; height: 100%; float: left;")
-                                div.filterArea.leftNavItem.show(style="margin-top: 35px")
-                                    div.filter-panel.clearfix
-                                        div.filter-con-header
-                                            div.filter-con-title(style='width:100%') Filter By
-                                                div.ui-filter-categ
-                                                    h3.ui-filter-categ-tle Location
-                                                    div.ui-filter-dtl-area
-                                                        div.ui-filter-dtl
-                                                            ul.entity-loading(id="location-tree")
+                                block tree
+                                    div.filterArea.leftNavItem.show(style="margin-top: 35px")
+                                        div.filter-panel.clearfix
+                                            div.filter-con-header
+                                                div.filter-con-title(style='width:100%') Filter By
+                                                    div.ui-filter-categ
+                                                        h3.ui-filter-categ-tle Location
+                                                        div.ui-filter-dtl-area
+                                                            div.ui-filter-dtl
+                                                                ul.entity-loading(id="location-tree")
                             div.dashboard-main
                                 block dashboard-cards
                                 div.dashboard-main
@@ -108,6 +117,7 @@ html
             var locations = {};
             var locationAnalytics = [];
             var range = 0;
+            var filterFolder = null;
             function timelineRange(id, name) {
                 $("#span-range").html(name);
                 var htmlSrting;

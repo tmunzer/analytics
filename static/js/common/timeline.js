@@ -1,4 +1,4 @@
-var min, max;
+var min, max, timelineReq;
 
 function updateTimeline() {
     if ($('#timeline').highcharts()) $('#timeline').highcharts().destroy();
@@ -31,18 +31,20 @@ function updateTimeline() {
             format = '{value:%m-%Y}';
             break;
     }
+    timelineReq = new Date().getTime();
     $.ajax({
         method: 'POST',
         url: '/api/common/timeline/',
         data: {
             startTime: startTime.toISOString(),
             endTime: endTime.toISOString(),
-            locations: JSON.stringify(locationAnalytics)
+            locations: JSON.stringify(locationAnalytics),
+            reqId: timelineReq
         }
     }).
         done(function (data) {
             if (data.error) console.log(data.error);
-            else {
+            else if (data.reqId == timelineReq) {
                 var maxChart = 0;
                 var time = [];
                 var chart = [];
