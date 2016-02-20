@@ -15,16 +15,14 @@ body {
     color: #FFF;
     margin-top: 0.34em;
 }
-.dropdown.large button {
-    width: 323px;
-    padding: 1em 1em 1em 18px;
 
-}
-.dropdown.medium button {
-    width: 200px;
+.dropdown.large button,
+.dropdown.medium button,
+.dropdown.tree button {
     padding: 1em 1em 1em 18px;
-
 }
+
+
 
 .dropdown button:hover {
     background-color: #4C7D99;
@@ -33,10 +31,22 @@ body {
 .dropdown {
     width: 100px;
 }
+.dropdown.medium button,
+ul.dropdown-menu.medium,
 .dropdown.medium {
     width: 200px !important;
 }
+.dropdown.tree button,
+ul.dropdown-menu.tree,
+.dropdown.tree {
+    width: 196px !important;
+}
+.dropdown.tree {
+    height: 35px;
+}
 
+.dropdown.large button,
+ul.dropdown-menu.large,
 .dropdown.large,
 .login-form input {
     width: 323px !important;
@@ -63,19 +73,16 @@ ul.dropdown-menu {
     border-radius: 0;
 
 }
-ul.dropdown-menu.large {
-    width: 323px;
-}
-ul.dropdown-menu.medium {
-    width: 200px;
-}
+
 .dropdown-menu > li {
     padding: 0.2em;
     border-bottom: 1px solid #789FB6;
+    color: #000;
 }
 .dropdown-menu.large > li {
     padding: 1em;
 }
+.dropdown-menu.tree > li,
 .dropdown-menu.medium > li {
     padding: 2px 0 2px 15px;
     font-size: 12px;
@@ -320,4 +327,13 @@ li.location {
 }
 .btn-primary {
     color: #fff !important;
+}
+.ui-tab-active .arrow-left{
+    margin-left: -1px !important;
+}
+.ui-tab-active .arrow-left::before {
+    left: 0;
+}
+.ui-tab-active .arrow-left::after {
+    left: -2px;
 }

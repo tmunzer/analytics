@@ -5,23 +5,9 @@ var heatmapUniqueClients, heatmapUniqueClientsRange,
     heatmapUnassociatedClients, heatmapUnassociatedClientsRange;
 
 function updateHeatmap() {
-    var lineChart = $('#lineChart');
-    var lineEmpty = $("#lineEmpty");
-    var lineData = $("#lineData");
-    var lineLoading = $("#lineLoading");
-    var heatmapChart = $('#heatmapChart');
-    var heatmapEmpty = $("#heatmapEmpty");
-    var heatmapData = $("#heatmapData");
-    var heatmapLoading = $("#heatmapLoading");
 
-
-    lineEmpty.hide();
-    lineData.hide();
-    lineLoading.show();
-
-    heatmapEmpty.hide();
-    heatmapData.hide();
-    heatmapLoading.show();
+    showLoading('line');
+    showLoading('heatmap');
 
     var chart = $('#timeline').highcharts();
     var endTime = new Date(chart.xAxis[1].categories[max]);
@@ -155,9 +141,7 @@ function updateHeatmap() {
             }
         });
     } else {
-        heatmapEmpty.show();
-        heatmapData.hide();
-        lineEmpty.show();
-        lineData.hide();
+        showEmpty("line");
+        showEmpty("heatmap");
     }
 }

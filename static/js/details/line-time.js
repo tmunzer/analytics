@@ -58,7 +58,6 @@ function displayLineChart(time, uniqueClients, engagedClients, passersbyClients,
             }
         ]
     });
+    showData("line");
 
-    $("#lineData").show();
-    $("#lineLoading").hide();
 }

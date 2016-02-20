@@ -54,23 +54,27 @@ function displayTree(folder, parent) {
 }
 
 function filterFolderType(type){
-    if ($("#filter-"+type).prop("checked")) {
-        $("#filter-alert").hide();
-        $(".filter-folder").prop("checked", false);
-        $("#filter-"+type).prop("checked", true);
-            filterFolder = type;
-
-    } else {
-        filterFolder = "None";
-        $("#filter-alert").show();
+    switch(type){
+        case "Folders":
+            filterFolder = "GENERIC";
+            break;
+        case "Buildings":
+            filterFolder = "BUILDING";
+            break;
+        case "Floors":
+            filterFolder = "FLOOR";
+            break;
     }
-
-
-    if (locations.length != {}) displayTree();
+    $("#button-filter-location").html(type);
+    displayTree();
 }
 
 
 function selectLocation(locationId){
+    if ($("#location-tree input:checked").length < 5){
+        $("#location-tree input:checkbox:not(:checked)").prop("disabled", false);
+    } else $("#location-tree input:checkbox:not(:checked)").prop("disabled", true);
+
     var checked = $("#checkbox-"+locationId).prop('checked');
     changeChilds(locationId, checked);
     if (!checked) uncheckParents(locationId);

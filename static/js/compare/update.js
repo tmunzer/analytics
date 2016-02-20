@@ -3,6 +3,6 @@ function updateDashboard() {
 }
 
 function updateCharts(){
-    updatePolar();
+    updatePolarAndBars();
     updateLocationLine();
 }

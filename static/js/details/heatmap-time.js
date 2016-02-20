@@ -59,7 +59,6 @@ function displayHeatmap(data, range, title) {
             }
         }
     });
-    $("#heatmapData").show();
-    $("#heatmapLoading").hide();
+    showData("heatmap");
 
 }

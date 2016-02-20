@@ -4,230 +4,201 @@ block tree
     div.filterArea.leftNavItem.show(style="margin-top: 35px")
         div.filter-panel.clearfix
             div.filter-con-header
-                div.filter-con-title(style='width:100%') Filter By
+                div.filter-con-title(style='width:100%') Compare
                     div.ui-filter-categ
-                        h3.ui-filter-categ-tle Type of compared locations
-                        div.ui-filter-dtl-area
-                            div.ui-filter-dtl
-                                ul
-                                    li(style="position:relative;" class="location")
-                                        label.checkbox.ml10(style="margin: 0 0 0 10px;")
-                                            input.filter-folder(type="checkbox" id="filter-GENERIC" onclick="filterFolderType('GENERIC')" style="margin: 0;")
-                                            span.lbl.fn-ellipsis(style="width: 80%;") Folders
-                                    li(style="position:relative;" class="location")
-                                        label.checkbox.ml10(style="margin: 0 0 0 10px;")
-                                            input.filter-folder(type="checkbox" id="filter-BUILDING" onclick="filterFolderType('BUILDING')" style="margin: 0;")
-                                            span.lbl.fn-ellipsis(style="width: 80%;") Buildings
-                                    li(style="position:relative;" class="location")
-                                        label.checkbox.ml10(style="margin: 0 0 0 10px;")
-                                            input.filter-folder(type="checkbox" id="filter-FLOOR" onclick="filterFolderType('FLOOR')" style="margin: 0;")
-                                            span.lbl.fn-ellipsis(style="width: 80%;") Floors
+                        div.dropdown.tree
+                            button(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="height: 35px;")
+                                span.init-text(id="button-filter-location") Buildings
+                                span.caret
+                            ul.dropdown-menu.tree(aria-labelledby="button-bestLocation" id="filter-location")
+                                li(onclick="filterFolderType('Folders')") Folders
+                                li(onclick="filterFolderType('Buildings')") Buildings
+                                li(onclick="filterFolderType('Floors')") Floors
 
-                        h3.ui-filter-categ-tle Locations
-                        div.alert-error(id="filter-alert" style="line-height: 25px;padding: 5px;")
-                            span Please select a type of compared locations first
-                        div.ui-filter-dtl-area
+                        div.ui-filter-dtl-area(style="margin-top: 15px;")
                             div.ui-filter-dtl
                                 ul.entity-loading(id="location-tree")
 
 block content
     div.dashboard-container.dojoDndSource.dojoDndTarget.dojoDndContainer(id="dashboard-widgets")
-        div.dojoDndItem.column.grid_16.dashboard-item(style="margin-right: 33px;height: 400px!important;")
-            div.dashboard-widget.dojoDndHandle
-                div.widget-loading.topApplicationGroup
-                    div.widget-content
-                        div.widget-label.clearfix
-                            span.widget-block
-                            span.widget-label-title Locations statistics
-                        div.clearfix(id="polarEmpty")
-                            div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
-                        div.entity-loading-widget(id="polarLoading" style="display:none;")
-                        div(id="polarData" style="display:none;")
-                            div.column.grid_16(style="position: relative;display: inline-flex;")
-                                div.grid_16(style="height: 250px;" id="polarChart")
+        div.ui-tab-container
+            div.line.clearfix
+                div.ui-tab.clearfix.ui-tab-first.ui-tab-active(id="tab-global" style="width: 150px;")
+                    div.arrow-left
+                    div.lower-tab
+                        a(href="javascript:void(0)" onclick="changeTab('global')") Global
+                div.ui-tab.clearfix.ui-tab-inactive(id="tab-overTime" style="width: 150px;")
+                    div.arrow-left
+                    div.lower-tab
+                        a(href="javascript:void(0)" onclick="changeTab('overTime')") Over Time
+            div.ui-tab-panel-wrap
+                div.ui-tab-panel(id="global")
+                    // POLAR CHART
+                    div.dojoDndItem.column.grid_16.dashboard-item(style="margin-right: 33px;height: 400px!important;")
+                        div.dashboard-widget.dojoDndHandle
+                            div.widget-loading.topApplicationGroup
+                                div.widget-content
+                                    div.widget-label.clearfix
+                                        span.widget-block
+                                        span.widget-label-title Locations statistics
+                                    div.clearfix(id="polarEmpty")
+                                        div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
+                                    div.entity-loading-widget(id="polarLoading" style="display:none;")
+                                    div(id="polarData" style="display:none;")
+                                        div.column.grid_16(style="position: relative;display: inline-flex;")
+                                            div.grid_16(style="height: 250px;" id="polarChart")
 
-        div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
-            div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
-                div.widget-loading.topApplicationGroup(style="height: 300px;")
-                    div.widget-content
-                        div.widget-label.clearfix
-                            span.health-progress-bar-help
-                            div.health-progress-help-info
-                                span(id="help-bestLocation") Percentage of people seen outside that come into your store.
-                                span.health-progress-help-info-rect
-                            span.widget-block
-                            span.widget-label-title Top 5 Locations By
-                        div.clearfix(id="bestLocationEmpty")
-                            div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
-                        div.entity-loading-widget(id="bestLocationLoading" style="display:none;")
-                        div(id="bestLocationData" style="display:none")
-                            div.column.grid_8(style="position: relative;display: inline-flex;")
-                                div.grid_8(style="height: 250px;" id="bestLocationChart")
+                    // Best locations by
+                    div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
+                        div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
+                            div.widget-loading.topApplicationGroup(style="height: 300px;")
+                                div.widget-content
+                                    div.widget-label.clearfix
+                                        span.health-progress-bar-help
+                                        div.health-progress-help-info
+                                            span(id="help-storefrontBarEmpty") Percentage of people seen outside that come into your store.
+                                            span.health-progress-help-info-rect
+                                        span.widget-block
+                                        span.widget-label-title Storefront Conversion
+                                    div.clearfix(id="storefrontBarEmpty")
+                                        div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
+                                    div.entity-loading-widget(id="storefrontBarLoading" style="display:none;")
+                                    div(id="storefrontBarData" style="display:none")
+                                        div.column.grid_8(style="position: relative;display: inline-flex;")
+                                            div.grid_8(style="height: 250px;" id="storefrontBarChart")
 
-        div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
-            div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
-                div.widget-loading.topApplicationGroup(style="height: 300px;")
-                    div.widget-content
-                        div.widget-label
-                            span.health-progress-bar-help
-                            div.health-progress-help-info
-                                span Percentage of people seen outside that come into your store.
-                                span.health-progress-help-info-rect
-                            span.widget-block
-                            span.widget-label-title Storefront Conversion
-                        div.clearfix(id="storeFrontEmpty")
-                            div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
-                        div.entity-loading-widget(id="storeFrontLoading" style="display:none;")
-                        div(id="storeFrontData" style="display:none")
-                            div.column.grid_8(style="position: relative;display: inline-flex;")
-                                div.grid_8(style="height: 250px;" id="bestLocationChart")
+                    // STORE FRONT CONVERSION BARS
+                    div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
+                        div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
+                            div.widget-loading.topApplicationGroup(style="height: 300px;")
+                                div.widget-content
+                                    div.widget-label.clearfix
+                                        span.health-progress-bar-help
+                                        div.health-progress-help-info
+                                            span(id="help-storefrontBarEmpty") Percentage of people seen outside that come into your store.
+                                            span.health-progress-help-info-rect
+                                        span.widget-block
+                                        span.widget-label-title Best Locations By
+                                    div.clearfix(id="storefrontBarEmpty")
+                                        div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
+                                    div.entity-loading-widget(id="storefrontBarLoading" style="display:none;")
+                                    div(id="storefrontBarData" style="display:none")
+                                        div.column.grid_8(style="position: relative;display: inline-flex;")
+                                            div.grid_8(style="height: 250px;" id="storefrontBarChart")
+                    // UNIQUE CLIENTS PER LOCATION
+                    div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
+                        div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
+                            div.widget-loading.topApplicationGroup(style="height: 300px;")
+                                div.widget-content
+                                    div.widget-label
+                                        span.health-progress-bar-help
+                                        div.health-progress-help-info
+                                            span The number of clients that were determined to be passersby over the time interval.
+                                            span.health-progress-help-info-rect
+                                        span.widget-block
+                                        span.widget-label-title Unique Clients
+                                    div.clearfix(id="uniqueBarEmpty")
+                                        div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
+                                    div.entity-loading-widget(id="uniqueBarLoading" style="display:none;")
+                                    div(id="uniqueBarData" style="display:none")
+                                        div.column.grid_8(style="position: relative;display: inline-flex;")
+                                            div.grid_8(style="height: 250px;" id="uniqueBarChart")
 
-        div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
-            div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
-                div.widget-loading.topApplicationGroup(style="height: 300px;")
-                    div.widget-content
-                        div.widget-label
-                            span.health-progress-bar-help
-                            div.health-progress-help-info
-                                span Number of clients that were engaged over the time interval.
-                                span.health-progress-help-info-rect
-                            span.widget-block
-                            span.widget-label-title Passers By
-                        div.clearfix(id="passersByEmpty")
-                            div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
-                        div.entity-loading-widget(id="passersByLoading" style="display:none;")
-                        div(id="passersByData" style="display:none;")
-                            div.column.grid_8(style="position: relative;display: inline-flex;")
-                                div.grid_8(style="height: 250px;" id="bestLocationChart")
+                    // ASSOCIATED/UNASSOCIATED CLIENTS PER LOCATION
+                    div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
+                        div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
+                            div.widget-loading.topApplicationGroup(style="height: 300px;")
+                                div.widget-content
+                                    div.widget-label
+                                        span.widget-block
+                                        span.widget-label-title Wi-Fi Usage
+                                    div.clearfix(id="wifiBarEmpty")
+                                        div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
+                                    div.entity-loading-widget(id="wifiBarLoading" style="display:none;")
+                                    div(id="wifiBarData" style="display:none")
+                                        div.column.grid_8(style="position: relative;display: inline-flex;")
+                                            div.grid_8(style="height: 250px;" id="wifiBarChart")
 
-        div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
-            div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
-                div.widget-loading.topApplicationGroup(style="height: 300px;")
-                    div.widget-content
-                        div.widget-label
-                            span.health-progress-bar-help
-                            div.health-progress-help-info
-                                span The number of clients that were determined to be passersby over the time interval.
-                                span.health-progress-help-info-rect
-                            span.widget-block
-                            span.widget-label-title Engaged
-                        div.clearfix(id="engagedEmpty")
-                            div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
-                        div.entity-loading-widget(id="engagedLoading" style="display:none;")
-                        div(id="engagedData" style="display:none")
-                            div.column.grid_8(style="position: relative;display: inline-flex;")
-                                div.grid_8(style="height: 250px;" id="bestLocationChart")
-
-        div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
-            div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
-                div.widget-loading.topApplicationGroup(style="height: 300px;")
-                    div.widget-content
-                        div.widget-label.clearfix
-                            span.health-progress-bar-help
-                            div.health-progress-help-info
-                                span(id="help-bestLocation") Percentage of people seen outside that come into your store.
-                                span.health-progress-help-info-rect
-                            span.widget-block
-                            span.widget-label-title Top 5 Locations By
-                        div.clearfix(id="bestLocationEmpty")
-                            div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
-                        div.entity-loading-widget(id="bestLocationLoading" style="display:none;")
-                        div(id="bestLocationData" style="display:none")
-                            div.column.grid_8(style="position: relative;display: inline-flex;")
-                                div.grid_8(style="height: 250px;" id="bestLocationChart")
-
-        div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
-            div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
-                div.widget-loading.topApplicationGroup(style="height: 300px;")
-                    div.widget-content
-                        div.widget-label
-                            span.health-progress-bar-help
-                            div.health-progress-help-info
-                                span Percentage of people seen outside that come into your store.
-                                span.health-progress-help-info-rect
-                            span.widget-block
-                            span.widget-label-title Storefront Conversion
-                        div.clearfix(id="storeFrontEmpty")
-                            div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
-                        div.entity-loading-widget(id="storeFrontLoading" style="display:none;")
-                        div(id="storeFrontData" style="display:none")
-                            div.column.grid_8(style="position: relative;display: inline-flex;")
-                                div.grid_8(style="height: 250px;" id="storeFrontChart")
-
-
-        div.dojoDndItem.column.grid_16.dashboard-item(style="margin-right: 33px;height: 400px!important;")
-            div.dashboard-widget.dojoDndHandle
-                div.widget-loading.topApplicationGroup
-                    div.widget-content
-                        div.widget-label.clearfix
-                            span.widget-block
-                            span.widget-label-title Number of devices
-                        div.clearfix(id="storefrontEmpty")
-                            div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
-                        div.entity-loading-widget(id="storefrontLoading" style="display:none;")
-                        div(id="storefrontData" style="display:none;")
-                            div.grid_16(style="height: 250px;" id="lineChart")
-        div.dojoDndItem.column.grid_16.dashboard-item(style="margin-right: 33px;height: 400px!important;")
-            div.dashboard-widget.dojoDndHandle
-                div.widget-loading.topApplicationGroup
-                    div.widget-content
-                        div.widget-label.clearfix
-                            span.widget-block
-                            span.widget-label-title Number of devices
-                        div.clearfix(id="engagedEmpty")
-                            div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
-                        div.entity-loading-widget(id="engagedLoading" style="display:none;")
-                        div(id="engagedData" style="display:none;")
-                            div.grid_16(style="height: 250px;" id="lineChart")
-        div.dojoDndItem.column.grid_16.dashboard-item(style="margin-right: 33px;height: 400px!important;")
-            div.dashboard-widget.dojoDndHandle
-                div.widget-loading.topApplicationGroup
-                    div.widget-content
-                        div.widget-label.clearfix
-                            span.widget-block
-                            span.widget-label-title Number of devices
-                        div.clearfix(id="passersByEmpty")
-                            div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
-                        div.entity-loading-widget(id="passersByLoading" style="display:none;")
-                        div(id="passersByData" style="display:none;")
-                            div.grid_16(style="height: 250px;" id="lineChart")
-        div.dojoDndItem.column.grid_16.dashboard-item(style="margin-right: 33px;height: 400px!important;")
-            div.dashboard-widget.dojoDndHandle
-                div.widget-loading.topApplicationGroup
-                    div.widget-content
-                        div.widget-label.clearfix
-                            span.widget-block
-                            span.widget-label-title Number of devices
-                        div.clearfix(id="uniqueEmpty")
-                            div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
-                        div.entity-loading-widget(id="uniqueLoading" style="display:none;")
-                        div(id="uniqueData" style="display:none;")
-                            div.grid_16(style="height: 250px;" id="lineChart")
-        div.dojoDndItem.column.grid_16.dashboard-item(style="margin-right: 33px;height: 400px!important;")
-            div.dashboard-widget.dojoDndHandle
-                div.widget-loading.topApplicationGroup
-                    div.widget-content
-                        div.widget-label.clearfix
-                            span.widget-block
-                            span.widget-label-title Number of devices
-                        div.clearfix(id="associatedEmpty")
-                            div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
-                        div.entity-loading-widget(id="associatedLoading" style="display:none;")
-                        div(id="associatedData" style="display:none;")
-                            div.grid_16(style="height: 250px;" id="lineChart")
-
-        div.dojoDndItem.column.grid_16.dashboard-item(style="margin-right: 33px;height: 400px!important;")
-            div.dashboard-widget.dojoDndHandle
-                div.widget-loading.topApplicationGroup
-                    div.widget-content
-                        div.widget-label.clearfix
-                            span.widget-block
-                            span.widget-label-title Number of devices
-                        div.clearfix(id="unassociatedEmpty")
-                            div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
-                        div.entity-loading-widget(id="unassociatedLoading" style="display:none;")
-                        div(id="unassociatedData" style="display:none;")
-                            div.grid_16(style="height: 250px;" id="lineChart")
+                div.ui-tab-panel(id="overTime" style="display: none;")
+                    // STORE FRONT CONVERSION OVER TIME
+                    div.dojoDndItem.column.grid_16.dashboard-item(style="margin-right: 33px;height: 400px!important;")
+                        div.dashboard-widget.dojoDndHandle
+                            div.widget-loading.topApplicationGroup
+                                div.widget-content
+                                    div.widget-label.clearfix
+                                        span.widget-block
+                                        span.widget-label-title StoreFront conversion over time
+                                    div.clearfix(id="storefrontEmpty")
+                                        div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
+                                    div.entity-loading-widget(id="storefrontLoading" style="display:none;")
+                                    div(id="storefrontData" style="display:none;")
+                    // ENGAGED CLIENTS CONVERSION OVER TIME
+                    div.dojoDndItem.column.grid_16.dashboard-item(style="margin-right: 33px;height: 400px!important;")
+                        div.dashboard-widget.dojoDndHandle
+                            div.widget-loading.topApplicationGroup
+                                div.widget-content
+                                    div.widget-label.clearfix
+                                        span.widget-block
+                                        span.widget-label-title Number of Engaged Clients over time
+                                    div.clearfix(id="engagedEmpty")
+                                        div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
+                                    div.entity-loading-widget(id="engagedLoading" style="display:none;")
+                                    div(id="engagedData" style="display:none;")
+                    // PASSERS BY CLIENTS CONVERSION OVER TIME
+                    div.dojoDndItem.column.grid_16.dashboard-item(style="margin-right: 33px;height: 400px!important;")
+                        div.dashboard-widget.dojoDndHandle
+                            div.widget-loading.topApplicationGroup
+                                div.widget-content
+                                    div.widget-label.clearfix
+                                        span.widget-block
+                                        span.widget-label-title Number of Passers By over time
+                                    div.clearfix(id="passersByEmpty")
+                                        div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
+                                    div.entity-loading-widget(id="passersByLoading" style="display:none;")
+                                    div(id="passersByData" style="display:none;")
+                    // UNIQUE CLIENTS CONVERSION OVER TIME
+                    div.dojoDndItem.column.grid_16.dashboard-item(style="margin-right: 33px;height: 400px!important;")
+                        div.dashboard-widget.dojoDndHandle
+                            div.widget-loading.topApplicationGroup
+                                div.widget-content
+                                    div.widget-label.clearfix
+                                        span.widget-block
+                                        span.widget-label-title Number of Unique Clients over time
+                                    div.clearfix(id="uniqueEmpty")
+                                        div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
+                                    div.entity-loading-widget(id="uniqueLoading" style="display:none;")
+                                    div(id="uniqueData" style="display:none;")
+                    // ASSOCIATED CLIENTS CONVERSION OVER TIME
+                    div.dojoDndItem.column.grid_16.dashboard-item(style="margin-right: 33px;height: 400px!important;")
+                        div.dashboard-widget.dojoDndHandle
+                            div.widget-loading.topApplicationGroup
+                                div.widget-content
+                                    div.widget-label.clearfix
+                                        span.widget-block
+                                        span.widget-label-title Number of Associated Clients over time
+                                    div.clearfix(id="associatedEmpty")
+                                        div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
+                                    div.entity-loading-widget(id="associatedLoading" style="display:none;")
+                                    div(id="associatedData" style="display:none;")
+                    // UNASSOCIATED CLIENTS CONVERSION OVER TIME
+                    div.dojoDndItem.column.grid_16.dashboard-item(style="margin-right: 33px;height: 400px!important;")
+                        div.dashboard-widget.dojoDndHandle
+                            div.widget-loading.topApplicationGroup
+                                div.widget-content
+                                    div.widget-label.clearfix
+                                        span.widget-block
+                                        span.widget-label-title Number of Unassociated Clients over time
+                                    div.clearfix(id="unassociatedEmpty")
+                                        div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
+                                    div.entity-loading-widget(id="unassociatedLoading" style="display:none;")
+                                    div(id="unassociatedData" style="display:none;")
 
 
-
+block scriptBelow
+    script.
+        function changeTab(tab){
+            $(".ui-tab").removeClass("ui-tab-active").addClass("ui-tab-inactive");
+            $(".ui-tab-panel").hide()
+            $("#tab-"+tab).addClass("ui-tab-active").removeClass("ui-tab-inactive");
+            $("#"+tab).show();
+        }

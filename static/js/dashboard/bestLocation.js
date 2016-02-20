@@ -8,9 +8,8 @@ function updateBestLocation() {
     // @TODO: Current API limitation
     if (endTime - startTime <= 2678400000) {
 
-        $("#bestLocationEmpty").hide();
-        $("#bestLocationLoading").show();
 
+        showLoading('bestLocation');
         $.ajax({
             method: 'POST',
             url: '/dashboard/api/update/widget-best/',
@@ -24,13 +23,11 @@ function updateBestLocation() {
             else {
                 bestLocations = data.data['bestLocations'];
                 displayBestLocation("storeFrontClients", 'Storefront Conversion', true);
-                $("#bestLocationLoading").hide();
-                $("#bestLocationData").show();
-                           }
+                showData('bestLocation');
+            }
         });
     } else {
-        $("#bestLocationEmpty").show();
-        $("#bestLocationData").hide();
+        showEmpty('bestLocation');
 
 
     }
