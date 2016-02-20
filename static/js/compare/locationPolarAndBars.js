@@ -119,7 +119,8 @@ function displayLocationPole(containerId, title, series) {
         chart: {
             polar: true,
             type: 'line',
-            width: 800
+            width: 800,
+            height: 390
         },
 
         title: {
@@ -251,11 +252,7 @@ function displayStackedBarChart(containerId, title, xAxisData, data, percentage)
         },
         legend: {
             align: 'right',
-            x: -30,
             verticalAlign: 'top',
-            y: 25,
-            floating: true,
-            backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
             borderColor: '#CCC',
             borderWidth: 1,
             shadow: false
