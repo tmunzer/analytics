@@ -10,9 +10,9 @@ router.post('/configuration/apLocationFolders/', function(req, res, next) {
         console.log(locations);
         res.send(locations.data);
     });
-})
-    .post('/common/timeline', function (req, res, next) {
-    var startTime, endTime, timeUnit, location, locations, locDone;
+});
+router.post('/common/timeline', function (req, res, next) {
+    var startTime, endTime, timeUnit, location, locations, locDone, timelineReq;
     var timeline = [];
     var series = [];
     if (req.body.hasOwnProperty('startTime') && req.body.hasOwnProperty('endTime')) {
@@ -25,6 +25,7 @@ router.post('/configuration/apLocationFolders/', function(req, res, next) {
         } else {
             timeUnit = "OneDay";
         }
+        timelineReq = req.body['reqId'];
 
         if (req.body.hasOwnProperty("locations")) {
             locations = JSON.parse(req.body['locations']);
@@ -45,7 +46,11 @@ router.post('/configuration/apLocationFolders/', function(req, res, next) {
                 }
                 locDone++;
                 if (locDone == locations.length) {
-                    res.json({error: null, data: timeline});
+                    res.json({
+                        error: null,
+                        data: timeline,
+                        reqId: timelineReq
+                    });
                 }
             });
         }

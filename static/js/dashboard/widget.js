@@ -6,18 +6,9 @@ function updateWidgets() {
     // @TODO: Current API limitation
     if (endTime - startTime <= 2678400000) {
 
-        $("#passersByEmpty").hide();
-        $("#passersByData").hide();
-
-        $("#engagedEmpty").hide();
-        $("#engagedData").hide();
-
-        $("#storeFrontEmpty").hide();
-        $("#storeFrontData").hide();
-
-        $("#passersByLoading").show();
-        $("#engagedLoading").show();
-        $("#storeFrontLoading").show();
+        showLoading("passersBy");
+        showLoading("engaged");
+        showLoading("storeFront");
 
         $.ajax({
             method: 'POST',
@@ -61,23 +52,20 @@ function updateWidgets() {
                     ];
                 }
 
-                $("#passersByLoading").hide();
-                $("#passersByData").show();
+                showData("passersBy");
                 displayWidgetChart("passersByChart", "Number of PassersBy Clients", xAxisData, dataPassersBy);
                 $("#passersByWeek").html(getHtmlPercentage(data.dataNow.passersbyClients, data.dataLastWeek.passersbyClients));
                 $("#passersByMonth").html(getHtmlPercentage(data.dataNow.passersbyClients, data.dataLastMonth.passersbyClients));
                 $("#passersByYear").html(getHtmlPercentage(data.dataNow.passersbyClients, data.dataLastYear.passersbyClients));
 
-                $("#engagedLoading").hide();
-                $("#engagedData").show();
+                showData("engaged");
                 displayWidgetChart("engagedChart", "Number of Engaged Clients", xAxisData, dataEngaged);
 
                 $("#engagedWeek").html(getHtmlPercentage(data.dataNow.engagedClients, data.dataLastWeek.engagedClients));
                 $("#engagedMonth").html(getHtmlPercentage(data.dataNow.engagedClients, data.dataLastMonth.engagedClients));
                 $("#engagedYear").html(getHtmlPercentage(data.dataNow.engagedClients, data.dataLastYear.engagedClients));
 
-                $("#storeFrontLoading").hide();
-                $("#storeFrontData").show();
+                showData("storeFront");
                 displayWidgetChart("storeFrontChart", "StoreFront Conversion", xAxisData, dataStoreFront, true);
                 $("#storeFrontWeek").html(getHtmlPercentage(
                     getStoreFront(data.dataNow.engagedClients, data.dataNow.uniqueClients),
@@ -94,18 +82,10 @@ function updateWidgets() {
             }
         });
     } else {
-        $("#passersByEmpty").show();
-        $("#passersByData").hide();
+        showEmpty("passersBy");
+        showEmpty("engaged");
+        showEmpty("storeFront");
 
-        $("#engagedEmpty").show();
-        $("#engagedData").hide();
-
-        $("#storeFrontEmpty").show();
-        $("#storeFrontData").hide();
-
-        $("#passersByLoading").hide();
-        $("#engagedLoading").hide();
-        $("#storeFrontLoading").hide();
     }
 
 }

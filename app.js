@@ -14,6 +14,7 @@ var routes = require('./routes/init');
 var dashboard = require('./routes/dashboard');
 var details = require('./routes/details');
 var api = require('./routes/api');
+var compare = require('./routes/compare');
 
 var events = require('events');
 global.eventEmitter = new events.EventEmitter();
@@ -43,6 +44,8 @@ app.use('/', routes);
 app.use('/dashboard/', dashboard);
 app.use('/details/', details);
 app.use('/api/', api);
+app.use('/compare/', compare);
+
 app.get('/fail', function (req, res, next) {
   setTimeout(function () {
     var nu = null;

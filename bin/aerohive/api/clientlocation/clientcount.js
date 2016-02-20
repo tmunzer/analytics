@@ -26,6 +26,6 @@ module.exports.withEE = function (vpcUrl, accessToken, ownerID, location, startT
         "&startTime=" + startTime +
         "&endTime=" + endTime;
     apiRequest(vpcUrl, accessToken, path, function (err, result) {
-        eventEmitter.emit(eventListener, reqId, err, result);
+        eventEmitter.emit(eventListener, reqId, location, err, result);
     })
 };

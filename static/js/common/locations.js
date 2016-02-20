@@ -2,6 +2,7 @@ function displayTree(folder, parent) {
     var subtree = '';
     var extendString = '';
     var htmlString = '';
+    var typeString = '';
     var htmlMinHeight = '';
     var id, name, root, folderType;
     if (folder == null) {
@@ -19,6 +20,9 @@ function displayTree(folder, parent) {
                 break;
             case "folderType":
                 folderType = folder[key];
+                if (folderType == filterFolder || filterFolder == null) typeString = '<input class="filter-loca-checked '+parent+'" type="checkbox" onclick="selectLocation(\''+id+'\')" ' +
+                    'id="checkbox-' + id + '" data-parent-id="'+parent+'" data-id="' + id + '" data-folder-type="'+folderType+'"' +
+                    'style="margin: 0;"/>';
                 break;
             case "folders":
                 switch (folderType) {
@@ -37,9 +41,7 @@ function displayTree(folder, parent) {
         '<li style="position:relative; '+htmlMinHeight+'"  class="location" data-parent-id="'+parent+'">' +
         extendString +
         '<label class="checkbox ml10" style="margin: 0 0 0 10px;">' +
-        '<input class="filter-loca-checked '+parent+'" type="checkbox" onclick="selectLocation(\''+id+'\')" ' +
-        'id="checkbox-' + id + '" data-parent-id="'+parent+'" data-id="' + id + '" data-folder-type="'+folderType+'"' +
-        'style="margin: 0;"/>' +
+        typeString +
         '<span class="lbl fn-ellipsis" style="width: 80%;">' + name + '</span>' +
         '</label>' +
         '<ul style="margin-bottom: 0;">' +
@@ -51,7 +53,28 @@ function displayTree(folder, parent) {
     } else return htmlString;
 }
 
+function filterFolderType(type){
+    switch(type){
+        case "Folders":
+            filterFolder = "GENERIC";
+            break;
+        case "Buildings":
+            filterFolder = "BUILDING";
+            break;
+        case "Floors":
+            filterFolder = "FLOOR";
+            break;
+    }
+    $("#button-filter-location").html(type);
+    displayTree();
+}
+
+
 function selectLocation(locationId){
+    if ($("#location-tree input:checked").length < 5){
+        $("#location-tree input:checkbox:not(:checked)").prop("disabled", false);
+    } else $("#location-tree input:checkbox:not(:checked)").prop("disabled", true);
+
     var checked = $("#checkbox-"+locationId).prop('checked');
     changeChilds(locationId, checked);
     if (!checked) uncheckParents(locationId);

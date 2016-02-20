@@ -7,6 +7,7 @@ function init(){
         '<li onclick="changeRange(\'Month\', 0)" id="timeline-0" class="timeline-range">Last 1M</li>'
     );
     $("#span-range").html('Month');
+    filterFolder = "BUILDING";
     var data = {};
     $.ajax({
         method: "POST",
@@ -14,10 +15,13 @@ function init(){
         data: data
     })
         .done(function (data) {
-            if (data.error) displayModal("API", data.error);
-             else {
+            if (data.error){
+                displayModal("API", data.error);
+            } else {
                 locations = data.locations;
                 displayTree();
+                $("#location-tree input:checkbox").prop("checked", true);
+                updateLocationAnalytics();
                 updateTimeline();
             }
         });

@@ -18,3 +18,15 @@ module.exports = function (vpcUrl, accessToken, ownerID, location, startTime, en
         }
     })
 };
+
+module.exports.withEE = function (vpcUrl, accessToken, ownerID, location, startTime, endTime, timeUnit, eventListener, reqId) {
+    var path = "/xapi/v1/clientlocation/clienttimeseries?" +
+        "ownerId=" + ownerID +
+        "&location=" + location +
+        "&startTime=" + startTime +
+        "&endTime=" + endTime +
+        "&timeUnit=" + timeUnit;
+    apiRequest(vpcUrl, accessToken, path, function (err, result) {
+        eventEmitter.emit(eventListener, reqId, location, err, result);
+    })
+};
