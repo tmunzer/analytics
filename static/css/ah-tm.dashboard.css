@@ -254,12 +254,27 @@ li.location {
 .widget-section{
     width: 215px !important;
     height: 60px;
-    margin: 15px 0 15px 0;
+    margin: 10px 0 15px 0;
     background: #eaf1f4;
     font-size: 11px;
     line-height: 13px;
 }
-
+.widget-section.bestLoc {
+    margin: 0 0 5px 0;
+    width: 100% ! important;
+}
+.compare {
+    height: 30px;
+    text-align: left;
+    line-height: 30px !important;
+    padding-left: 5px;
+    font: 12px helvetica,arial,san-serif;
+    vertical-align: middle;
+}
+span.compare {
+    font-weight: bold;
+    text-transform: uppercase;
+}
 .widget-number {
     position: relative;
     top: 0;

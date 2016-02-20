@@ -27,7 +27,7 @@ function updatePolarAndBars() {
             if (data.error) console.log(data.error);
             else if (data.reqId == locationPolarReq) {
                 var series = [];
-                var locationsSerie = [];
+                var locationsSeries = [];
                 var storefrontBars = [];
                 var engagedBars = [];
                 var passersByBars = [];
@@ -35,6 +35,7 @@ function updatePolarAndBars() {
                 var associatedBars = [];
                 var unassociatedBars = [];
                 var storeFrontClients;
+                var bestLocations;
                 dataLocation = data.dataLocation;
                 dataAverage = [
                     data.dataAverage['uniqueClients'],
@@ -43,6 +44,9 @@ function updatePolarAndBars() {
                     data.dataAverage['associatedClients'],
                     data.dataAverage['unassociatedClients']
                 ];
+                if (data.dataAverage['uniqueClients'] == 0) storeFrontClients = 0;
+                else storeFrontClients = ((data.dataAverage['engagedClients']/data.dataAverage['uniqueClients'])*100).toFixed(0);
+
                 series.push({
                     type: 'area',
                     color: 'rgba(0, 0, 0, 0.2)',
@@ -50,7 +54,32 @@ function updatePolarAndBars() {
                     data: dataAverage,
                     pointPlacement: 'on'
                 });
-
+                bestLocations = {
+                    storefront: {
+                        best: "",
+                        bestValue: storeFrontClients,
+                        worst: "",
+                        worstValue: storeFrontClients
+                    },
+                    passersBy: {
+                        best: "",
+                        bestValue: data.dataAverage['passersbyClients'],
+                        worst: "",
+                        worstValue: data.dataAverage['passersbyClients']
+                    },
+                    visitors: {
+                        best: "",
+                        bestValue: data.dataAverage['engagedClients'],
+                        worst: "",
+                        worstValue: data.dataAverage['engagedClients']
+                    },
+                    wifi: {
+                        best: "",
+                        bestValue: data.dataAverage['associatedClients'],
+                        worst: "",
+                        worstValue: data.dataAverage['associatedClients']
+                    }
+                };
                 for (var loc in dataLocation) {
                     var dataChart = [
                         dataLocation[loc]['uniqueClients'],
@@ -70,14 +99,52 @@ function updatePolarAndBars() {
                     if (dataLocation[loc]['uniqueClients'] == 0) storeFrontClients = 0;
                     else storeFrontClients = ((dataLocation[loc]['engagedClients']/dataLocation[loc]['uniqueClients'])*100).toFixed(0);
 
-                    locationsSerie.push(dataLocation[loc].name);
+                    locationsSeries.push(dataLocation[loc].name);
                     storefrontBars.push(parseInt(storeFrontClients));
                     engagedBars.push(dataLocation[loc]['engagedClients']);
                     passersByBars.push(dataLocation[loc]['passersbyClients']);
                     uniqueBars.push(dataLocation[loc]['uniqueClients']);
                     associatedBars.push(dataLocation[loc]['associatedClients']);
                     unassociatedBars.push(dataLocation[loc]['unassociatedClients']);
+
+                    if (bestLocations.storefront.bestValue < parseInt(storeFrontClients)){
+                        bestLocations.storefront.bestValue = parseInt(storeFrontClients);
+                        bestLocations.storefront.best = dataLocation[loc].name;
+                    } else if (bestLocations.storefront.worstValue > parseInt(storeFrontClients)) {
+                        bestLocations.storefront.worstValue = parseInt(storeFrontClients);
+                        bestLocations.storefront.worst = dataLocation[loc].name;
+                    }
+                    if (bestLocations.passersBy.bestValue < dataLocation[loc]['passersbyClients']){
+                        bestLocations.passersBy.bestValue =dataLocation[loc]['passersbyClients'];
+                        bestLocations.passersBy.best = dataLocation[loc].name;
+                    } else if (bestLocations.passersBy.worstValue > dataLocation[loc]['passersbyClients']) {
+                        bestLocations.passersBy.worstValue = dataLocation[loc]['passersbyClients'];
+                        bestLocations.passersBy.worst = dataLocation[loc].name;
+                    }
+                    if (bestLocations.visitors.bestValue < dataLocation[loc]['engagedClients']){
+                        bestLocations.visitors.bestValue = dataLocation[loc]['engagedClients'];
+                        bestLocations.visitors.best = dataLocation[loc].name;
+                    } else if (bestLocations.visitors.worstValue > dataLocation[loc]['engagedClients']) {
+                        bestLocations.visitors.worstValue = dataLocation[loc]['engagedClients'];
+                        bestLocations.visitors.worst = dataLocation[loc].name;
+                    }
+                    if (bestLocations.wifi.bestValue < dataLocation[loc]['associatedClients']){
+                        bestLocations.wifi.bestValue = dataLocation[loc]['associatedClients'];
+                        bestLocations.wifi.best = dataLocation[loc].name;
+                    } else if (bestLocations.wifi.worstValue > dataLocation[loc]['associatedClients']) {
+                        bestLocations.wifi.worstValue = dataLocation[loc]['associatedClients'];
+                        bestLocations.wifi.worst = dataLocation[loc].name;
+                    }
                 }
+                console.log(bestLocations);
+                $("#storefrontBest").html(bestLocations.storefront.best);
+                $("#storefrontWorst").html(bestLocations.storefront.worst);
+                $("#passersByBest").html(bestLocations.passersBy.best);
+                $("#passersByWorst").html(bestLocations.passersBy.worst);
+                $("#visitorsBest").html(bestLocations.visitors.best);
+                $("#visitorsWorst").html(bestLocations.visitors.worst);
+                $("#wifiBest").html(bestLocations.wifi.best);
+                $("#wifiWorst").html(bestLocations.wifi.worst);
 
                 var uniqueClients = [{
                     name: 'Engaged Clients',
@@ -97,14 +164,14 @@ function updatePolarAndBars() {
                 displayLocationPole('polarChart', "", series);
                 showData("polar");
 
-                displayBarChart("storefrontBarChart", "", locationsSerie, storefrontBars, true);
+                displayBarChart("storefrontBarChart", "", locationsSeries, storefrontBars, true);
                 showData("storefrontBar");
 
-                displayStackedBarChart("uniqueBarChart", "", locationsSerie, uniqueClients);
+                displayStackedBarChart("uniqueBarChart", "", locationsSeries, uniqueClients);
                 showData("uniqueBar");
 
 
-                displayStackedBarChart("wifiBarChart", "", locationsSerie, wifiClients);
+                displayStackedBarChart("wifiBarChart", "", locationsSeries, wifiClients);
                 showData("wifiBar");
 
             }
@@ -267,7 +334,7 @@ function displayStackedBarChart(containerId, title, xAxisData, data, percentage)
                 dataLabels: {
                     enabled: true,
                     style: {
-                        textShadow: '0 0 3px black'
+                        textShadow: '0 0 3px contrast'
                     }
                 }
             }

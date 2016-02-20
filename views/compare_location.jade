@@ -79,12 +79,49 @@ block content
                                             span.health-progress-help-info-rect
                                         span.widget-block
                                         span.widget-label-title Best Locations By
-                                    div.clearfix(id="storefrontBarEmpty")
+                                    div.clearfix(id="bestLocationBarEmpty" style="display:none")
                                         div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
-                                    div.entity-loading-widget(id="storefrontBarLoading" style="display:none;")
-                                    div(id="storefrontBarData" style="display:none")
+                                    div.entity-loading-widget(id="bestLocationLoading" style="display:none;")
+                                    div(id="bestLocationData" )
                                         div.column.grid_8(style="position: relative;display: inline-flex;")
-                                            div.grid_8(style="height: 250px;" id="storefrontBarChart")
+                                            div.column.grid_8
+                                                div.usageSection.widget-section.bestLoc
+                                                    span.num-label.tagBlockTitle.widget-info(style="width: 40%; float: left;") StoreFront Conversion
+                                                    span.num-indicator.widget-number(id="storeFrontWeek" style="width: 60%;")
+                                                        div.compare
+                                                            span.compare(style="color: green;") Best:
+                                                            span.compare(id="storefrontBest")
+                                                        div.compare
+                                                            span.compare(style="color: red;") Worst:
+                                                            span.compare(id="storefrontWorst")
+                                                div.usageSection.widget-section.bestLoc
+                                                    span.num-label.tagBlockTitle.widget-info(style="width: 40%; float: left;") Passers By
+                                                    span.num-indicator.widget-number(id="storeFrontMonth" style="width: 60%;")
+                                                        div.compare
+                                                            span.compare(style="color: green;") Best:
+                                                            span.compare(id="passersByBest")
+                                                        div.compare
+                                                            span.compare(style="color: red;") Worst:
+                                                            span.compare(id="passersByWorst")
+                                                div.usageSection.widget-section.bestLoc
+                                                    span.num-label.tagBlockTitle.widget-info(style="width: 40%; float: left;") Visitors
+                                                    span.num-indicator.widget-number(id="storeFrontYear" style="width: 60%;")
+                                                        div.compare
+                                                            span.compare(style="color: green;") Best:
+                                                            span.compare(id="visitorsBest")
+                                                        div.compare
+                                                            span.compare(style="color: red;") Worst:
+                                                            span.compare(id="visitorsWorst")
+                                                div.usageSection.widget-section.bestLoc
+                                                    span.num-label.tagBlockTitle.widget-info(style="width: 40%; float: left;") Wi-Fi Connections
+                                                    span.num-indicator.widget-number(id="storeFrontYear" style="width: 60%;")
+                                                        div.compare
+                                                            span.compare(style="color: green;") Best:
+                                                            span.compare(id="wifiBest")
+                                                        div.compare
+                                                            span.compare(style="color: red;") Worst:
+                                                            span.compare(id="wifiWorst")
+
                     // UNIQUE CLIENTS PER LOCATION
                     div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
                         div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
