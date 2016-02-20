@@ -93,11 +93,11 @@ router.post('/api/polar/', function (req, res, next) {
                     var result = {
                         locationId: locId,
                         name: name,
-                        uniqueClients: data.data['uniqueClients'],
-                        engagedClients: data.data['engagedClients'],
-                        passersbyClients: data.data['passersbyClients'],
-                        associatedClients: data.data['associatedClients'],
-                        unassociatedClients: data.data['unassociatedClients']
+                        uniqueClients: data['uniqueClients'],
+                        engagedClients: data['engagedClients'],
+                        passersbyClients: data['passersbyClients'],
+                        associatedClients: data['associatedClients'],
+                        unassociatedClients: data['unassociatedClients']
                     };
                     locResult.push(result);
                 }
@@ -110,11 +110,11 @@ router.post('/api/polar/', function (req, res, next) {
                     if (err) res.json({error: err});
                     else {
                         dataAverage = {
-                            uniqueClients: parseInt((data.data['uniqueClients'] / numLoc).toFixed(0)),
-                            engagedClients: parseInt((data.data['engagedClients'] / numLoc).toFixed(0)),
-                            passersbyClients: parseInt((data.data['passersbyClients'] / numLoc).toFixed(0)),
-                            associatedClients: parseInt((data.data['associatedClients'] / numLoc).toFixed(0)),
-                            unassociatedClients: parseInt((data.data['unassociatedClients'] / numLoc).toFixed(0))
+                            uniqueClients: parseInt((data['uniqueClients'] / numLoc).toFixed(0)),
+                            engagedClients: parseInt((data['engagedClients'] / numLoc).toFixed(0)),
+                            passersbyClients: parseInt((data['passersbyClients'] / numLoc).toFixed(0)),
+                            associatedClients: parseInt((data['associatedClients'] / numLoc).toFixed(0)),
+                            unassociatedClients: parseInt((data['unassociatedClients'] / numLoc).toFixed(0))
 
                         };
                     }
@@ -182,15 +182,15 @@ router.post('/api/timeline/', function (req, res, next) {
                     else {
                         var storeFrontClients, name;
                         name = Location.getLocationName(req.session.locations, locId);
-                        for (var i in data['data']['times']){
-                            if (data['data']['times'][i]['unassociatedClients'] == 0) storeFrontClients = 0;
-                            else storeFrontClients = ((data['data']['times'][i]['engagedClients']/data['data']['times'][i]['unassociatedClients'])*100).toFixed(0);
-                            data['data']['times'][i]['storefrontClients'] = parseInt(storeFrontClients);
+                        for (var i in data['times']){
+                            if (data['times'][i]['unassociatedClients'] == 0) storeFrontClients = 0;
+                            else storeFrontClients = ((data['times'][i]['engagedClients']/data['times'][i]['unassociatedClients'])*100).toFixed(0);
+                            data['times'][i]['storefrontClients'] = parseInt(storeFrontClients);
                         }
-                        timeserie = data.data['times'];
+                        timeserie = data['times'];
                         dataLocation.push({
                             name: name,
-                            data: data['data']['times']
+                            data: data['times']
                         });
                     }
                     locDone++;

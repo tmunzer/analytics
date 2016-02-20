@@ -8,9 +8,7 @@ module.exports = function (vpcUrl, accessToken, ownerID, callback) {
         if (err){
             callback(err, null);
         } else if (result){
-            console.log(result);
-            var location = new Location(result.data);
-            console.log(location);
+            var location = new Location(result);
             callback(null, location);
         } else {
             callback(null, null);

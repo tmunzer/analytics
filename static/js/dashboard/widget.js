@@ -21,6 +21,7 @@ function updateWidgets() {
         }).done(function (data) {
             if (data.error) console.log(data.error);
             else {
+                console.log(data);
                 var dataPassersBy, dataEngaged, dataStoreFront, xAxisData;
                 //less than 1 week
                 if (endTime - startTime <= 604800000) {

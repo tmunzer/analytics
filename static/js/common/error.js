@@ -10,6 +10,13 @@ function displayModal(errorSource, error){
                 '<a href="" class="btn btn-primary"> Try to reload the page</a> ' +
                 '<a href="/" class="btn btn-primary"> Try to use other credentials </a> ';
             break;
+        case "CUSTOM":
+            title = error.title;
+            body = '<span style="line-height: 25px;">'+error.message+'</span>';
+            footer =
+                '<a href="" class="btn btn-primary"> Try to reload the page</a> ' +
+                '<a href="/" class="btn btn-primary"> Try to use other credentials </a> ';
+            break;
     }
     $("#modalLabel").html(title);
     $("#modalBody").html(body);

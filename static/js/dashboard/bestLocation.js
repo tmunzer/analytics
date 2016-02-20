@@ -21,6 +21,7 @@ function updateBestLocation() {
         }).done(function (data) {
             if (data.error) console.log(data.error);
             else {
+                console.log(data);
                 bestLocations = data.data['bestLocations'];
                 displayBestLocation("storeFrontClients", 'Storefront Conversion', true);
                 showData('bestLocation');

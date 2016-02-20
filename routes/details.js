@@ -74,7 +74,7 @@ router.post('/api/clienttimeseries/', function(req, res, next) {
             function (err, result) {
                 if (err) res.json({error: err});
                 else {
-                    series = result.data['times'];
+                    series = result['times'];
                     for (var i in series) {
                         if (timeseries.hasOwnProperty(i)) {
                             timeseries[i]["uniqueClients"] += series[i]['uniqueClients'];

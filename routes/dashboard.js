@@ -54,26 +54,7 @@ router.get('/', function (req, res, next) {
 /*================================================================
  API
  ================================================================*/
-router.post('/api/init/', function (req, res, next) {
-    API.monitor.device(req.session.vpcUrl, req.session.accessToken, req.session.ownerID, function (err, devices) {
-        if (err) res.json({error: err});
-        else API.configuration.location(req.session.vpcUrl, req.session.accessToken, req.session.ownerID, function (err, locations) {
-            if (err) res.json({error: err});
-            else {
-                req.session.locations = locations;
-                req.session.locationsCount = Location.countBuildings(req.session.locations);
-                var devicesCount = Device.countDevices(devices);
-                res.json({
-                    error: null,
-                    locationsCount: req.session.locationsCount,
-                    devicesCount: devicesCount,
-                    locations: locations
-                });
-            }
-        });
 
-    });
-});
 
 router.post('/api/update/cards/', function (req, res, next) {
     var locations = [];
@@ -201,11 +182,11 @@ router.post('/api/update/widgets/', function (req, res, next) {
                 res.json({error: err});
                 locNowDone = -1;
             } else {
-                dataNow['uniqueClients'] += data.data['uniqueClients'];
-                dataNow['engagedClients'] += data.data['engagedClients'];
-                dataNow['passersbyClients'] += data.data['passersbyClients'];
-                dataNow['associatedClients'] += data.data['associatedClients'];
-                dataNow['unassociatedClients'] += data.data['unassociatedClients'];
+                dataNow['uniqueClients'] += data['uniqueClients'];
+                dataNow['engagedClients'] += data['engagedClients'];
+                dataNow['passersbyClients'] += data['passersbyClients'];
+                dataNow['associatedClients'] += data['associatedClients'];
+                dataNow['unassociatedClients'] += data['unassociatedClients'];
                 locNowDone++;
                 eventEmitter.emit("dashboard widget finished", eventId);
             }
@@ -217,11 +198,11 @@ router.post('/api/update/widgets/', function (req, res, next) {
                     res.json({error: err});
                     locWeekDone = -1;
                 } else {
-                    dataLastWeek['uniqueClients'] += data.data['uniqueClients'];
-                    dataLastWeek['engagedClients'] += data.data['engagedClients'];
-                    dataLastWeek['passersbyClients'] += data.data['passersbyClients'];
-                    dataLastWeek['associatedClients'] += data.data['associatedClients'];
-                    dataLastWeek['unassociatedClients'] += data.data['unassociatedClients'];
+                    dataLastWeek['uniqueClients'] += data['uniqueClients'];
+                    dataLastWeek['engagedClients'] += data['engagedClients'];
+                    dataLastWeek['passersbyClients'] += data['passersbyClients'];
+                    dataLastWeek['associatedClients'] += data['associatedClients'];
+                    dataLastWeek['unassociatedClients'] += data['unassociatedClients'];
                     locWeekDone++;
                     eventEmitter.emit("dashboard widget finished", eventId);
                 }
@@ -233,11 +214,11 @@ router.post('/api/update/widgets/', function (req, res, next) {
                     res.json({error: err});
                     locMonthDone = -1;
                 } else {
-                    dataLastMonth['uniqueClients'] += data.data['uniqueClients'];
-                    dataLastMonth['engagedClients'] += data.data['engagedClients'];
-                    dataLastMonth['passersbyClients'] += data.data['passersbyClients'];
-                    dataLastMonth['associatedClients'] += data.data['associatedClients'];
-                    dataLastMonth['unassociatedClients'] += data.data['unassociatedClients'];
+                    dataLastMonth['uniqueClients'] += data['uniqueClients'];
+                    dataLastMonth['engagedClients'] += data['engagedClients'];
+                    dataLastMonth['passersbyClients'] += data['passersbyClients'];
+                    dataLastMonth['associatedClients'] += data['associatedClients'];
+                    dataLastMonth['unassociatedClients'] += data['unassociatedClients'];
                     locMonthDone++;
                     eventEmitter.emit("dashboard widget finished", eventId);
                 }
@@ -250,11 +231,11 @@ router.post('/api/update/widgets/', function (req, res, next) {
                     locYearDone = -1;
                 }
                 else {
-                    dataLastYear['uniqueClients'] += data.data['uniqueClients'];
-                    dataLastYear['engagedClients'] += data.data['engagedClients'];
-                    dataLastYear['passersbyClients'] += data.data['passersbyClients'];
-                    dataLastYear['associatedClients'] += data.data['associatedClients'];
-                    dataLastYear['unassociatedClients'] += data.data['unassociatedClients'];
+                    dataLastYear['uniqueClients'] += data['uniqueClients'];
+                    dataLastYear['engagedClients'] += data['engagedClients'];
+                    dataLastYear['passersbyClients'] += data['passersbyClients'];
+                    dataLastYear['associatedClients'] += data['associatedClients'];
+                    dataLastYear['unassociatedClients'] += data['unassociatedClients'];
                     locYearDone++;
                     eventEmitter.emit("dashboard widget finished", eventId);
                 }
@@ -308,16 +289,16 @@ router.post("/api/update/widget-best/", function (req, res, next) {
                     }
                     else {
                         var storeFrontClients, name;
-                        if (data.data['unassociatedClients'] == 0) storeFrontClients = 0;
-                        else storeFrontClients = ((data.data['engagedClients']/data.data['unassociatedClients'])*100).toFixed(0);
+                        if (data['unassociatedClients'] == 0) storeFrontClients = 0;
+                        else storeFrontClients = ((data['engagedClients']/data['unassociatedClients'])*100).toFixed(0);
                         name = Location.getLocationName(req.session.locations, this.location);
                         bestLocations[this.location] = {
                             name: name,
-                            uniqueClients: data.data['uniqueClients'],
-                            engagedClients: data.data['engagedClients'],
-                            passersbyClients: data.data['passersbyClients'],
-                            associatedClients: data.data['associatedClients'],
-                            unassociatedClients: data.data['unassociatedClients'],
+                            uniqueClients: data['uniqueClients'],
+                            engagedClients: data['engagedClients'],
+                            passersbyClients: data['passersbyClients'],
+                            associatedClients: data['associatedClients'],
+                            unassociatedClients: data['unassociatedClients'],
                             storeFrontClients: storeFrontClients
                         };
                         locDone++;

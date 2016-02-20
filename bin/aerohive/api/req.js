@@ -39,11 +39,11 @@ module.exports.apiRequest = function (vpcUrl, accessToken, path, callback) {
             }
             switch (result.result.status) {
                 case 200:
-                    callback(null, result);
+                    callback(null, result.data);
                     break;
                 default:
                     console.error(result);
-                    callback(result.error, result);
+                    callback(result.error, result.data);
                     break;
 
             }
