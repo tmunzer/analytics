@@ -2,30 +2,9 @@ extends compare
 
 block include
     script(language="JavaScript" type="text/javascript" src='/js/highcharts-more.js')
-    script(language="JavaScript" type="text/javascript" src='/js/compare/location/locationPolarAndBars.js')
-    script(language="JavaScript" type="text/javascript" src='/js/compare/location/locationLine.js')
-    script(language="JavaScript" type="text/javascript" src='/js/compare/location/update.js')
-    script(language="JavaScript" type="text/javascript" src='/js/compare/location/init.js')
-
-
-block tree
-    div.filterArea.leftNavItem.show(style="margin-top: 35px")
-        div.filter-panel.clearfix
-            div.filter-con-header
-                div.filter-con-title(style='width:100%') Compare
-                    div.ui-filter-categ
-                        div.dropdown.tree
-                            button(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="height: 35px;")
-                                span.init-text(id="button-filter-location") Buildings
-                                span.caret
-                            ul.dropdown-menu.tree(aria-labelledby="button-bestLocation" id="filter-location")
-                                li(onclick="filterFolderType('Folders')") Folders
-                                li(onclick="filterFolderType('Buildings')") Buildings
-                                li(onclick="filterFolderType('Floors')") Floors
-
-                        div.ui-filter-dtl-area(style="margin-top: 15px;")
-                            div.ui-filter-dtl
-                                ul.entity-loading(id="location-tree")
+    script(language="JavaScript" type="text/javascript" src='/js/compare/period/periodPolarAndBars.js')
+    script(language="JavaScript" type="text/javascript" src='/js/compare/period/update.js')
+    script(language="JavaScript" type="text/javascript" src='/js/compare/period/init.js')
 
 block content
     div.dashboard-container.dojoDndSource.dojoDndTarget.dojoDndContainer(id="dashboard-widgets")
