@@ -16,7 +16,10 @@ router.get('/location/', function (req, res, next) {
         res.render('compare_location', {
             title: 'Analytics',
             current_page: 'compare',
-            compare_page: 'location'
+            compare_page: 'location',
+            server: req.session.vpcUrl,
+            ownerId: req.session.ownerID,
+            accessToken: req.session.accessToken
         });
     } else res.redirect("/");
 }).get('/period/', function (req, res, next) {
@@ -24,7 +27,10 @@ router.get('/location/', function (req, res, next) {
         res.render('compare', {
             title: 'Analytics',
             current_page: 'compare',
-            compare_page: 'period'
+            compare_page: 'period',
+            server: req.session.vpcUrl,
+            ownerId: req.session.ownerID,
+            accessToken: req.session.accessToken
         });
     } else res.redirect("/");
 });

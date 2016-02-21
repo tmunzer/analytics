@@ -22,8 +22,6 @@ body {
     padding: 1em 1em 1em 18px;
 }
 
-
-
 .dropdown button:hover {
     background-color: #4C7D99;
 }
@@ -351,4 +349,27 @@ span.compare {
 }
 .ui-tab-active .arrow-left::after {
     left: -2px;
+}
+
+.user-list li a {
+    color: #fff;
+    margin: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+.user-list li a:hover {
+    color: #9de7f9;
+    text-decoration-line: inherit;
+}
+
+span.help-tip::before {
+    border-left: 8px solid #525252 !important;
+}
+span.help-tip {
+    background-color: #525252 !important;
+    border-radius: 0 !important;
+    border: 1px solid silver !important;
+    color: #fff !important;
+    height: 25px !important;
 }

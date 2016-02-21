@@ -46,7 +46,10 @@ router.get('/', function (req, res, next) {
     if (req.session.vpcUrl && req.session.ownerID && req.session.accessToken) {
         res.render('dashboard', {
             title: 'Analytics',
-            current_page: 'dashboard'
+            current_page: 'dashboard',
+            server: req.session.vpcUrl,
+            ownerId: req.session.ownerID,
+            accessToken: req.session.accessToken
         })
     } else res.redirect("/");
 });

@@ -134,6 +134,10 @@ function updateTimeline() {
             $("#span-to-date").html(displayDate(chart.xAxis[1].categories[max]));
             $('.highcharts-container').mouseup(function(e){
                 if (min != (chart.xAxis[0].getExtremes().min).toFixed(0) || max != (chart.xAxis[0].getExtremes().max).toFixed(0)) {
+                    max = (chart.xAxis[0].getExtremes().max).toFixed(0);
+                    min = (chart.xAxis[0].getExtremes().min).toFixed(0);
+                    $("#span-from-date").html(displayDate(chart.xAxis[1].categories[min]));
+                    $("#span-to-date").html(displayDate(chart.xAxis[1].categories[max]));
                     updateCharts();
                 }
             });
