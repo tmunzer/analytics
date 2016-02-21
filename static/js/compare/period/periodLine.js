@@ -64,7 +64,6 @@ function updatePeriodLine() {
         }).done(function (data) {
             if (data.error) displayModal("API", data.error);
             else if (data.reqId == periodLineReq) {
-                console.log(data);
                 var tmpUnique, tmpStorefront, tmpEngaged, tmpPassersBy, tmpAssociated, tmpUnassociated, timeserie;
                 var seriesUnique = [];
                 var seriesStorefront = [];
