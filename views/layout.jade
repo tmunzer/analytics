@@ -34,8 +34,23 @@ html
                 h4.modal-title(id="modalLabel" style="text-transform: capitalize") Modal title
             div.modal-body(id="modalBody")
             div.modal-footer(id="modalFooter" style="position: absolute; bottom: 0px; width: 100%;")
-
-
+        div.modal.fade.bs-example-modal-lg(id="modalAD" tabindex="-1" role="dialog" aria-labelledby="modalLabelAD" style="height: 200px;")
+            div.modal-header
+                h4.modal-title(id="modalLabelAD" style="text-transform: capitalize") Account details
+            div.modal-body(id="modalBodyAD")
+                table
+                    tbody
+                        tr
+                            th(style="padding: 5px 10px;") HMNG Server:
+                            td(style="padding: 5px 10px;")= server
+                        tr
+                            th(style="padding: 5px 10px;") Owner ID:
+                            td(style="padding: 5px 10px;")= ownerId
+                        tr
+                            th(style="padding: 5px 10px;") Access Token:
+                            td(style="padding: 5px 10px;")= accessToken
+            div.modal-footer(id="modalFooterAD" style="position: absolute; bottom: 0px; width: 100%;")
+                a(href="javascript:void(0)" class="btn btn-primary" onclick="$('#modalAD').modal('hide')") Close
         div.header(id="header")
             div.head-inner
                 h1.logo
@@ -50,6 +65,19 @@ html
                             a.nav-dashboard(href="/compare/location/") Compare
                         li(class = details)
                             a.nav-dashboard(href="/details/") Details
+                    div.head-options.hdrOptions
+                        div.ah-navsprite-icons
+                            a.tooltips.apollo-right-fixed.apollo-help(style="margin-top: -20px;" href="/help/" target="_blank")
+                                span.help-tip Need help?
+                        div.ah-navsprite-icons.ah-navsprite-user
+                            div.head-sta-item.sta-user.hdrUser
+                                div.sta-item-con
+                                    div.sta-item-con-arrow
+                                    ul.user-list
+                                        li.user-list-item-first(onclick="$('#modalAD').modal()") Account Details
+                                        li
+                                            a(href="/logout/") Logout
+                                span.sta-item-bridge
             div.head-bottom
                 div.sub-tabs
                     block sub-tabs
@@ -119,6 +147,7 @@ html
             var locationAnalytics = [];
             var range = 0;
             var filterFolder = null;
+
             function timelineRange(id, name) {
                 $("#span-range").html(name);
                 var htmlSrting;

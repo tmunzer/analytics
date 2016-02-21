@@ -1,0 +1,43 @@
+doctype html
+html
+    head
+        title= title
+        script(language="JavaScript" type="text/javascript" src='/js/jquery-2.1.1.min.js')
+        script(language="JavaScript" type="text/javascript" src='/js/bootstrap.min.js')
+        link(rel='stylesheet' href='/css/ah-styles.min.css')
+        link(rel='stylesheet' href='/css/bootstrap.min.css')
+        link(rel='stylesheet' href='/css/ah-tm.init.css')
+        link(rel='stylesheet' href='/css/ah-tm.howto.css')
+    body
+        div(style="border-top: 2px solid rgb(255, 195, 15);" class="user-home-wrap")
+        div.clearfix(id='main')
+            div.pt-r
+                div(id="container")
+                    //div.grid_20.LoginPage
+                    div.howto-page
+                        img(src="/images/login_page_logo.png" alt="Aerohive" class="ah-logo")
+                        div.ah-growing-hives(style="position: fixed; top: 0px; right: 10%;")
+
+                        div.howto-box(style="width: 60%")
+                            div
+                                h1(style="text-align: center; margin-top: 10px;") Help
+                                span This Help page will help you to understand each statistic displayed in this Web APP.
+                                br
+                                span All the data displayed in this Web APP are directly retrieved through the Aerohive Cloud Service APIs.
+                                b=" There is no information stored on this server"
+                                span , excepted the information regarding your session, including the needed information the query the ACS APIs.
+                                h4 Associated Clients
+                                span The number of clients that were associated with the network over the given time interval.
+                                h4 Engaged Clients
+                                span The number of clients that were engaged over the time interval.
+                                h4 PassersBy Clients
+                                span The number of clients that were determined to be passersby over the time interval.
+                                h4 Unassociated Clients
+                                span The number of clients not associated with the network over the given time interval.
+                                h4 Unique Clients
+                                span The number of unique clients over the time interval.
+                                h4 StoreFront Conversion
+                                span Percentage of people seen outside that come into your store.
+
+                        div.page-footer
+                            span(style="border: none;") © 2016 Aerohive Networks. All Rights Reserved.
