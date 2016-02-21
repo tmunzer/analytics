@@ -53,7 +53,7 @@ function updateLocationLine() {
         locationLineReq = new Date().getTime();
         $.ajax({
             method: 'POST',
-            url: '/compare/api/timeline/',
+            url: '/compare/api/location/timeline/',
             data: {
                 startTime: startTime.toISOString(),
                 endTime: endTime.toISOString(),
@@ -62,7 +62,7 @@ function updateLocationLine() {
                 reqId: locationLineReq
             }
         }).done(function (data) {
-            if (data.error) console.log(data.error);
+            if (data.error) displayModal("API", data.error);
             else if (data.reqId == locationLineReq) {
                 var tmpUnique, tmpStorefront, tmpEngaged, tmpPassersBy, tmpAssociated, tmpUnassociated, timeserie;
                 var seriesUnique = [];

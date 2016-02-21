@@ -8,6 +8,7 @@ function updateCards() {
     })
         .done(function (data) {
             if (data.error) {
+                displayModal("API", data.error);
                 $("#maps-folders").html("<i class='fa fa-close'></i>");
                 $("#maps-buildings").html("<i class='fa fa-close'></i>");
                 $("#maps-floors").html("<i class='fa fa-close'></i>");

@@ -1,6 +1,8 @@
-var locationPolarReq;
-function updatePolarAndBars() {
-    var dataLocation, dataAverage;
+var periodPolarReq;
+
+function updatePeriod() {
+
+    var dataPeriod, dataAverage;
     var chart = $('#timeline').highcharts();
     var endTime = chart.xAxis[1].categories[max];
     var startTime = chart.xAxis[1].categories[min];
@@ -12,20 +14,21 @@ function updatePolarAndBars() {
         showLoading("wifiBar");
         showLoading("uniqueBar");
 
-        locationPolarReq = new Date().getTime();
+        periodPolarReq = new Date().getTime();
+
         $.ajax({
-            method: 'POST',
-            url: '/compare/api/polar/',
+            method: "POST",
+            url: "/compare/api/period/polar/",
             data: {
+                locations: JSON.stringify(locationAnalytics),
                 startTime: startTime.toISOString(),
                 endTime: endTime.toISOString(),
-                filterFolder: filterFolder,
-                locations: JSON.stringify(locationAnalytics),
-                reqId: locationPolarReq
+                reqId: periodPolarReq
+
             }
         }).done(function (data) {
-            if (data.error) console.log(data.error);
-            else if (data.reqId == locationPolarReq) {
+            if (data.error) displayModal("API", data.error);
+            else if (data.reqId == periodPolarReq) {
                 var series = [];
                 var locationsSeries = [];
                 var storefrontBars = [];
@@ -35,8 +38,8 @@ function updatePolarAndBars() {
                 var associatedBars = [];
                 var unassociatedBars = [];
                 var storeFrontClients;
-                var bestLocations;
-                dataLocation = data.dataLocation;
+
+                dataPeriod = data.dataPeriod;
                 dataAverage = [
                     data.dataAverage['uniqueClients'],
                     data.dataAverage['engagedClients'],
@@ -54,97 +57,36 @@ function updatePolarAndBars() {
                     data: dataAverage,
                     pointPlacement: 'on'
                 });
-                bestLocations = {
-                    storefront: {
-                        best: "",
-                        bestValue: null,
-                        worst: "",
-                        worstValue: null
-                    },
-                    passersBy: {
-                        best: "",
-                        bestValue: null,
-                        worst: "",
-                        worstValue: null
-                    },
-                    visitors: {
-                        best: "",
-                        bestValue: null,
-                        worst: "",
-                        worstValue: null
-                    },
-                    wifi: {
-                        best: "",
-                        bestValue: null,
-                        worst: "",
-                        worstValue: null
-                    }
-                };
-                for (var loc in dataLocation) {
+
+                for (var period in dataPeriod) {
                     var dataChart = [
-                        dataLocation[loc]['uniqueClients'],
-                        dataLocation[loc]['engagedClients'],
-                        dataLocation[loc]['passersbyClients'],
-                        dataLocation[loc]['associatedClients'],
-                        dataLocation[loc]['unassociatedClients']
+                        dataPeriod[period]['uniqueClients'],
+                        dataPeriod[period]['engagedClients'],
+                        dataPeriod[period]['passersbyClients'],
+                        dataPeriod[period]['associatedClients'],
+                        dataPeriod[period]['unassociatedClients']
                     ];
 
                     series.push({
                         type: 'line',
-                        name: dataLocation[loc].name,
+                        name: dataPeriod[period]['period'],
                         data: dataChart,
                         pointPlacement: 'on'
                     });
 
-                    if (dataLocation[loc]['uniqueClients'] == 0) storeFrontClients = 0;
-                    else storeFrontClients = ((dataLocation[loc]['engagedClients']/dataLocation[loc]['uniqueClients'])*100).toFixed(0);
+                    if (dataPeriod[period]['uniqueClients'] == 0) storeFrontClients = 0;
+                    else storeFrontClients = ((dataPeriod[period]['engagedClients']/dataPeriod[period]['uniqueClients'])*100).toFixed(0);
 
-                    locationsSeries.push(dataLocation[loc].name);
+                    locationsSeries.push(dataPeriod[period]['period']);
                     storefrontBars.push(parseInt(storeFrontClients));
-                    engagedBars.push(dataLocation[loc]['engagedClients']);
-                    passersByBars.push(dataLocation[loc]['passersbyClients']);
-                    uniqueBars.push(dataLocation[loc]['uniqueClients']);
-                    associatedBars.push(dataLocation[loc]['associatedClients']);
-                    unassociatedBars.push(dataLocation[loc]['unassociatedClients']);
+                    engagedBars.push(dataPeriod[period]['engagedClients']);
+                    passersByBars.push(dataPeriod[period]['passersbyClients']);
+                    uniqueBars.push(dataPeriod[period]['uniqueClients']);
+                    associatedBars.push(dataPeriod[period]['associatedClients']);
+                    unassociatedBars.push(dataPeriod[period]['unassociatedClients']);
 
-                    if (bestLocations.storefront.bestValue == null || bestLocations.storefront.bestValue < parseInt(storeFrontClients)){
-                        bestLocations.storefront.bestValue = parseInt(storeFrontClients);
-                        bestLocations.storefront.best = dataLocation[loc].name;
-                    } else if (bestLocations.storefront.worstValue == null || bestLocations.storefront.worstValue > parseInt(storeFrontClients)) {
-                        bestLocations.storefront.worstValue = parseInt(storeFrontClients);
-                        bestLocations.storefront.worst = dataLocation[loc].name;
-                    }
-                    if (bestLocations.passersBy.bestValue == null || bestLocations.passersBy.bestValue < dataLocation[loc]['passersbyClients']){
-                        bestLocations.passersBy.bestValue =dataLocation[loc]['passersbyClients'];
-                        bestLocations.passersBy.best = dataLocation[loc].name;
-                    } else if (bestLocations.passersBy.worstValue == null || bestLocations.passersBy.worstValue > dataLocation[loc]['passersbyClients']) {
-                        bestLocations.passersBy.worstValue = dataLocation[loc]['passersbyClients'];
-                        bestLocations.passersBy.worst = dataLocation[loc].name;
-                    }
-                    if (bestLocations.visitors.bestValue == null || bestLocations.visitors.bestValue < dataLocation[loc]['engagedClients']){
-                        bestLocations.visitors.bestValue = dataLocation[loc]['engagedClients'];
-                        bestLocations.visitors.best = dataLocation[loc].name;
-                    } else if (bestLocations.visitors.worstValue == null || bestLocations.visitors.worstValue > dataLocation[loc]['engagedClients']) {
-                        bestLocations.visitors.worstValue = dataLocation[loc]['engagedClients'];
-                        bestLocations.visitors.worst = dataLocation[loc].name;
-                    }
-                    if (bestLocations.wifi.bestValue == null || bestLocations.wifi.bestValue < dataLocation[loc]['associatedClients']){
-                        bestLocations.wifi.bestValue = dataLocation[loc]['associatedClients'];
-                        bestLocations.wifi.best = dataLocation[loc].name;
-                    } else if (bestLocations.wifi.worstValue == null || bestLocations.wifi.worstValue > dataLocation[loc]['associatedClients']) {
-                        bestLocations.wifi.worstValue = dataLocation[loc]['associatedClients'];
-                        bestLocations.wifi.worst = dataLocation[loc].name;
-                    }
+
                 }
-                console.log(bestLocations);
-                $("#storefrontBest").html(bestLocations.storefront.best);
-                $("#storefrontWorst").html(bestLocations.storefront.worst);
-                $("#passersByBest").html(bestLocations.passersBy.best);
-                $("#passersByWorst").html(bestLocations.passersBy.worst);
-                $("#visitorsBest").html(bestLocations.visitors.best);
-                $("#visitorsWorst").html(bestLocations.visitors.worst);
-                $("#wifiBest").html(bestLocations.wifi.best);
-                $("#wifiWorst").html(bestLocations.wifi.worst);
 
                 var uniqueClients = [{
                     name: 'Engaged Clients',
@@ -178,6 +120,7 @@ function updatePolarAndBars() {
         })
     }
 }
+
 
 function displayLocationPole(containerId, title, series) {
     $('#'+containerId).highcharts({
