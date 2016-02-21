@@ -19,7 +19,7 @@ function updateWidgets() {
                 locations: JSON.stringify(locationAnalytics)
             }
         }).done(function (data) {
-            if (data.error) console.log(data.error);
+            if (data.error) displayModal("API", data.error);
             else {
                 var dataPassersBy, dataEngaged, dataStoreFront, xAxisData;
                 //less than 1 week

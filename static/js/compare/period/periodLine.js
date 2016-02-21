@@ -1,6 +1,6 @@
-var locationLineReq;
-function updateLocationLine() {
-    var dataLocation, dataAverage, format, step;
+var periodLineReq;
+function updatePeriodLine() {
+    var dataPeriod, dataAverage, format, step;
     var chart = $('#timeline').highcharts();
     var endTime = chart.xAxis[1].categories[max];
     var startTime = chart.xAxis[1].categories[min];
@@ -50,20 +50,21 @@ function updateLocationLine() {
                 break;
         }
 
-        locationLineReq = new Date().getTime();
+        periodLineReq = new Date().getTime();
         $.ajax({
             method: 'POST',
-            url: '/compare/api/location/timeline/',
+            url: '/compare/api/period/timeline/',
             data: {
                 startTime: startTime.toISOString(),
                 endTime: endTime.toISOString(),
                 filterFolder: filterFolder,
                 locations: JSON.stringify(locationAnalytics),
-                reqId: locationLineReq
+                reqId: periodLineReq
             }
         }).done(function (data) {
             if (data.error) displayModal("API", data.error);
-            else if (data.reqId == locationLineReq) {
+            else if (data.reqId == periodLineReq) {
+                console.log(data);
                 var tmpUnique, tmpStorefront, tmpEngaged, tmpPassersBy, tmpAssociated, tmpUnassociated, timeserie;
                 var seriesUnique = [];
                 var seriesStorefront = [];
@@ -108,58 +109,62 @@ function updateLocationLine() {
                 });
                  */
                 timeserie = data.timeserie;
-                for (var i in data.dataLocation) {
+                for (var i in data.dataPeriod) {
                     tmpUnique = [];
                     tmpStorefront = [];
                     tmpEngaged = [];
                     tmpPassersBy = [];
                     tmpAssociated = [];
                     tmpUnassociated = [];
-                    for (var j in data.dataLocation[i]['data']) {
-                        tmpUnique.push(data.dataLocation[i]['data'][j]['uniqueClients']);
-                        tmpStorefront.push(data.dataLocation[i]['data'][j]['storefrontClients']);
-                        tmpEngaged.push(data.dataLocation[i]['data'][j]['engagedClients']);
-                        tmpPassersBy.push(data.dataLocation[i]['data'][j]['passersbyClients']);
-                        tmpAssociated.push(data.dataLocation[i]['data'][j]['associatedClients']);
-                        tmpUnassociated.push(data.dataLocation[i]['data'][j]['unassociatedClients']);
+                    for (var j in data.dataPeriod[i]['times']) {
+                        tmpUnique.push(data.dataPeriod[i]['times'][j]['uniqueClients']);
+                        tmpStorefront.push(data.dataPeriod[i]['times'][j]['storefrontClients']);
+                        tmpEngaged.push(data.dataPeriod[i]['times'][j]['engagedClients']);
+                        tmpPassersBy.push(data.dataPeriod[i]['times'][j]['passersbyClients']);
+                        tmpAssociated.push(data.dataPeriod[i]['times'][j]['associatedClients']);
+                        tmpUnassociated.push(data.dataPeriod[i]['times'][j]['unassociatedClients']);
                     }
                     seriesUnique.push({
-                        name: data.dataLocation[i].name,
+                        name: data.dataPeriod[i].period,
                         data: tmpUnique,
                         marker: {
                             symbol: "circle"
                         }
                     });
                     seriesStorefront.push({
-                        name: data.dataLocation[i].name,
+                        name: data.dataPeriod[i].period,
                         data: tmpStorefront,
                         marker: {
                             symbol: "circle"
-                        }                    });
+                        }
+                    });
                     seriesEngaged.push({
-                        name: data.dataLocation[i].name,
+                        name: data.dataPeriod[i].period,
                         data: tmpEngaged,
                         marker: {
                             symbol: "circle"
                         }                    });
                     seriesPassersBy.push({
-                        name: data.dataLocation[i].name,
+                        name: data.dataPeriod[i].period,
                         data: tmpPassersBy,
                         marker: {
                             symbol: "circle"
-                        }                    });
+                        }
+                    });
                     seriesAssociated.push({
-                        name: data.dataLocation[i].name,
+                        name: data.dataPeriod[i].period,
                         data: tmpAssociated,
                         marker: {
                             symbol: "circle"
-                        }                    });
+                        }
+                    });
                     seriesUnassociated.push({
-                        name: data.dataLocation[i].name,
+                        name: data.dataPeriod[i].period,
                         data: tmpUnassociated,
                         marker: {
                             symbol: "circle"
-                        }                    });
+                        }
+                    });
             }
                 displayLineChart('uniqueData', timeserie, seriesUnique, format, step);
                 $("#uniqueData").show();

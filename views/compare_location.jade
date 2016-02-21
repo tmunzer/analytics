@@ -62,10 +62,6 @@ block content
                             div.widget-loading.topApplicationGroup(style="height: 300px;")
                                 div.widget-content
                                     div.widget-label.clearfix
-                                        span.health-progress-bar-help
-                                        div.health-progress-help-info
-                                            span(id="help-storefrontBarEmpty") Percentage of people seen outside that come into your store.
-                                            span.health-progress-help-info-rect
                                         span.widget-block
                                         span.widget-label-title Storefront Conversion
                                     div.clearfix(id="storefrontBarEmpty")
@@ -81,10 +77,6 @@ block content
                             div.widget-loading.topApplicationGroup(style="height: 300px;")
                                 div.widget-content
                                     div.widget-label.clearfix
-                                        span.health-progress-bar-help
-                                        div.health-progress-help-info
-                                            span(id="help-storefrontBarEmpty") Percentage of people seen outside that come into your store.
-                                            span.health-progress-help-info-rect
                                         span.widget-block
                                         span.widget-label-title Best Locations By
                                     div.clearfix(id="bestLocationBarEmpty" style="display:none")
@@ -136,10 +128,6 @@ block content
                             div.widget-loading.topApplicationGroup(style="height: 300px;")
                                 div.widget-content
                                     div.widget-label
-                                        span.health-progress-bar-help
-                                        div.health-progress-help-info
-                                            span The number of clients that were determined to be passersby over the time interval.
-                                            span.health-progress-help-info-rect
                                         span.widget-block
                                         span.widget-label-title Unique Clients
                                     div.clearfix(id="uniqueBarEmpty")
@@ -243,7 +231,7 @@ block scriptBelow
     script.
         function changeTab(tab){
             $(".ui-tab").removeClass("ui-tab-active").addClass("ui-tab-inactive");
-            $(".ui-tab-panel").hide()
+            $(".ui-tab-panel").hide();
             $("#tab-"+tab).addClass("ui-tab-active").removeClass("ui-tab-inactive");
             $("#"+tab).show();
         }

@@ -71,10 +71,11 @@ function filterFolderType(type){
 
 
 function selectLocation(locationId){
-    if ($("#location-tree input:checked").length < 5){
-        $("#location-tree input:checkbox:not(:checked)").prop("disabled", false);
-    } else $("#location-tree input:checkbox:not(:checked)").prop("disabled", true);
-
+    if (filterFolder){
+        if ($("#location-tree input:checked").length < 5){
+            $("#location-tree input:checkbox:not(:checked)").prop("disabled", false);
+        } else $("#location-tree input:checkbox:not(:checked)").prop("disabled", true);
+    }
     var checked = $("#checkbox-"+locationId).prop('checked');
     changeChilds(locationId, checked);
     if (!checked) uncheckParents(locationId);

@@ -4,5 +4,5 @@ function updateDashboard() {
 
 function updateCharts(){
     updatePeriod();
-    //updateLocationLine();
+    updatePeriodLine();
 }

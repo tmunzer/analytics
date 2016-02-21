@@ -19,7 +19,6 @@ function init(){
             else {
                 locations = data.locations;
                 displayTree();
-//                updateLocationAnalytics();
                 updateTimeline();
             }
         });

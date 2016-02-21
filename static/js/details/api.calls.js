@@ -76,7 +76,7 @@ function updateHeatmap() {
                 endTime: endTime.toISOString()
             }
         }).done(function (data) {
-            if (data.error) console.log(error);
+            if (data.error) displayModal("API", data.error);
             else {
                 var entry;
                 var time, x, y, numEntries;

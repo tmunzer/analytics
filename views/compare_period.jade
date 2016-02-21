@@ -3,6 +3,7 @@ extends compare
 block include
     script(language="JavaScript" type="text/javascript" src='/js/highcharts-more.js')
     script(language="JavaScript" type="text/javascript" src='/js/compare/period/periodPolarAndBars.js')
+    script(language="JavaScript" type="text/javascript" src='/js/compare/period/periodLine.js')
     script(language="JavaScript" type="text/javascript" src='/js/compare/period/update.js')
     script(language="JavaScript" type="text/javascript" src='/js/compare/period/init.js')
 
@@ -41,10 +42,6 @@ block content
                             div.widget-loading.topApplicationGroup(style="height: 300px;")
                                 div.widget-content
                                     div.widget-label.clearfix
-                                        span.health-progress-bar-help
-                                        div.health-progress-help-info
-                                            span(id="help-storefrontBarEmpty") Percentage of people seen outside that come into your store.
-                                            span.health-progress-help-info-rect
                                         span.widget-block
                                         span.widget-label-title Storefront Conversion
                                     div.clearfix(id="storefrontBarEmpty")
@@ -60,54 +57,15 @@ block content
                             div.widget-loading.topApplicationGroup(style="height: 300px;")
                                 div.widget-content
                                     div.widget-label.clearfix
-                                        span.health-progress-bar-help
-                                        div.health-progress-help-info
-                                            span(id="help-storefrontBarEmpty") Percentage of people seen outside that come into your store.
-                                            span.health-progress-help-info-rect
                                         span.widget-block
-                                        span.widget-label-title Best Locations By
+                                        span.widget-label-title Will be available soon...
                                     div.clearfix(id="bestLocationBarEmpty" style="display:none")
                                         div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
                                     div.entity-loading-widget(id="bestLocationLoading" style="display:none;")
                                     div(id="bestLocationData" )
                                         div.column.grid_8(style="position: relative;display: inline-flex;")
                                             div.column.grid_8
-                                                div.usageSection.widget-section.bestLoc
-                                                    span.num-label.tagBlockTitle.widget-info(style="width: 40%; float: left;") StoreFront Conversion
-                                                    span.num-indicator.widget-number(id="storeFrontWeek" style="width: 60%;")
-                                                        div.compare
-                                                            span.compare(style="color: green;") Best:
-                                                            span.compare(id="storefrontBest")
-                                                        div.compare
-                                                            span.compare(style="color: red;") Worst:
-                                                            span.compare(id="storefrontWorst")
-                                                div.usageSection.widget-section.bestLoc
-                                                    span.num-label.tagBlockTitle.widget-info(style="width: 40%; float: left;") Passers By
-                                                    span.num-indicator.widget-number(id="storeFrontMonth" style="width: 60%;")
-                                                        div.compare
-                                                            span.compare(style="color: green;") Best:
-                                                            span.compare(id="passersByBest")
-                                                        div.compare
-                                                            span.compare(style="color: red;") Worst:
-                                                            span.compare(id="passersByWorst")
-                                                div.usageSection.widget-section.bestLoc
-                                                    span.num-label.tagBlockTitle.widget-info(style="width: 40%; float: left;") Visitors
-                                                    span.num-indicator.widget-number(id="storeFrontYear" style="width: 60%;")
-                                                        div.compare
-                                                            span.compare(style="color: green;") Best:
-                                                            span.compare(id="visitorsBest")
-                                                        div.compare
-                                                            span.compare(style="color: red;") Worst:
-                                                            span.compare(id="visitorsWorst")
-                                                div.usageSection.widget-section.bestLoc
-                                                    span.num-label.tagBlockTitle.widget-info(style="width: 40%; float: left;") Wi-Fi Connections
-                                                    span.num-indicator.widget-number(id="storeFrontYear" style="width: 60%;")
-                                                        div.compare
-                                                            span.compare(style="color: green;") Best:
-                                                            span.compare(id="wifiBest")
-                                                        div.compare
-                                                            span.compare(style="color: red;") Worst:
-                                                            span.compare(id="wifiWorst")
+
 
                     // UNIQUE CLIENTS PER LOCATION
                     div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
@@ -115,10 +73,6 @@ block content
                             div.widget-loading.topApplicationGroup(style="height: 300px;")
                                 div.widget-content
                                     div.widget-label
-                                        span.health-progress-bar-help
-                                        div.health-progress-help-info
-                                            span The number of clients that were determined to be passersby over the time interval.
-                                            span.health-progress-help-info-rect
                                         span.widget-block
                                         span.widget-label-title Unique Clients
                                     div.clearfix(id="uniqueBarEmpty")

@@ -18,7 +18,7 @@ function updatePeriod() {
 
         $.ajax({
             method: "POST",
-            url: "/compare/api/period/",
+            url: "/compare/api/period/polar/",
             data: {
                 locations: JSON.stringify(locationAnalytics),
                 startTime: startTime.toISOString(),
@@ -27,9 +27,8 @@ function updatePeriod() {
 
             }
         }).done(function (data) {
-            if (data.error) console.log(data.error);
+            if (data.error) displayModal("API", data.error);
             else if (data.reqId == periodPolarReq) {
-                console.log(data);
                 var series = [];
                 var locationsSeries = [];
                 var storefrontBars = [];

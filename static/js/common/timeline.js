@@ -43,7 +43,7 @@ function updateTimeline() {
         }
     }).
         done(function (data) {
-            if (data.error) console.log(data.error);
+            if (data.error) displayModal("API", data.error);
             else if (data.reqId == timelineReq) {
                 var maxChart = 0;
                 var time = [];
@@ -135,7 +135,7 @@ function updateTimeline() {
             }
             chart = $('#timeline').highcharts();
             max = chart.xAxis[0].getExtremes().max;
-            min= chart.xAxis[0].getExtremes().min;
+            min = chart.xAxis[0].getExtremes().min;
             $("#span-from-date").html(displayDate(chart.xAxis[1].categories[min]));
             $("#span-to-date").html(displayDate(chart.xAxis[1].categories[max]));
             $('.highcharts-container').mouseup(function(e){

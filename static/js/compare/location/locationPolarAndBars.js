@@ -15,7 +15,7 @@ function updatePolarAndBars() {
         locationPolarReq = new Date().getTime();
         $.ajax({
             method: 'POST',
-            url: '/compare/api/polar/',
+            url: '/compare/api/location/polar/',
             data: {
                 startTime: startTime.toISOString(),
                 endTime: endTime.toISOString(),
@@ -24,7 +24,7 @@ function updatePolarAndBars() {
                 reqId: locationPolarReq
             }
         }).done(function (data) {
-            if (data.error) console.log(data.error);
+            if (data.error) displayModal("API", data.error);
             else if (data.reqId == locationPolarReq) {
                 var series = [];
                 var locationsSeries = [];

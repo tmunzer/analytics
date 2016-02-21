@@ -19,7 +19,7 @@ function updateBestLocation() {
                 locations: JSON.stringify(locationAnalytics)
             }
         }).done(function (data) {
-            if (data.error) console.log(data.error);
+            if (data.error) displayModal("API", data.error);
             else {
                 bestLocations = data.data['bestLocations'];
                 displayBestLocation("storeFrontClients", 'Storefront Conversion', true);
