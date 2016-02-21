@@ -24,4 +24,7 @@ router.post('/', function (req, res, next) {
     res.redirect('/dashboard/');
   }
 });
+router.get('/howto/', function(req, res, next){
+  res.render('howto', { title: 'Analytics'});
+});
 module.exports = router;
