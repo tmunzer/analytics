@@ -459,11 +459,11 @@ router.post('/api/period/timeline/', function (req, res, next) {
                             if (reqPeriods[this.j]['times'] == null) reqPeriods[this.j]["times"] = data['times'];
                             else {
                                 for (var k = 0; k < data['times'].length; k++) {
-                                    reqPeriods[this.j]["times"][k]['uniqueClients'] += data['times']['uniqueClients'];
-                                    reqPeriods[this.j]["times"][k]['engagedClients'] += data['times']['engagedClients'];
-                                    reqPeriods[this.j]["times"][k]['passersbyClients'] += data['times']['passersbyClients'];
-                                    reqPeriods[this.j]["times"][k]['associatedClients'] += data['times']['associatedClients'];
-                                    reqPeriods[this.j]["times"][k]['unassociatedClients'] += data['times']['unassociatedClients'];
+                                    reqPeriods[this.j]["times"][k]['uniqueClients'] += data['times'][k]['uniqueClients'];
+                                    reqPeriods[this.j]["times"][k]['engagedClients'] += data['times'][k]['engagedClients'];
+                                    reqPeriods[this.j]["times"][k]['passersbyClients'] += data['times'][k]['passersbyClients'];
+                                    reqPeriods[this.j]["times"][k]['associatedClients'] += data['times'][k]['associatedClients'];
+                                    reqPeriods[this.j]["times"][k]['unassociatedClients'] += data['times'][k]['unassociatedClients'];
                                 }
                             }
                             reqDone++;
