@@ -376,4 +376,5 @@ span.help-tip {
 
 .table td, .table th {
     line-height: 2 !important;
+    padding: 8px 0 !important;
 }
