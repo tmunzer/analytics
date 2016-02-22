@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 var respawn = require('respawn');
 
 var monitor = respawn(['node', 'www'], {
