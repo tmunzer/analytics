@@ -13,7 +13,7 @@ function updatePeriod() {
         showLoading("storefrontBar");
         showLoading("wifiBar");
         showLoading("uniqueBar");
-
+        showLoading("tableCompare");
         periodPolarReq = new Date().getTime();
 
         $.ajax({
@@ -48,7 +48,7 @@ function updatePeriod() {
                     data.dataAverage['unassociatedClients']
                 ];
                 if (data.dataAverage['uniqueClients'] == 0) storeFrontClients = 0;
-                else storeFrontClients = ((data.dataAverage['engagedClients']/data.dataAverage['uniqueClients'])*100).toFixed(0);
+                else storeFrontClients = ((data.dataAverage['engagedClients'] / data.dataAverage['uniqueClients']) * 100).toFixed(0);
 
                 series.push({
                     type: 'area',
@@ -58,35 +58,37 @@ function updatePeriod() {
                     pointPlacement: 'on'
                 });
 
-                for (var period in dataPeriod) {
+                dataPeriod.forEach(function (currentPeriod) {
+
                     var dataChart = [
-                        dataPeriod[period]['uniqueClients'],
-                        dataPeriod[period]['engagedClients'],
-                        dataPeriod[period]['passersbyClients'],
-                        dataPeriod[period]['associatedClients'],
-                        dataPeriod[period]['unassociatedClients']
+                        currentPeriod['uniqueClients'],
+                        currentPeriod['engagedClients'],
+                        currentPeriod['passersbyClients'],
+                        currentPeriod['associatedClients'],
+                        currentPeriod['unassociatedClients']
                     ];
 
                     series.push({
                         type: 'line',
-                        name: dataPeriod[period]['period'],
+                        name: currentPeriod['period'],
                         data: dataChart,
                         pointPlacement: 'on'
                     });
 
-                    if (dataPeriod[period]['uniqueClients'] == 0) storeFrontClients = 0;
-                    else storeFrontClients = ((dataPeriod[period]['engagedClients']/dataPeriod[period]['uniqueClients'])*100).toFixed(0);
+                    if (currentPeriod['uniqueClients'] == 0) storeFrontClients = 0;
+                    else storeFrontClients = ((currentPeriod['engagedClients'] / currentPeriod['uniqueClients']) * 100).toFixed(0);
+                    currentPeriod['storefrontClients'] = storeFrontClients;
 
-                    locationsSeries.push(dataPeriod[period]['period']);
+                    locationsSeries.push(currentPeriod['period']);
                     storefrontBars.push(parseInt(storeFrontClients));
-                    engagedBars.push(dataPeriod[period]['engagedClients']);
-                    passersByBars.push(dataPeriod[period]['passersbyClients']);
-                    uniqueBars.push(dataPeriod[period]['uniqueClients']);
-                    associatedBars.push(dataPeriod[period]['associatedClients']);
-                    unassociatedBars.push(dataPeriod[period]['unassociatedClients']);
+                    engagedBars.push(currentPeriod['engagedClients']);
+                    passersByBars.push(currentPeriod['passersbyClients']);
+                    uniqueBars.push(currentPeriod['uniqueClients']);
+                    associatedBars.push(currentPeriod['associatedClients']);
+                    unassociatedBars.push(currentPeriod['unassociatedClients']);
 
 
-                }
+                });
 
                 var uniqueClients = [{
                     name: 'Engaged Clients',
@@ -95,7 +97,7 @@ function updatePeriod() {
                     name: 'Passers By',
                     data: passersByBars
                 }];
-                var wifiClients  = [{
+                var wifiClients = [{
                     name: 'Associated Clients',
                     data: associatedBars
                 }, {
@@ -116,14 +118,51 @@ function updatePeriod() {
                 displayStackedBarChart("wifiBarChart", "", locationsSeries, wifiClients);
                 showData("wifiBar");
 
+                var htmlString = "<table class='table table-hover'><thead><tr><th></th>";
+                for (var i = 0; i < dataPeriod.length - 1; i++) {
+                    htmlString += "<th>" + dataPeriod[i]['period'] + "</th>";
+                }
+                htmlString += "</tr></thead><tbody>";
+                htmlString += "<tr><th>StoreFront Conversion</th>" + getTableRow(dataPeriod, "storefrontClients") + "</tr>";
+                htmlString += "<tr><th>Engaged Clients</th>" + getTableRow(dataPeriod, "engagedClients") + "</tr>";
+                htmlString += "<tr><th>PassersBy Clients</th>" + getTableRow(dataPeriod, "passersbyClients") + "</tr>";
+                htmlString += "<tr><th>Associated Clients</th>" + getTableRow(dataPeriod, "associatedClients") + "</tr>";
+                htmlString += "<tr><th>Unassociated Clients</th>" + getTableRow(dataPeriod, "unassociatedClients") + "</tr>";
+                htmlString += "</tbody></table>";
+                $("#tableCompare").html(htmlString);
+                showData("tableCompare");
             }
         })
     }
 }
 
+function getTableRow(dataPeriod, dataName) {
+    var htmlString = "";
+    for (var i = 0; i < dataPeriod.length - 1; i++) {
+        htmlString += "<td>" + getPercentage(dataPeriod[dataPeriod.length -1][dataName], dataPeriod[i][dataName]) + "</td>";
+    }
+    return htmlString;
+}
+
+function getPercentage(num1, num2) {
+    var htmlString = "";
+    if (num2 == 0) {
+        htmlString = '<span style="color: gray">N/A</span>';
+    } else {
+        var percentage = (((num1 - num2) / num2) * 100);
+        if (percentage < 0) htmlString =
+            '<span style="color: red"><i class="fa fa-caret-down fa-lg" style="margin: auto;color: red;"></i> ' + percentage.toFixed(0) + '%</span>';
+        else if (percentage > 0) htmlString =
+            '<span style="color: green"><i class="fa fa-caret-up fa-lg" style="margin: auto;color: green;"></i> +' + percentage.toFixed(0) + '%</span>';
+        else htmlString =
+            '<span style="color: gray"><i class="fa fa-caret-right fa-lg" style="margin: auto;"></i> ' + percentage.toFixed(0) + '%</span>';
+    }
+    return htmlString
+}
+
 
 function displayLocationPole(containerId, title, series) {
-    $('#'+containerId).highcharts({
+    $('#' + containerId).highcharts({
         colors: ['#0085bd', '#00aff8', '#307fa1', '#606c71', '#3095cf', '#005c83', '#003248', '#00090d'],
 
         chart: {
@@ -175,7 +214,7 @@ function displayLocationPole(containerId, title, series) {
 
 function displayBarChart(containerId, title, xAxisData, data, percentage) {
     var yAxisTitle, pointFormatPercentage;
-    if (percentage){
+    if (percentage) {
         yAxisTitle = "% of Devices";
         pointFormatPercentage = "%";
     } else {
@@ -216,7 +255,7 @@ function displayBarChart(containerId, title, xAxisData, data, percentage) {
 
         tooltip: {
             headerFormat: '<span style="font-size:11px">{point.x}</span><br>',
-            pointFormat: '<span style="color:{point.color}">{series.name}</span>: <b>{point.y}'+pointFormatPercentage+'</b><br/>'
+            pointFormat: '<span style="color:{point.color}">{series.name}</span>: <b>{point.y}' + pointFormatPercentage + '</b><br/>'
         },
 
         series: [{
@@ -285,3 +324,4 @@ function displayStackedBarChart(containerId, title, xAxisData, data, percentage)
         series: data
     });
 }
+

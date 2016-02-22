@@ -73,7 +73,7 @@ router.post('/api/update/cards/', function (req, res, next) {
     });
 });
 router.post('/api/update/widgets/', function (req, res, next) {
-    var startTime, endTime, location, locations, locNowDone, locWeekDone, locMonthDone, locYearDone,
+    var startTime, endTime, locations, locNowDone, locWeekDone, locMonthDone, locYearDone,
         startLastWeek, endLastWeek, startLastMonth, endLastMonth, startLastYear, endLastYear;
     var dataNow = {
         "uniqueClients": 0,
@@ -136,9 +136,7 @@ router.post('/api/update/widgets/', function (req, res, next) {
 
         var widgetReqId = new Date().getTime();
 
-        for (var i = 0; i < locations.length; i++) {
-            location = locations[i];
-
+        locations.forEach(function (location){
             API.clientlocation.clientcountWithEE(
                 req.session.vpcUrl,
                 req.session.accessToken,
@@ -175,7 +173,7 @@ router.post('/api/update/widgets/', function (req, res, next) {
                 startLastYear.toISOString(),
                 endLastYear.toISOString(),
                 "dashboard widget lastYear", widgetReqId);
-        }
+        });
     } else res.json({error: "missing parameters"});
 
 
@@ -262,7 +260,7 @@ router.post('/api/update/widgets/', function (req, res, next) {
         });
 });
 router.post("/api/update/widget-best/", function (req, res, next) {
-    var startTime, endTime, locDone, bestLocations, locations, location, locationsToGet, i;
+    var startTime, endTime, locDone, bestLocations, locations, locationsToGet, i;
     if (req.body.hasOwnProperty('startTime') && req.body.hasOwnProperty('endTime')) {
         startTime = new Date(req.body['startTime']);
         endTime = new Date(req.body['endTime']);
@@ -275,9 +273,7 @@ router.post("/api/update/widget-best/", function (req, res, next) {
         locDone = 0;
         bestLocations = {};
         locationsToGet = Location.getFilteredFloorsId(req.session.locations, locations, "BUILDING");
-        for (i = 0; i < locationsToGet.length; i++) {
-            location = locationsToGet[i];
-
+        locationsToGet.forEach(function (location){
             API.clientlocation.clientcount(
                 req.session.vpcUrl,
                 req.session.accessToken,
@@ -316,7 +312,7 @@ router.post("/api/update/widget-best/", function (req, res, next) {
                     }
                 }.bind({location: location}));
 
-        }
+        });
     } else res.json({error: "missing parameters"});
 });
 module.exports = router;

@@ -59,106 +59,108 @@ block dashboard-cards
                             div.card-arrow
 
 block content
-        div.dashboard-container.dojoDndSource.dojoDndTarget.dojoDndContainer(id="dashboard-widgets")
-            div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
-                div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
-                    div.widget-loading.topApplicationGroup(style="height: 300px;")
-                        div.widget-content
-                            div.widget-label.clearfix
-                                span.widget-block
-                                span.widget-label-title Top 5 Locations By
-                                div.dropdown.medium(style="position: absolute;top: -5px;left: 250px;")
-                                    button(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="height: 35px;")
-                                        span.init-text(id="button-bestLocation") Storefront Conversion
-                                        span.caret
-                                    ul.dropdown-menu.medium(aria-labelledby="button-bestLocation" id="myLoc")
-                                        li(onclick="displayBestLocation('associatedClients', 'Associated Clients')") Associated Clients
-                                        li(onclick="displayBestLocation('engagedClients', 'Engaged Clients')") Engaged Clients
-                                        li(onclick="displayBestLocation('passersbyClients', 'Passersby Clients')") Passersby Clients
-                                        li(onclick="displayBestLocation('storeFrontClients', 'Storefront Conversion', true)") Storefront Conversion
-                                        li(onclick="displayBestLocation('unassociatedClients', 'Unassociated Clients')") Unassociated Clients
-                                        li(onclick="displayBestLocation('uniqueClients', 'Unique Clients')") Unique Clients
+    -var waiting = "Requesting data from Aerohive Cloud Service..."
 
-                            div.clearfix(id="bestLocationEmpty")
-                                div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
-                            div.entity-loading-widget(id="bestLocationLoading" style="display:none;")
-                            div(id="bestLocationData" style="display:none")
-                                div.column.grid_8(style="position: relative;display: inline-flex;")
-                                    div.grid_8(style="height: 250px;" id="bestLocationChart")
+    div.dashboard-container.dojoDndSource.dojoDndTarget.dojoDndContainer(id="dashboard-widgets")
+        div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
+            div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
+                div.widget-loading.topApplicationGroup(style="height: 300px;")
+                    div.widget-content
+                        div.widget-label.clearfix
+                            span.widget-block
+                            span.widget-label-title Top 5 Locations By
+                            div.dropdown.medium(style="position: absolute;top: -5px;left: 250px;")
+                                button(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="height: 35px;")
+                                    span.init-text(id="button-bestLocation") Storefront Conversion
+                                    span.caret
+                                ul.dropdown-menu.medium(aria-labelledby="button-bestLocation" id="myLoc")
+                                    li(onclick="displayBestLocation('associatedClients', 'Associated Clients')") Associated Clients
+                                    li(onclick="displayBestLocation('engagedClients', 'Engaged Clients')") Engaged Clients
+                                    li(onclick="displayBestLocation('passersbyClients', 'Passersby Clients')") Passersby Clients
+                                    li(onclick="displayBestLocation('storeFrontClients', 'Storefront Conversion', true)") Storefront Conversion
+                                    li(onclick="displayBestLocation('unassociatedClients', 'Unassociated Clients')") Unassociated Clients
+                                    li(onclick="displayBestLocation('uniqueClients', 'Unique Clients')") Unique Clients
 
-            div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
-                div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
-                    div.widget-loading.topApplicationGroup(style="height: 300px;")
-                        div.widget-content
-                            div.widget-label
-                                span.widget-block
-                                span.widget-label-title Storefront Conversion
-                            div.clearfix(id="storeFrontEmpty")
-                                div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
-                            div.entity-loading-widget(id="storeFrontLoading" style="display:none;")
-                            div(id="storeFrontData" style="display:none")
-                                div.column.grid_4.first(style="position: relative;display: inline-flex;")
-                                    div.grid_4.column(style="height: 250px;" id="storeFrontChart")
-                                    div.column.grid_4.last
-                                        div.topAppGroupTitle Progress Compared to
-                                        div.usageSection.widget-section
-                                            span.num-indicator.widget-number(id="storeFrontWeek")
-                                            span.num-label.tagBlockTitle.widget-info Previous Week
-                                        div.usageSection.widget-section
-                                            span.num-indicator.widget-number(id="storeFrontMonth")
-                                            span.num-label.tagBlockTitle.widget-info Previous Month
-                                        div.usageSection.widget-section
-                                            span.num-indicator.widget-number(id="storeFrontYear")
-                                            span.num-label.tagBlockTitle.widget-info Previous Year
+                        div.clearfix(id="bestLocationEmpty")
+                            div(style="text-align: center; line-height: 250px;")= waiting
+                        div.entity-loading-widget(id="bestLocationLoading" style="display:none;")
+                        div(id="bestLocationData" style="display:none")
+                            div.column.grid_8(style="position: relative;display: inline-flex;")
+                                div.grid_8(style="height: 250px;" id="bestLocationChart")
 
-            div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
-                div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
-                    div.widget-loading.topApplicationGroup(style="height: 300px;")
-                        div.widget-content
-                            div.widget-label
-                                span.widget-block
-                                span.widget-label-title Passers By
-                            div.clearfix(id="passersByEmpty")
-                                div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
-                            div.entity-loading-widget(id="passersByLoading" style="display:none;")
-                            div(id="passersByData" style="display:none;")
-                                div.column.grid_4.first(style="position: relative;display: inline-flex;")
-                                    div.grid_4.column(style="height: 250px;" id="passersByChart")
-                                    div.column.grid_4.last
-                                        div.topAppGroupTitle Progress Compared to
-                                        div.usageSection.widget-section
-                                            span.num-indicator.widget-number(id="passersByWeek")
-                                            span.num-label.tagBlockTitle.widget-info Previous Week
-                                        div.usageSection.widget-section
-                                            span.num-indicator.widget-number(id="passersByMonth")
-                                            span.num-label.tagBlockTitle.widget-info Previous Month
-                                        div.usageSection.widget-section
-                                            span.num-indicator.widget-number(id="passersByYear")
-                                            span.num-label.tagBlockTitle.widget-info Previous Year
+        div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
+            div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
+                div.widget-loading.topApplicationGroup(style="height: 300px;")
+                    div.widget-content
+                        div.widget-label
+                            span.widget-block
+                            span.widget-label-title Storefront Conversion
+                        div.clearfix(id="storeFrontEmpty")
+                            div(style="text-align: center; line-height: 250px;")= waiting
+                        div.entity-loading-widget(id="storeFrontLoading" style="display:none;")
+                        div(id="storeFrontData" style="display:none")
+                            div.column.grid_4.first(style="position: relative;display: inline-flex;")
+                                div.grid_4.column(style="height: 250px;" id="storeFrontChart")
+                                div.column.grid_4.last
+                                    div.topAppGroupTitle Progress Compared to
+                                    div.usageSection.widget-section
+                                        span.num-indicator.widget-number(id="storeFrontWeek")
+                                        span.num-label.tagBlockTitle.widget-info Previous Week
+                                    div.usageSection.widget-section
+                                        span.num-indicator.widget-number(id="storeFrontMonth")
+                                        span.num-label.tagBlockTitle.widget-info Previous Month
+                                    div.usageSection.widget-section
+                                        span.num-indicator.widget-number(id="storeFrontYear")
+                                        span.num-label.tagBlockTitle.widget-info Previous Year
 
-            div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
-                div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
-                    div.widget-loading.topApplicationGroup(style="height: 300px;")
-                        div.widget-content
-                            div.widget-label
-                                span.widget-block
-                                span.widget-label-title Engaged
-                            div.clearfix(id="engagedEmpty")
-                                div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
-                            div.entity-loading-widget(id="engagedLoading" style="display:none;")
-                            div(id="engagedData" style="display:none")
-                                div.column.grid_4.first(style="position: relative;display: inline-flex;")
-                                    div.grid_4.column(style="height: 250px;" id="engagedChart")
-                                    div.column.grid_4.last
-                                        div.topAppGroupTitle Progress Compared to
-                                        div.usageSection.widget-section
-                                            span.num-indicator.widget-number(id="engagedWeek")
-                                            span.num-label.tagBlockTitle.widget-info Previous Week
-                                        div.usageSection.widget-section
-                                            span.num-indicator.widget-number(id="engagedMonth")
-                                            span.num-label.tagBlockTitle.widget-info Previous Month
-                                        div.usageSection.widget-section
-                                            span.num-indicator.widget-number(id="engagedYear")
-                                            span.num-label.tagBlockTitle.widget-info Previous Year
+        div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
+            div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
+                div.widget-loading.topApplicationGroup(style="height: 300px;")
+                    div.widget-content
+                        div.widget-label
+                            span.widget-block
+                            span.widget-label-title Passers By
+                        div.clearfix(id="passersByEmpty")
+                            div(style="text-align: center; line-height: 250px;")= waiting
+                        div.entity-loading-widget(id="passersByLoading" style="display:none;")
+                        div(id="passersByData" style="display:none;")
+                            div.column.grid_4.first(style="position: relative;display: inline-flex;")
+                                div.grid_4.column(style="height: 250px;" id="passersByChart")
+                                div.column.grid_4.last
+                                    div.topAppGroupTitle Progress Compared to
+                                    div.usageSection.widget-section
+                                        span.num-indicator.widget-number(id="passersByWeek")
+                                        span.num-label.tagBlockTitle.widget-info Previous Week
+                                    div.usageSection.widget-section
+                                        span.num-indicator.widget-number(id="passersByMonth")
+                                        span.num-label.tagBlockTitle.widget-info Previous Month
+                                    div.usageSection.widget-section
+                                        span.num-indicator.widget-number(id="passersByYear")
+                                        span.num-label.tagBlockTitle.widget-info Previous Year
+
+        div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
+            div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
+                div.widget-loading.topApplicationGroup(style="height: 300px;")
+                    div.widget-content
+                        div.widget-label
+                            span.widget-block
+                            span.widget-label-title Engaged
+                        div.clearfix(id="engagedEmpty")
+                            div(style="text-align: center; line-height: 250px;")= waiting
+                        div.entity-loading-widget(id="engagedLoading" style="display:none;")
+                        div(id="engagedData" style="display:none")
+                            div.column.grid_4.first(style="position: relative;display: inline-flex;")
+                                div.grid_4.column(style="height: 250px;" id="engagedChart")
+                                div.column.grid_4.last
+                                    div.topAppGroupTitle Progress Compared to
+                                    div.usageSection.widget-section
+                                        span.num-indicator.widget-number(id="engagedWeek")
+                                        span.num-label.tagBlockTitle.widget-info Previous Week
+                                    div.usageSection.widget-section
+                                        span.num-indicator.widget-number(id="engagedMonth")
+                                        span.num-label.tagBlockTitle.widget-info Previous Month
+                                    div.usageSection.widget-section
+                                        span.num-indicator.widget-number(id="engagedYear")
+                                        span.num-label.tagBlockTitle.widget-info Previous Year
 
 

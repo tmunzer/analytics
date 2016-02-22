@@ -78,30 +78,28 @@ function updateHeatmap() {
         }).done(function (data) {
             if (data.error) displayModal("API", data.error);
             else {
-                var entry;
                 var time, x, y, numEntries;
-                for (var i in data['data']) {
-                    entry = data['data'][i];
-                    time = entry['time'];
-                    lineTime.push(new Date(entry['time']));
-                    lineUniqueClients.push(entry['uniqueClients']);
-                    lineEngagedClients.push(entry['engagedClients']);
-                    linePassersbyClients.push(entry['passersbyClients']);
-                    lineAssociatedClients.push(entry['associatedClients']);
-                    lineUnassociatedClients.push(entry['unassociatedClients']);
+                data['data'].forEach(function (currentData){
+                    time = currentData['time'];
+                    lineTime.push(new Date(currentData['time']));
+                    lineUniqueClients.push(currentData['uniqueClients']);
+                    lineEngagedClients.push(currentData['engagedClients']);
+                    linePassersbyClients.push(currentData['passersbyClients']);
+                    lineAssociatedClients.push(currentData['associatedClients']);
+                    lineUnassociatedClients.push(currentData['unassociatedClients']);
                     if (new Date() - new Date(time)) {
                         x = parseInt(time.split("T")[1].split(":")[0]);
                         y = new Date(time).getDay();
                         numEntries = heatmapTemp[x][y]['numEntries'] + 1;
                         heatmapTemp[x][y]['numEntries'] = numEntries;
-                        heatmapTemp[x][y]['uniqueClients'] = heatmapTemp[x][y]['uniqueClients'] + entry['uniqueClients'];
-                        heatmapTemp[x][y]['engagedClients'] = heatmapTemp[x][y]['engagedClients'] + entry['engagedClients'];
-                        heatmapTemp[x][y]['passersbyClients'] = heatmapTemp[x][y]['passersbyClients'] + entry['passersbyClients'];
-                        heatmapTemp[x][y]['associatedClients'] = heatmapTemp[x][y]['associatedClients'] + entry['associatedClients'];
-                        heatmapTemp[x][y]['unassociatedClients'] = heatmapTemp[x][y]['unassociatedClients'] + entry['unassociatedClients'];
+                        heatmapTemp[x][y]['uniqueClients'] = heatmapTemp[x][y]['uniqueClients'] + currentData['uniqueClients'];
+                        heatmapTemp[x][y]['engagedClients'] = heatmapTemp[x][y]['engagedClients'] + currentData['engagedClients'];
+                        heatmapTemp[x][y]['passersbyClients'] = heatmapTemp[x][y]['passersbyClients'] + currentData['passersbyClients'];
+                        heatmapTemp[x][y]['associatedClients'] = heatmapTemp[x][y]['associatedClients'] + currentData['associatedClients'];
+                        heatmapTemp[x][y]['unassociatedClients'] = heatmapTemp[x][y]['unassociatedClients'] + currentData['unassociatedClients'];
                     }
 
-                }
+                });
                 var tempVal = 0;
                 var dayOfTheWeek;
                 for (x = 0; x < 24; x++) {

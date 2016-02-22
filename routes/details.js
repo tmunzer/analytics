@@ -44,7 +44,7 @@ router.post('/api/init/', function (req, res, next) {
     });
 });
 router.post('/api/clienttimeseries/', function(req, res, next) {
-    var startTime, endTime, timeUnit, locDone, location, locations, series, timeseries;
+    var startTime, endTime, timeUnit, locDone, locations, series, timeseries;
     series = [];
     timeseries = [];
     locDone = 0;
@@ -64,8 +64,7 @@ router.post('/api/clienttimeseries/', function(req, res, next) {
         if (locations.length == 0) locations = [req.session.locations.id];
     } else locations = [req.session.locations.id];
 
-    for (var i = 0; i < locations.length; i++) {
-        location = locations[i];
+    locations.forEach(function(location){
         API.clientlocation.clienttimeseries(
             req.session.vpcUrl,
             req.session.accessToken,
@@ -94,7 +93,7 @@ router.post('/api/clienttimeseries/', function(req, res, next) {
                 }
             }
         )
-    }
+    });
 });
 
 module.exports = router;
