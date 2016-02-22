@@ -8,6 +8,7 @@ block include
     script(language="JavaScript" type="text/javascript" src='/js/compare/period/init.js')
 
 block content
+    -var waiting = "Requesting data from Aerohive Cloud Service..."
     div.dashboard-container.dojoDndSource.dojoDndTarget.dojoDndContainer(id="dashboard-widgets")
         div.ui-tab-container
             div.line.clearfix
@@ -30,7 +31,7 @@ block content
                                         span.widget-block
                                         span.widget-label-title Locations statistics
                                     div.clearfix(id="polarEmpty")
-                                        div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
+                                        div(style="text-align: center; line-height: 250px;")= waiting
                                     div.entity-loading-widget(id="polarLoading" style="display:none;")
                                     div(id="polarData" style="display:none;")
                                         div.column.grid_16(style="position: relative;display: inline-flex;")
@@ -45,7 +46,7 @@ block content
                                         span.widget-block
                                         span.widget-label-title Storefront Conversion
                                     div.clearfix(id="storefrontBarEmpty")
-                                        div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
+                                        div(style="text-align: center; line-height: 250px;")= waiting
                                     div.entity-loading-widget(id="storefrontBarLoading" style="display:none;")
                                     div(id="storefrontBarData" style="display:none")
                                         div.column.grid_8(style="position: relative;display: inline-flex;")
@@ -58,13 +59,13 @@ block content
                                 div.widget-content
                                     div.widget-label.clearfix
                                         span.widget-block
-                                        span.widget-label-title Will be available soon...
-                                    div.clearfix(id="bestLocationBarEmpty" style="display:none")
-                                        div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
-                                    div.entity-loading-widget(id="bestLocationLoading" style="display:none;")
-                                    div(id="bestLocationData" )
+                                        span.widget-label-title Progress compared to other periods
+                                    div.clearfix(id="tableCompareEmpty")
+                                        div(style="text-align: center; line-height: 250px;")= waiting
+                                    div.entity-loading-widget(id="tableCompareLoading" style="display:none;")
+                                    div(id="tableCompareData" )
                                         div.column.grid_8(style="position: relative;display: inline-flex;")
-                                            div.column.grid_8
+                                            div.column.grid_8(style="height: 250px;" id="tableCompare")
 
 
                     // UNIQUE CLIENTS PER LOCATION
@@ -76,7 +77,7 @@ block content
                                         span.widget-block
                                         span.widget-label-title Unique Clients
                                     div.clearfix(id="uniqueBarEmpty")
-                                        div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
+                                        div(style="text-align: center; line-height: 250px;")= waiting
                                     div.entity-loading-widget(id="uniqueBarLoading" style="display:none;")
                                     div(id="uniqueBarData" style="display:none")
                                         div.column.grid_8(style="position: relative;display: inline-flex;")
@@ -91,7 +92,7 @@ block content
                                         span.widget-block
                                         span.widget-label-title Wi-Fi Usage
                                     div.clearfix(id="wifiBarEmpty")
-                                        div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
+                                        div(style="text-align: center; line-height: 250px;")= waiting
                                     div.entity-loading-widget(id="wifiBarLoading" style="display:none;")
                                     div(id="wifiBarData" style="display:none")
                                         div.column.grid_8(style="position: relative;display: inline-flex;")
@@ -107,7 +108,7 @@ block content
                                         span.widget-block
                                         span.widget-label-title StoreFront conversion over time
                                     div.clearfix(id="storefrontEmpty")
-                                        div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
+                                        div(style="text-align: center; line-height: 250px;")= waiting
                                     div.entity-loading-widget(id="storefrontLoading" style="display:none;")
                                     div(id="storefrontData" style="display:none;")
                     // ENGAGED CLIENTS CONVERSION OVER TIME
@@ -119,7 +120,7 @@ block content
                                         span.widget-block
                                         span.widget-label-title Number of Engaged Clients over time
                                     div.clearfix(id="engagedEmpty")
-                                        div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
+                                        div(style="text-align: center; line-height: 250px;")= waiting
                                     div.entity-loading-widget(id="engagedLoading" style="display:none;")
                                     div(id="engagedData" style="display:none;")
                     // PASSERS BY CLIENTS CONVERSION OVER TIME
@@ -131,7 +132,7 @@ block content
                                         span.widget-block
                                         span.widget-label-title Number of Passers By over time
                                     div.clearfix(id="passersByEmpty")
-                                        div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
+                                        div(style="text-align: center; line-height: 250px;")= waiting
                                     div.entity-loading-widget(id="passersByLoading" style="display:none;")
                                     div(id="passersByData" style="display:none;")
                     // UNIQUE CLIENTS CONVERSION OVER TIME
@@ -143,7 +144,7 @@ block content
                                         span.widget-block
                                         span.widget-label-title Number of Unique Clients over time
                                     div.clearfix(id="uniqueEmpty")
-                                        div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
+                                        div(style="text-align: center; line-height: 250px;")= waiting
                                     div.entity-loading-widget(id="uniqueLoading" style="display:none;")
                                     div(id="uniqueData" style="display:none;")
                     // ASSOCIATED CLIENTS CONVERSION OVER TIME
@@ -155,7 +156,7 @@ block content
                                         span.widget-block
                                         span.widget-label-title Number of Associated Clients over time
                                     div.clearfix(id="associatedEmpty")
-                                        div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
+                                        div(style="text-align: center; line-height: 250px;")= waiting
                                     div.entity-loading-widget(id="associatedLoading" style="display:none;")
                                     div(id="associatedData" style="display:none;")
                     // UNASSOCIATED CLIENTS CONVERSION OVER TIME
@@ -167,7 +168,7 @@ block content
                                         span.widget-block
                                         span.widget-label-title Number of Unassociated Clients over time
                                     div.clearfix(id="unassociatedEmpty")
-                                        div(style="text-align: center; line-height: 250px;") Data unavailable. Data is assembled each hour in one-hour intervals.
+                                        div(style="text-align: center; line-height: 250px;")= waiting
                                     div.entity-loading-widget(id="unassociatedLoading" style="display:none;")
                                     div(id="unassociatedData" style="display:none;")
 

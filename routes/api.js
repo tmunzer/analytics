@@ -71,8 +71,7 @@ router.post('/common/timeline/', function (req, res, next) {
             if (locations.length == 0) locations = [req.session.locations.id];
         } else locations = [req.session.locations.id];
         locDone = 0;
-        for (var i = 0; i < locations.length; i++) {
-            location = locations[i];
+        locations.forEach(function (location){
             API.clientlocation.clienttimeseries(req.session.vpcUrl, req.session.accessToken, req.session.ownerID, location, startTime.toISOString(), endTime.toISOString(), timeUnit, function (err, result) {
                 if (err) res.json({error: err});
                 else {
@@ -92,8 +91,8 @@ router.post('/common/timeline/', function (req, res, next) {
                     });
                 }
             });
-        }
-    } else res.json({error: "missing parameters"});
+        });
+        } else res.json({error: "missing parameters"});
 });
 
 module.exports = router;

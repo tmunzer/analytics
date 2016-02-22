@@ -108,59 +108,60 @@ function updateLocationLine() {
                 });
                  */
                 timeserie = data.timeserie;
-                for (var i in data.dataLocation) {
+                data.dataLocation.forEach(function (currentLocation){
                     tmpUnique = [];
                     tmpStorefront = [];
                     tmpEngaged = [];
                     tmpPassersBy = [];
                     tmpAssociated = [];
                     tmpUnassociated = [];
-                    for (var j in data.dataLocation[i]['data']) {
-                        tmpUnique.push(data.dataLocation[i]['data'][j]['uniqueClients']);
-                        tmpStorefront.push(data.dataLocation[i]['data'][j]['storefrontClients']);
-                        tmpEngaged.push(data.dataLocation[i]['data'][j]['engagedClients']);
-                        tmpPassersBy.push(data.dataLocation[i]['data'][j]['passersbyClients']);
-                        tmpAssociated.push(data.dataLocation[i]['data'][j]['associatedClients']);
-                        tmpUnassociated.push(data.dataLocation[i]['data'][j]['unassociatedClients']);
-                    }
-                    seriesUnique.push({
-                        name: data.dataLocation[i].name,
+                    currentLocation['data'].forEach(function (currentData){
+                        tmpUnique.push(currentData['uniqueClients']);
+                        tmpStorefront.push(currentData['storefrontClients']);
+                        tmpEngaged.push(currentData['engagedClients']);
+                        tmpPassersBy.push(currentData['passersbyClients']);
+                        tmpAssociated.push(currentData['associatedClients']);
+                        tmpUnassociated.push(currentData['unassociatedClients']);
+                    });
+
+                        seriesUnique.push({
+                        name: currentLocation.name,
                         data: tmpUnique,
                         marker: {
                             symbol: "circle"
                         }
                     });
                     seriesStorefront.push({
-                        name: data.dataLocation[i].name,
+                        name: currentLocation.name,
                         data: tmpStorefront,
                         marker: {
                             symbol: "circle"
                         }                    });
                     seriesEngaged.push({
-                        name: data.dataLocation[i].name,
+                        name: currentLocation.name,
                         data: tmpEngaged,
                         marker: {
                             symbol: "circle"
                         }                    });
                     seriesPassersBy.push({
-                        name: data.dataLocation[i].name,
+                        name: currentLocation.name,
                         data: tmpPassersBy,
                         marker: {
                             symbol: "circle"
                         }                    });
                     seriesAssociated.push({
-                        name: data.dataLocation[i].name,
+                        name: currentLocation.name,
                         data: tmpAssociated,
                         marker: {
                             symbol: "circle"
                         }                    });
                     seriesUnassociated.push({
-                        name: data.dataLocation[i].name,
+                        name: currentLocation.name,
                         data: tmpUnassociated,
                         marker: {
                             symbol: "circle"
                         }                    });
-            }
+                });
                 displayLineChart('uniqueData', timeserie, seriesUnique, format, step);
                 $("#uniqueData").show();
                 $("#uniqueEmpty").hide();

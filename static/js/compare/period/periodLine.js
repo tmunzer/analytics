@@ -108,63 +108,63 @@ function updatePeriodLine() {
                 });
                  */
                 timeserie = data.timeserie;
-                for (var i in data.dataPeriod) {
+                data.dataPeriod.forEach(function (period){
                     tmpUnique = [];
                     tmpStorefront = [];
                     tmpEngaged = [];
                     tmpPassersBy = [];
                     tmpAssociated = [];
                     tmpUnassociated = [];
-                    for (var j in data.dataPeriod[i]['times']) {
-                        tmpUnique.push(data.dataPeriod[i]['times'][j]['uniqueClients']);
-                        tmpStorefront.push(data.dataPeriod[i]['times'][j]['storefrontClients']);
-                        tmpEngaged.push(data.dataPeriod[i]['times'][j]['engagedClients']);
-                        tmpPassersBy.push(data.dataPeriod[i]['times'][j]['passersbyClients']);
-                        tmpAssociated.push(data.dataPeriod[i]['times'][j]['associatedClients']);
-                        tmpUnassociated.push(data.dataPeriod[i]['times'][j]['unassociatedClients']);
+                    for (var j in period['times']) {
+                        tmpUnique.push(period['times'][j]['uniqueClients']);
+                        tmpStorefront.push(period['times'][j]['storefrontClients']);
+                        tmpEngaged.push(period['times'][j]['engagedClients']);
+                        tmpPassersBy.push(period['times'][j]['passersbyClients']);
+                        tmpAssociated.push(period['times'][j]['associatedClients']);
+                        tmpUnassociated.push(period['times'][j]['unassociatedClients']);
                     }
                     seriesUnique.push({
-                        name: data.dataPeriod[i].period,
+                        name: period.period,
                         data: tmpUnique,
                         marker: {
                             symbol: "circle"
                         }
                     });
                     seriesStorefront.push({
-                        name: data.dataPeriod[i].period,
+                        name: period.period,
                         data: tmpStorefront,
                         marker: {
                             symbol: "circle"
                         }
                     });
                     seriesEngaged.push({
-                        name: data.dataPeriod[i].period,
+                        name: period.period,
                         data: tmpEngaged,
                         marker: {
                             symbol: "circle"
                         }                    });
                     seriesPassersBy.push({
-                        name: data.dataPeriod[i].period,
+                        name: period.period,
                         data: tmpPassersBy,
                         marker: {
                             symbol: "circle"
                         }
                     });
                     seriesAssociated.push({
-                        name: data.dataPeriod[i].period,
+                        name: period.period,
                         data: tmpAssociated,
                         marker: {
                             symbol: "circle"
                         }
                     });
                     seriesUnassociated.push({
-                        name: data.dataPeriod[i].period,
+                        name: period.period,
                         data: tmpUnassociated,
                         marker: {
                             symbol: "circle"
                         }
                     });
-            }
+                });
                 displayLineChart('uniqueData', timeserie, seriesUnique, format, step);
                 $("#uniqueData").show();
                 $("#uniqueEmpty").hide();

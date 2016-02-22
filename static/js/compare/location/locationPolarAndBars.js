@@ -80,62 +80,62 @@ function updatePolarAndBars() {
                         worstValue: null
                     }
                 };
-                for (var loc in dataLocation) {
+                dataLocation.forEach(function(currentLocation){
                     var dataChart = [
-                        dataLocation[loc]['uniqueClients'],
-                        dataLocation[loc]['engagedClients'],
-                        dataLocation[loc]['passersbyClients'],
-                        dataLocation[loc]['associatedClients'],
-                        dataLocation[loc]['unassociatedClients']
+                        currentLocation['uniqueClients'],
+                        currentLocation['engagedClients'],
+                        currentLocation['passersbyClients'],
+                        currentLocation['associatedClients'],
+                        currentLocation['unassociatedClients']
                     ];
 
                     series.push({
                         type: 'line',
-                        name: dataLocation[loc].name,
+                        name: currentLocation.name,
                         data: dataChart,
                         pointPlacement: 'on'
                     });
 
-                    if (dataLocation[loc]['uniqueClients'] == 0) storeFrontClients = 0;
-                    else storeFrontClients = ((dataLocation[loc]['engagedClients']/dataLocation[loc]['uniqueClients'])*100).toFixed(0);
+                    if (currentLocation['uniqueClients'] == 0) storeFrontClients = 0;
+                    else storeFrontClients = ((currentLocation['engagedClients']/currentLocation['uniqueClients'])*100).toFixed(0);
 
-                    locationsSeries.push(dataLocation[loc].name);
+                    locationsSeries.push(currentLocation.name);
                     storefrontBars.push(parseInt(storeFrontClients));
-                    engagedBars.push(dataLocation[loc]['engagedClients']);
-                    passersByBars.push(dataLocation[loc]['passersbyClients']);
-                    uniqueBars.push(dataLocation[loc]['uniqueClients']);
-                    associatedBars.push(dataLocation[loc]['associatedClients']);
-                    unassociatedBars.push(dataLocation[loc]['unassociatedClients']);
+                    engagedBars.push(currentLocation['engagedClients']);
+                    passersByBars.push(currentLocation['passersbyClients']);
+                    uniqueBars.push(currentLocation['uniqueClients']);
+                    associatedBars.push(currentLocation['associatedClients']);
+                    unassociatedBars.push(currentLocation['unassociatedClients']);
 
                     if (bestLocations.storefront.bestValue == null || bestLocations.storefront.bestValue < parseInt(storeFrontClients)){
                         bestLocations.storefront.bestValue = parseInt(storeFrontClients);
-                        bestLocations.storefront.best = dataLocation[loc].name;
+                        bestLocations.storefront.best = currentLocation.name;
                     } else if (bestLocations.storefront.worstValue == null || bestLocations.storefront.worstValue > parseInt(storeFrontClients)) {
                         bestLocations.storefront.worstValue = parseInt(storeFrontClients);
-                        bestLocations.storefront.worst = dataLocation[loc].name;
+                        bestLocations.storefront.worst = currentLocation.name;
                     }
-                    if (bestLocations.passersBy.bestValue == null || bestLocations.passersBy.bestValue < dataLocation[loc]['passersbyClients']){
-                        bestLocations.passersBy.bestValue =dataLocation[loc]['passersbyClients'];
-                        bestLocations.passersBy.best = dataLocation[loc].name;
-                    } else if (bestLocations.passersBy.worstValue == null || bestLocations.passersBy.worstValue > dataLocation[loc]['passersbyClients']) {
-                        bestLocations.passersBy.worstValue = dataLocation[loc]['passersbyClients'];
-                        bestLocations.passersBy.worst = dataLocation[loc].name;
+                    if (bestLocations.passersBy.bestValue == null || bestLocations.passersBy.bestValue < currentLocation['passersbyClients']){
+                        bestLocations.passersBy.bestValue =currentLocation['passersbyClients'];
+                        bestLocations.passersBy.best = currentLocation.name;
+                    } else if (bestLocations.passersBy.worstValue == null || bestLocations.passersBy.worstValue > currentLocation['passersbyClients']) {
+                        bestLocations.passersBy.worstValue = currentLocation['passersbyClients'];
+                        bestLocations.passersBy.worst = currentLocation.name;
                     }
-                    if (bestLocations.visitors.bestValue == null || bestLocations.visitors.bestValue < dataLocation[loc]['engagedClients']){
-                        bestLocations.visitors.bestValue = dataLocation[loc]['engagedClients'];
-                        bestLocations.visitors.best = dataLocation[loc].name;
-                    } else if (bestLocations.visitors.worstValue == null || bestLocations.visitors.worstValue > dataLocation[loc]['engagedClients']) {
-                        bestLocations.visitors.worstValue = dataLocation[loc]['engagedClients'];
-                        bestLocations.visitors.worst = dataLocation[loc].name;
+                    if (bestLocations.visitors.bestValue == null || bestLocations.visitors.bestValue < currentLocation['engagedClients']){
+                        bestLocations.visitors.bestValue = currentLocation['engagedClients'];
+                        bestLocations.visitors.best = currentLocation.name;
+                    } else if (bestLocations.visitors.worstValue == null || bestLocations.visitors.worstValue > currentLocation['engagedClients']) {
+                        bestLocations.visitors.worstValue = currentLocation['engagedClients'];
+                        bestLocations.visitors.worst = currentLocation.name;
                     }
-                    if (bestLocations.wifi.bestValue == null || bestLocations.wifi.bestValue < dataLocation[loc]['associatedClients']){
-                        bestLocations.wifi.bestValue = dataLocation[loc]['associatedClients'];
-                        bestLocations.wifi.best = dataLocation[loc].name;
-                    } else if (bestLocations.wifi.worstValue == null || bestLocations.wifi.worstValue > dataLocation[loc]['associatedClients']) {
-                        bestLocations.wifi.worstValue = dataLocation[loc]['associatedClients'];
-                        bestLocations.wifi.worst = dataLocation[loc].name;
+                    if (bestLocations.wifi.bestValue == null || bestLocations.wifi.bestValue < currentLocation['associatedClients']){
+                        bestLocations.wifi.bestValue = currentLocation['associatedClients'];
+                        bestLocations.wifi.best = currentLocation.name;
+                    } else if (bestLocations.wifi.worstValue == null || bestLocations.wifi.worstValue > currentLocation['associatedClients']) {
+                        bestLocations.wifi.worstValue = currentLocation['associatedClients'];
+                        bestLocations.wifi.worst = currentLocation.name;
                     }
-                }
+                });
                 console.log(bestLocations);
                 $("#storefrontBest").html(bestLocations.storefront.best);
                 $("#storefrontWorst").html(bestLocations.storefront.worst);

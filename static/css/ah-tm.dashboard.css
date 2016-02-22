@@ -373,3 +373,7 @@ span.help-tip {
     color: #fff !important;
     height: 25px !important;
 }
+
+.table td, .table th {
+    line-height: 2 !important;
+}

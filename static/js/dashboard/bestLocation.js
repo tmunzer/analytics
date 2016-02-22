@@ -60,6 +60,7 @@ function displayBestLocation(param, title, percentage){
     var data = [];
     var sortable = [];
 
+
     for (var locNum in bestLocations) {
         sortable.push([bestLocations[locNum]['name'], bestLocations[locNum][param]]);
     }

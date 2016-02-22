@@ -68,18 +68,18 @@ router.post('/api/location/polar/', function (req, res, next) {
         averageDone = false;
         var reqId = new Date().getTime();
 
-        for (var location in locations) {
+        locations.forEach(function(location){
             API.clientlocation.clientcount.withEE(
                 req.session.vpcUrl,
                 req.session.accessToken,
                 req.session.ownerID,
-                locations[location],
+                location,
                 startTime.toISOString(),
                 endTime.toISOString(),
                 "compare location polar location",
                 reqId
             );
-        }
+        });
         API.clientlocation.clientcount.withEE(
             req.session.vpcUrl,
             req.session.accessToken,
@@ -166,8 +166,7 @@ router.post('/api/location/timeline/', function (req, res, next) {
         var reqId = new Date().getTime();
         locDone = 0;
 
-        for (var i = 0; i < locations.length; i++) {
-            location = locations[i];
+        locations.forEach(function(location){
             API.clientlocation.clienttimeseries.withEE(
                 req.session.vpcUrl,
                 req.session.accessToken,
@@ -178,7 +177,7 @@ router.post('/api/location/timeline/', function (req, res, next) {
                 timeUnit,
                 "compare location timeline",
                 reqId);
-        }
+        });
 
 
         eventEmitter
@@ -188,11 +187,11 @@ router.post('/api/location/timeline/', function (req, res, next) {
                     else {
                         var storeFrontClients, name;
                         name = Location.getLocationName(req.session.locations, locId);
-                        for (var i in data['times']) {
-                            if (data['times'][i]['unassociatedClients'] == 0) storeFrontClients = 0;
-                            else storeFrontClients = ((data['times'][i]['engagedClients'] / data['times'][i]['unassociatedClients']) * 100).toFixed(0);
-                            data['times'][i]['storefrontClients'] = parseInt(storeFrontClients);
-                        }
+                        data["times"].forEach(function (currentData){
+                            if (currentData['unassociatedClients'] == 0) storeFrontClients = 0;
+                            else storeFrontClients = ((currentData['engagedClients'] / currentData['unassociatedClients']) * 100).toFixed(0);
+                            currentData['storefrontClients'] = parseInt(storeFrontClients);
+                        });
                         timeserie = data['times'];
                         dataLocation.push({
                             name: name,
@@ -219,7 +218,7 @@ router.post('/api/location/timeline/', function (req, res, next) {
 });
 
 router.post("/api/period/polar/", function (req, res, next) {
-    var oneHour, oneDay, oneWeek, oneMonth, range, reqPeriods;
+    var oneHour, oneDay, oneWeek, oneMonth, range, reqPeriods, i;
     var startTime, endTime, location, locations, ajaxReqId;
 
     if (req.body.hasOwnProperty('startTime') && req.body.hasOwnProperty('endTime')) {
@@ -250,12 +249,12 @@ router.post("/api/period/polar/", function (req, res, next) {
                 "associatedClients": 0,
                 "unassociatedClients": 0
             }];
-            for (var i = 1; i <= 7; i++) {
+            for (i = 1; i <= 7; i++) {
                 var startDay = new Date(startTime);
                 startDay.setDate(startDay.getDate() - i);
                 var endDay = new Date(endTime);
                 endDay.setDate(endDay.getDate() - i);
-                reqPeriods.push({
+                reqPeriods.unshift({
                     period: 'Day -' + i, start: startDay, end: endDay,
                     "uniqueClients": 0,
                     "engagedClients": 0,
@@ -274,12 +273,12 @@ router.post("/api/period/polar/", function (req, res, next) {
                 "associatedClients": 0,
                 "unassociatedClients": 0
             }];
-            for (var i = 1; i <= 5; i++) {
+            for (i = 1; i <= 5; i++) {
                 var startWeek = new Date(startTime);
                 startWeek.setDate(startWeek.getDate() - i * 7);
                 var endWeek = new Date(endTime);
                 endWeek.setDate(endWeek.getDate() - i * 7);
-                reqPeriods.push({
+                reqPeriods.unshift({
                     period: 'Week -' + i, start: startWeek, end: endWeek,
                     "uniqueClients": 0,
                     "engagedClients": 0,
@@ -298,12 +297,12 @@ router.post("/api/period/polar/", function (req, res, next) {
                 "associatedClients": 0,
                 "unassociatedClients": 0
             }];
-            for (var i = 1; i <= 6; i++) {
+            for (i = 1; i <= 6; i++) {
                 var startMonth = new Date(startTime);
                 startMonth.setMonth(startMonth.getMonth() - i);
                 var endMonth = new Date(endTime);
                 endMonth.setMonth(endMonth.getMonth() - i);
-                reqPeriods.push({
+                reqPeriods.unshift({
                     period: 'Month -' + i, start: startMonth, end: endMonth,
                     "uniqueClients": 0,
                     "engagedClients": 0,
@@ -316,27 +315,26 @@ router.post("/api/period/polar/", function (req, res, next) {
         var reqDone = 0;
         var reqTotal = locations.length * reqPeriods.length;
         var reqId = new Date().getTime();
-        for (var i = 0; i < locations.length; i++) {
-            location = locations[i];
-            for (var j = 0; j < reqPeriods.length; j++) {
+        locations.forEach(function(location){
+            reqPeriods.forEach(function(currentPeriod){
                 API.clientlocation.clientcount(
                     req.session.vpcUrl,
                     req.session.accessToken,
                     req.session.ownerID,
                     location,
-                    reqPeriods[j]['start'].toISOString(),
-                    reqPeriods[j]['end'].toISOString(),
+                    currentPeriod['start'].toISOString(),
+                    currentPeriod['end'].toISOString(),
                     function (err, result) {
                         if (err) {
                             res.json({error: err});
                             reqDone = -1;
                         } else {
                             reqDone++;
-                            reqPeriods[this.j]['uniqueClients'] += result['uniqueClients'];
-                            reqPeriods[this.j]['engagedClients'] += result['engagedClients'];
-                            reqPeriods[this.j]['passersbyClients'] += result['passersbyClients'];
-                            reqPeriods[this.j]['associatedClients'] += result['associatedClients'];
-                            reqPeriods[this.j]['unassociatedClients'] += result['unassociatedClients'];
+                            this.currentPeriod['uniqueClients'] += result['uniqueClients'];
+                            this.currentPeriod['engagedClients'] += result['engagedClients'];
+                            this.currentPeriod['passersbyClients'] += result['passersbyClients'];
+                            this.currentPeriod['associatedClients'] += result['associatedClients'];
+                            this.currentPeriod['unassociatedClients'] += result['unassociatedClients'];
                             if (reqDone == reqTotal) {
                                 var dataAverage = {
                                     "uniqueClients": 0,
@@ -345,13 +343,13 @@ router.post("/api/period/polar/", function (req, res, next) {
                                     "associatedClients": 0,
                                     "unassociatedClients": 0
                                 };
-                                for (var k = 0; k < reqPeriods.length; k++) {
-                                    dataAverage['uniqueClients'] += reqPeriods[k]['uniqueClients'];
-                                    dataAverage['engagedClients'] += reqPeriods[k]['engagedClients'];
-                                    dataAverage['passersbyClients'] += reqPeriods[k]['passersbyClients'];
-                                    dataAverage['associatedClients'] += reqPeriods[k]['associatedClients'];
-                                    dataAverage['unassociatedClients'] += reqPeriods[k]['unassociatedClients'];
-                                }
+                                reqPeriods.forEach(function(resultPeriod){
+                                    dataAverage['uniqueClients'] += resultPeriod['uniqueClients'];
+                                    dataAverage['engagedClients'] += resultPeriod['engagedClients'];
+                                    dataAverage['passersbyClients'] += resultPeriod['passersbyClients'];
+                                    dataAverage['associatedClients'] += resultPeriod['associatedClients'];
+                                    dataAverage['unassociatedClients'] += resultPeriod['unassociatedClients'];
+                                });
                                 dataAverage['uniqueClients'] = parseInt((dataAverage['uniqueClients'] / reqPeriods.length).toFixed(0));
                                 dataAverage['engagedClients'] = parseInt((dataAverage['engagedClients'] / reqPeriods.length).toFixed(0));
                                 dataAverage['passersbyClients'] = parseInt((dataAverage['passersbyClients'] / reqPeriods.length).toFixed(0));
@@ -365,18 +363,17 @@ router.post("/api/period/polar/", function (req, res, next) {
                                 })
                             }
                         }
-                    }.bind({j: j}));
-            }
+                    }.bind({currentPeriod: currentPeriod}));
+            });
+        });
         }
-    }
     else
         res.json({error: "missing parameters"});
 });
 
 router.post('/api/period/timeline/', function (req, res, next) {
-    var oneHour, oneDay, oneWeek, oneMonth, range, reqPeriods, range;
-    var startTime, endTime, timeUnit, location, locations, locDone, timelineReq, ajaxReqId;
-    var dataLocation = [];
+    var oneHour, oneDay, oneWeek, oneMonth, range, reqPeriods, range, i;
+    var startTime, endTime, timeUnit, location, locations, ajaxReqId;
     var timeserie = [];
 
     ajaxReqId = req.body['reqId'];
@@ -392,7 +389,6 @@ router.post('/api/period/timeline/', function (req, res, next) {
         } else {
             timeUnit = "OneDay";
         }
-        timelineReq = req.body['reqId'];
 
         if (req.body.hasOwnProperty("locations")) {
             locations = JSON.parse(req.body['locations']);
@@ -400,7 +396,6 @@ router.post('/api/period/timeline/', function (req, res, next) {
         } else locations = [req.session.locations.id];
 
         var reqId = new Date().getTime();
-        locDone = 0;
 
         oneHour = 1000 * 60 * 60;
         oneDay = oneHour * 24;
@@ -409,74 +404,74 @@ router.post('/api/period/timeline/', function (req, res, next) {
 
         if (range <= oneDay) {
             reqPeriods = [{period: 'Today', start: startTime, end: endTime, times: null}];
-            for (var i = 1; i <= 7; i++) {
+            for (i = 1; i <= 7; i++) {
                 var startDay = new Date(startTime);
                 startDay.setDate(startDay.getDate() - i);
                 var endDay = new Date(endTime);
                 endDay.setDate(endDay.getDate() - i);
-                reqPeriods.push({period: 'Day -' + i, start: startDay, end: endDay, times: null})
+                reqPeriods.unshift({period: 'Day -' + i, start: startDay, end: endDay, times: null})
             }
         }
         else if (range <= oneWeek) {
             reqPeriods = [{period: 'This Week', start: startTime, end: endTime, times: null}];
-            for (var i = 1; i <= 5; i++) {
+            for (i = 1; i <= 5; i++) {
                 var startWeek = new Date(startTime);
                 startWeek.setDate(startWeek.getDate() - i * 7);
                 var endWeek = new Date(endTime);
                 endWeek.setDate(endWeek.getDate() - i * 7);
-                reqPeriods.push({
+                reqPeriods.unshift({
                     period: 'Week -' + i, start: startWeek, end: endWeek, times: null
                 })
             }
         }
         else if (range <= oneMonth) {
             reqPeriods = [{period: 'This Month', start: startTime, end: endTime, times: null}];
-            for (var i = 1; i <= 6; i++) {
+            for (i = 1; i <= 6; i++) {
                 var startMonth = new Date(startTime);
                 startMonth.setMonth(startMonth.getMonth() - i);
                 var endMonth = new Date(endTime);
                 endMonth.setMonth(endMonth.getMonth() - i);
-                reqPeriods.push({period: 'Month -' + i, start: startMonth, end: endMonth, times: null})
+                reqPeriods.unshift({period: 'Month -' + i, start: startMonth, end: endMonth, times: null})
             }
         }
 
         var reqDone = 0;
         var reqTotal = locations.length * reqPeriods.length;
-        for (var i = 0; i < locations.length; i++) {
-            location = locations[i];
-            for (var j = 0; j < reqPeriods.length; j++) {
+
+        locations.forEach(function(location){
+            reqPeriods.forEach(function(currentPeriod){
                 API.clientlocation.clienttimeseries(
                     req.session.vpcUrl,
                     req.session.accessToken,
                     req.session.ownerID,
                     location,
-                    reqPeriods[j]['start'].toISOString(),
-                    reqPeriods[j]['end'].toISOString(),
+                    currentPeriod['start'].toISOString(),
+                    currentPeriod['end'].toISOString(),
                     timeUnit,
                     function (err, data) {
                         if (err) res.json({error: err});
                         else {
-                            if (reqPeriods[this.j]['times'] == null) reqPeriods[this.j]["times"] = data['times'];
+                            if (this.currentPeriod['times'] == null) this.currentPeriod["times"] = data['times'];
                             else {
                                 for (var k = 0; k < data['times'].length; k++) {
-                                    reqPeriods[this.j]["times"][k]['uniqueClients'] += data['times'][k]['uniqueClients'];
-                                    reqPeriods[this.j]["times"][k]['engagedClients'] += data['times'][k]['engagedClients'];
-                                    reqPeriods[this.j]["times"][k]['passersbyClients'] += data['times'][k]['passersbyClients'];
-                                    reqPeriods[this.j]["times"][k]['associatedClients'] += data['times'][k]['associatedClients'];
-                                    reqPeriods[this.j]["times"][k]['unassociatedClients'] += data['times'][k]['unassociatedClients'];
+                                    this.currentPeriod["times"][k]['uniqueClients'] += data['times'][k]['uniqueClients'];
+                                    this.currentPeriod["times"][k]['engagedClients'] += data['times'][k]['engagedClients'];
+                                    this.currentPeriod["times"][k]['passersbyClients'] += data['times'][k]['passersbyClients'];
+                                    this.currentPeriod["times"][k]['associatedClients'] += data['times'][k]['associatedClients'];
+                                    this.currentPeriod["times"][k]['unassociatedClients'] += data['times'][k]['unassociatedClients'];
                                 }
                             }
                             reqDone++;
                             if (reqDone == reqTotal) {
                                 var storeFrontClients;
-                                for (var l = 0; l < reqPeriods.length; l++) {
-                                    for (var m = 0; m < reqPeriods[l]["times"].length; m++) {
-                                        timeserie.push(reqPeriods[l]["times"][m]['time']);
-                                        if (reqPeriods[l]['times'][m]['unassociatedClients'] == 0) storeFrontClients = 0;
-                                        else storeFrontClients = ((reqPeriods[l]['times'][m]['engagedClients'] / reqPeriods[l]['times'][m]['unassociatedClients']) * 100).toFixed(0);
-                                        reqPeriods[l]['times'][m]['storefrontClients'] = parseInt(storeFrontClients);
-                                    }
-                                }
+                                reqPeriods.forEach(function (currentPeriod){
+                                    currentPeriod['times'].forEach(function (currentData){
+                                        timeserie.push(currentData['time']);
+                                        if (currentData['unassociatedClients'] == 0) storeFrontClients = 0;
+                                        else storeFrontClients = ((currentData['engagedClients'] / currentData['unassociatedClients']) * 100).toFixed(0);
+                                        currentData['storefrontClients'] = parseInt(storeFrontClients);
+                                    });
+                                });
                                 res.json({
                                     error: null,
                                     timeserie: timeserie,
@@ -485,9 +480,9 @@ router.post('/api/period/timeline/', function (req, res, next) {
                                 })
                             }
                         }
-                    }.bind({j: j}));
-            }
-        }
+                    }.bind({currentPeriod: currentPeriod}));
+            });
+        });
     } else res.json({error: "missing parameters"});
 });
 module.exports = router;
