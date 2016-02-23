@@ -72,41 +72,6 @@ function updateLocationLine() {
                 var seriesAssociated = [];
                 var seriesUnassociated = [];
 
-                /*
-                for (var i in dataAverage['times']) {
-                    time.push(dataAverage['times'][i]['time']);
-                    tmpUnique.push(dataAverage['times'][i]['uniqueClients']);
-                    tmpStorefront.push(dataAverage['times'][i]['storefrontClients']);
-                    tmpEngaged.push(dataAverage['times'][i]['engagedClients']);
-                    tmpPassersBy.push(dataAverage['times'][i]['passersbyClients']);
-                    tmpAssociated.push(dataAverage['times'][i]['associatedClients']);
-                    tmpUnassociated.push(dataAverage['times'][i]['unassociatedClients']);
-                }
-                seriesUnique.push({
-                    name: 'Average',
-                    data: tmpUnique
-                });
-                seriesStorefront.push({
-                    name: 'Average',
-                    data: tmpStorefront
-                });
-                seriesEngaged.push({
-                    name: 'Average',
-                    data: tmpEngaged
-                });
-                seriesPassersBy.push({
-                    name: 'Average',
-                    data: tmpPassersBy
-                });
-                seriesAssociated.push({
-                    name: 'Average',
-                    data: tmpAssociated
-                });
-                seriesUnassociated.push({
-                    name: 'Average',
-                    data: tmpUnassociated
-                });
-                 */
                 timeserie = data.timeserie;
                 data.dataLocation.forEach(function (currentLocation){
                     tmpUnique = [];
