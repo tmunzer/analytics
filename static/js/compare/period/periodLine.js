@@ -64,14 +64,14 @@ function updatePeriodLine() {
         }).done(function (data) {
             if (data.error) displayModal("API", data.error);
             else if (data.reqId == periodLineReq) {
-                var tmpUnique, tmpStorefront, tmpEngaged, tmpPassersBy, tmpAssociated, tmpUnassociated, timeserie;
+                var tmpUnique, tmpStorefront, tmpEngaged, tmpPassersBy, tmpAssociated, tmpUnassociated;
                 var seriesUnique = [];
                 var seriesStorefront = [];
                 var seriesEngaged = [];
                 var seriesPassersBy = [];
                 var seriesAssociated = [];
                 var seriesUnassociated = [];
-
+                var timeserie = [];
                 /*
                 for (var i in dataAverage['times']) {
                     time.push(dataAverage['times'][i]['time']);
@@ -107,7 +107,9 @@ function updatePeriodLine() {
                     data: tmpUnassociated
                 });
                  */
-                timeserie = data.timeserie;
+                data.timeserie.forEach(function(time){
+                    timeserie.push(new Date(time));
+                });
                 data.dataPeriod.forEach(function (period){
                     tmpUnique = [];
                     tmpStorefront = [];

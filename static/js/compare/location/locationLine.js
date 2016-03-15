@@ -71,8 +71,11 @@ function updateLocationLine() {
                 var seriesPassersBy = [];
                 var seriesAssociated = [];
                 var seriesUnassociated = [];
+                var timeserie = [];
 
-                timeserie = data.timeserie;
+                data.timeserie.forEach(function(time){
+                    timeserie.push(new Date(time.time));
+                });
                 data.dataLocation.forEach(function (currentLocation){
                     tmpUnique = [];
                     tmpStorefront = [];
