@@ -74,7 +74,7 @@ function updateLocationLine() {
                 var timeserie = [];
 
                 data.timeserie.forEach(function(time){
-                    timeserie.push(new Date(time.time));
+                    timeserie.push(new Date(time));
                 });
                 data.dataLocation.forEach(function (currentLocation){
                     tmpUnique = [];
