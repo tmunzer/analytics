@@ -8,9 +8,10 @@ var Location = require(appRoot + "/bin/aerohive/models/location");
 /*================================================================
  ROUTES
  ================================================================*/
-/*================================================================
- DASHBOARD
- ================================================================*/
+/*=========================================
+ LOCATION PAGE (currently, in two parts)
+ ==========================================*/
+// Per location comparison
 router.get('/location/', function (req, res, next) {
     if (req.session.vpcUrl && req.session.ownerID && req.session.accessToken) {
         res.render('compare_location', {
@@ -22,7 +23,9 @@ router.get('/location/', function (req, res, next) {
             accessToken: req.session.accessToken
         });
     } else res.redirect("/");
-}).get('/period/', function (req, res, next) {
+});
+// Per period comparison
+router.get('/period/', function (req, res, next) {
     if (req.session.vpcUrl && req.session.ownerID && req.session.accessToken) {
         res.render('compare_period', {
             title: 'Analytics',
@@ -35,21 +38,27 @@ router.get('/location/', function (req, res, next) {
     } else res.redirect("/");
 });
 /*================================================================
- API
+ API - PER LOCATION COMPARISON
  ================================================================*/
 router.post('/api/location/polar/', function (req, res, next) {
     var startTime, endTime, locations, locDone, averageDone, numLoc, polarReq;
     var locResult = [];
     var dataAverage = [];
     if (req.body.hasOwnProperty('startTime') && req.body.hasOwnProperty('endTime')) {
+        // retrieve the start time and end time from the POST method
         startTime = new Date(req.body['startTime']);
         endTime = new Date(req.body['endTime']);
+        // retrieve the "reqId" parameter from the POST Method.
+        // This will be sent back to the web browser to identify the request
         polarReq = req.body['reqId'];
 
+        // if the "locations" parameter exists, and is not null, will filter the request based on the locations selected by the user
+        // otherwise takes the "root" folder
         if (req.body.hasOwnProperty("locations")) {
             locations = JSON.parse(req.body['locations']);
             if (locations.length == 0) locations = [req.session.locations.id];
         } else locations = [req.session.locations.id];
+        // Only take into account the type of locations defined by the user
         if (req.body.hasOwnProperty("filterFolder")) {
             switch (req.body["filterFolder"]) {
                 case "GENERIC":
@@ -66,9 +75,13 @@ router.post('/api/location/polar/', function (req, res, next) {
 
         locDone = 0;
         averageDone = false;
+        // this "reqId" is used to identify the calls to ACS API.
+        // It is needed because of the use of "Event Emitter" instead of the callback method
         var reqId = new Date().getTime();
 
         locations.forEach(function(location){
+            // for each location get the number of clients for each location
+            // once done, will go to the Event "compare location polar location" below
             API.clientlocation.clientcount.withEE(
                 req.session.vpcUrl,
                 req.session.accessToken,
@@ -80,6 +93,8 @@ router.post('/api/location/polar/', function (req, res, next) {
                 reqId
             );
         });
+        // get the number of clients for the NG account. This will be used to get the average number of clients
+        // once done, will go to the Event "compare location polar average" below
         API.clientlocation.clientcount.withEE(
             req.session.vpcUrl,
             req.session.accessToken,
@@ -91,10 +106,16 @@ router.post('/api/location/polar/', function (req, res, next) {
             reqId
         );
 
-        eventEmitter.on("compare location polar location", function (eventId, locId, err, data) {
+        // here is the list of events
+        eventEmitter
+            // "compare location polar location" is called after each API call to get the number of clients from a specific location
+            .on("compare location polar location", function (eventId, locId, err, data) {
+            // validate that this request is sent from this same function call
             if (eventId == reqId) {
+                // if there is an error, send the error message to the web browser
                 if (err) res.json({error: err});
                 else {
+                    // get the name of the location based on the locationID
                     var name = Location.getLocationName(req.session.locations, locId);
                     var result = {
                         locationId: locId,
@@ -105,16 +126,21 @@ router.post('/api/location/polar/', function (req, res, next) {
                         associatedClients: data['associatedClients'],
                         unassociatedClients: data['unassociatedClients']
                     };
+                    // store the result
                     locResult.push(result);
+                    locDone++;
                 }
-                locDone++;
+                // got to the event "compare location polar finished"
                 eventEmitter.emit("compare location polar finished", eventId);
             }
         })
+            // "compare loaction polar average" is called after the API call to get the number of clients for the whole NG account
             .on("compare location polar average", function (eventId, locId, err, data) {
                 if (eventId == reqId) {
+                    // if there is an error: send the error message to the web browser
                     if (err) res.json({error: err});
                     else {
+                        // for each number, divided it by the number of locations to get the average
                         dataAverage = {
                             uniqueClients: parseInt((data['uniqueClients'] / numLoc).toFixed(0)),
                             engagedClients: parseInt((data['engagedClients'] / numLoc).toFixed(0)),
@@ -123,14 +149,18 @@ router.post('/api/location/polar/', function (req, res, next) {
                             unassociatedClients: parseInt((data['unassociatedClients'] / numLoc).toFixed(0))
 
                         };
+                        averageDone = true;
                     }
-                    averageDone = true;
+                    // got to the event "compare location poloar finished"
                     eventEmitter.emit("compare location polar finished", eventId);
                 }
             })
+            // "compare location polar finished
             .on("compare location polar finished", function (eventId) {
                 if (eventId == reqId) {
+                    // check if all locations are done, and if the average is done
                     if (locDone == locations.length && averageDone) {
+                        // send back the response to the web browser
                         res.json({
                             error: null,
                             dataLocation: locResult,
@@ -142,13 +172,18 @@ router.post('/api/location/polar/', function (req, res, next) {
             });
     }
 });
+
+// route to get the "Over Time" charts
 router.post('/api/location/timeline/', function (req, res, next) {
     var startTime, endTime, timeUnit, location, locations, locDone, timelineReq;
     var dataLocation = [];
     var timeserie = [];
     if (req.body.hasOwnProperty('startTime') && req.body.hasOwnProperty('endTime')) {
+        // retrieve the start time and end time from the POST method
         startTime = new Date(req.body['startTime']);
         endTime = new Date(req.body['endTime']);
+
+        // set the TimeUnit depending on the duration to fit the ACS API constraints
         if (endTime - startTime <= 172800000) {
             timeUnit = "FiveMinutes";
         } else if (endTime - startTime <= 604800000) {
@@ -156,17 +191,27 @@ router.post('/api/location/timeline/', function (req, res, next) {
         } else {
             timeUnit = "OneDay";
         }
+
+        // retrieve the "reqId" parameter from the POST Method.
+        // This will be sent back to the web browser to identify the request
         timelineReq = req.body['reqId'];
 
+        // if the "locations" parameter exists, and is not null, will filter the request based on the locations selected by the user
+        // otherwise takes the "root" folder
         if (req.body.hasOwnProperty("locations")) {
             locations = JSON.parse(req.body['locations']);
             if (locations.length == 0) locations = [req.session.locations.id];
         } else locations = [req.session.locations.id];
 
+        // this "reqId" is used to identify the calls to ACS API.
+        // It is needed because of the use of "Event Emitter" instead of the callback method
         var reqId = new Date().getTime();
         locDone = 0;
 
+
         locations.forEach(function(location){
+            // for each location get the number of clients for each location
+            // once done, will go to the Event "compare location timeline" below
             API.clientlocation.clienttimeseries.withEE(
                 req.session.vpcUrl,
                 req.session.accessToken,
@@ -179,31 +224,40 @@ router.post('/api/location/timeline/', function (req, res, next) {
                 reqId);
         });
 
-
+        // here is the list of events
         eventEmitter
+            // "compare location timeline" is called after each ACS API call
             .on("compare location timeline", function (eventId, locId, err, data) {
                 if (eventId == reqId) {
+                    // if there is an error, send the error message to the web browser
                     if (err) res.json({error: err});
                     else {
                         var storeFrontClients, name;
+                        // get the name of the location based on the locationID
                         name = Location.getLocationName(req.session.locations, locId);
                         data["times"].forEach(function (currentData){
-                            if (currentData['unassociatedClients'] == 0) storeFrontClients = 0;
-                            else storeFrontClients = ((currentData['engagedClients'] / currentData['unassociatedClients']) * 100).toFixed(0);
+                            // for each "time" entry, calculate the storefront conversion
+                            if (currentData['uniqueClients'] == 0) storeFrontClients = 0;
+                            else storeFrontClients = ((currentData['engagedClients'] / currentData['uniqueClients']) * 100).toFixed(0);
+                            // add the storefront conversion the the entry
                             currentData['storefrontClients'] = parseInt(storeFrontClients);
                         });
-                        timeserie = data['times'];
+                        // create an array with all the time values (used for the xAxis on the charts)
+                        timeserie = data['times']["time"];
+                        // add the array of values from this location to the final array
                         dataLocation.push({
                             name: name,
                             data: data['times']
                         });
+                        locDone++;
                     }
-                    locDone++;
+                    // call the "compare location timeline finished" event
                     eventEmitter.emit("compare location timeline finished", eventId);
                 }
             })
             .on("compare location timeline finished", function (eventId) {
                 if (eventId == reqId) {
+                    // if all the locations are done, send back the response to the web browser
                     if (locDone == locations.length) {
                         res.json({
                             error: null,
@@ -217,17 +271,25 @@ router.post('/api/location/timeline/', function (req, res, next) {
     } else res.json({error: "missing parameters"});
 });
 
+/*================================================================
+ API - PER PERIOD COMPARISON
+ ================================================================*/
+// route to get the "Global" charts
 router.post("/api/period/polar/", function (req, res, next) {
     var oneHour, oneDay, oneWeek, oneMonth, range, reqPeriods, i;
-    var startTime, endTime, location, locations, ajaxReqId;
+    var startTime, endTime, locations, ajaxReqId;
 
     if (req.body.hasOwnProperty('startTime') && req.body.hasOwnProperty('endTime')) {
+        // retrieve the start time and end time from the POST method
         startTime = new Date(req.body['startTime']);
         endTime = new Date(req.body['endTime']);
         range = endTime - startTime;
-
+        // retrieve the "reqId" parameter from the POST Method.
+        // This will be sent back to the web browser to identify the request
         ajaxReqId = req.body['reqId'];
 
+        // if the "locations" parameter exists, and is not null, will filter the request based on the locations selected by the user
+        // otherwise takes the "root" folder
         if (req.body.hasOwnProperty("locations")) {
             locations = JSON.parse(req.body['locations']);
             if (locations.length == 0) locations = [req.session.locations.id];
@@ -238,6 +300,9 @@ router.post("/api/period/polar/", function (req, res, next) {
         oneWeek = oneDay * 7;
         oneMonth = oneDay * 31;
 
+        // define the array of periods to compare.
+        // The number of entries and the values of each of them depends on the time range
+        // if the time range is less than one day
         if (range <= oneDay) {
             reqPeriods = [{
                 period: 'Today',
@@ -250,10 +315,12 @@ router.post("/api/period/polar/", function (req, res, next) {
                 "unassociatedClients": 0
             }];
             for (i = 1; i <= 7; i++) {
+                // calculate the start/end dates (initial -1 day, -2 days, ...)
                 var startDay = new Date(startTime);
                 startDay.setDate(startDay.getDate() - i);
                 var endDay = new Date(endTime);
                 endDay.setDate(endDay.getDate() - i);
+                // add the new period at the beginning of the array
                 reqPeriods.unshift({
                     period: 'Day -' + i, start: startDay, end: endDay,
                     "uniqueClients": 0,
@@ -264,6 +331,8 @@ router.post("/api/period/polar/", function (req, res, next) {
                 })
             }
         }
+        // if the time range is less than one week
+        // same as before, but range difference is 1 week
         else if (range <= oneWeek) {
             reqPeriods = [{
                 period: 'This Week', start: startTime, end: endTime,
@@ -288,6 +357,8 @@ router.post("/api/period/polar/", function (req, res, next) {
                 })
             }
         }
+        // if the time range is less than one month
+        // same as before, but range difference is 1 month
         else if (range <= oneMonth) {
             reqPeriods = [{
                 period: 'This Month', start: startTime, end: endTime,
@@ -312,11 +383,42 @@ router.post("/api/period/polar/", function (req, res, next) {
                 })
             }
         }
+        // otherwise
+        // same as before, but range difference is 1 year
+        else {
+            reqPeriods = [{
+                period: 'This Year', start: startTime, end: endTime,
+                "uniqueClients": 0,
+                "engagedClients": 0,
+                "passersbyClients": 0,
+                "associatedClients": 0,
+                "unassociatedClients": 0
+            }];
+            for (i = 1; i <= 2; i++) {
+                var startYear = new Date(startTime);
+                startYear.setFullYear(startYear.getFullYear() - i);
+                var endYear = new Date(endTime);
+                endYear.setFullYear(endYear.getFullYear() - i);
+                reqPeriods.unshift({
+                    period: 'Year -' + i, start: startYear, end: endYear,
+                    "uniqueClients": 0,
+                    "engagedClients": 0,
+                    "passersbyClients": 0,
+                    "associatedClients": 0,
+                    "unassociatedClients": 0
+                })
+            }
+        }
+
         var reqDone = 0;
+        // calculate the total number of ACS API calls we have to do.
+        // this will be used to validate that all the requests are done
         var reqTotal = locations.length * reqPeriods.length;
-        var reqId = new Date().getTime();
+
         locations.forEach(function(location){
+            // loop over all the locations selected
             reqPeriods.forEach(function(currentPeriod){
+                // loop over all the period defined above (number of periods is depending on the time range)
                 API.clientlocation.clientcount(
                     req.session.vpcUrl,
                     req.session.accessToken,
@@ -325,16 +427,18 @@ router.post("/api/period/polar/", function (req, res, next) {
                     currentPeriod['start'].toISOString(),
                     currentPeriod['end'].toISOString(),
                     function (err, result) {
-                        if (err) {
-                            res.json({error: err});
-                            reqDone = -1;
-                        } else {
-                            reqDone++;
+                        // if there is an error, send the error message to the web browser
+                        if (err) res.json({error: err});
+                        else {
+                            // add the values from this location to the value for this period of time
+                            // the result is, for each period of time, the number of clients over all the selected locations
                             this.currentPeriod['uniqueClients'] += result['uniqueClients'];
                             this.currentPeriod['engagedClients'] += result['engagedClients'];
                             this.currentPeriod['passersbyClients'] += result['passersbyClients'];
                             this.currentPeriod['associatedClients'] += result['associatedClients'];
                             this.currentPeriod['unassociatedClients'] += result['unassociatedClients'];
+                            reqDone++;
+                            // if all the locations and the periods are done
                             if (reqDone == reqTotal) {
                                 var dataAverage = {
                                     "uniqueClients": 0,
@@ -343,6 +447,7 @@ router.post("/api/period/polar/", function (req, res, next) {
                                     "associatedClients": 0,
                                     "unassociatedClients": 0
                                 };
+                                // calculate the average over all the periods
                                 reqPeriods.forEach(function(resultPeriod){
                                     dataAverage['uniqueClients'] += resultPeriod['uniqueClients'];
                                     dataAverage['engagedClients'] += resultPeriod['engagedClients'];
@@ -355,6 +460,7 @@ router.post("/api/period/polar/", function (req, res, next) {
                                 dataAverage['passersbyClients'] = parseInt((dataAverage['passersbyClients'] / reqPeriods.length).toFixed(0));
                                 dataAverage['associatedClients'] = parseInt((dataAverage['associatedClients'] / reqPeriods.length).toFixed(0));
                                 dataAverage['unassociatedClients'] = parseInt((dataAverage['unassociatedClients'] / reqPeriods.length).toFixed(0));
+                                // send back the response to the web browser
                                 res.json({
                                     error: null,
                                     dataAverage: dataAverage,
@@ -371,17 +477,20 @@ router.post("/api/period/polar/", function (req, res, next) {
         res.json({error: "missing parameters"});
 });
 
+// route to get the "Over Time" charts
 router.post('/api/period/timeline/', function (req, res, next) {
-    var oneHour, oneDay, oneWeek, oneMonth, range, reqPeriods, range, i;
-    var startTime, endTime, timeUnit, location, locations, ajaxReqId;
+    var oneHour, oneDay, oneWeek, oneMonth, range, reqPeriods, i;
+    var startTime, endTime, timeUnit, locations, ajaxReqId;
     var timeserie = [];
 
-    ajaxReqId = req.body['reqId'];
 
     if (req.body.hasOwnProperty('startTime') && req.body.hasOwnProperty('endTime')) {
+        // retrieve the start time and end time from the POST method
         startTime = new Date(req.body['startTime']);
         endTime = new Date(req.body['endTime']);
         range = endTime - startTime;
+
+        // set the TimeUnit depending on the duration to fit the ACS API constraints
         if (range <= 172800000) {
             timeUnit = "FiveMinutes";
         } else if (range <= 604800000) {
@@ -390,18 +499,25 @@ router.post('/api/period/timeline/', function (req, res, next) {
             timeUnit = "OneDay";
         }
 
+        // retrieve the "reqId" parameter from the POST Method.
+        // This will be sent back to the web browser to identify the request
+        ajaxReqId = req.body['reqId'];
+
+        // if the "locations" parameter exists, and is not null, will filter the request based on the locations selected by the user
+        // otherwise takes the "root" folder
         if (req.body.hasOwnProperty("locations")) {
             locations = JSON.parse(req.body['locations']);
             if (locations.length == 0) locations = [req.session.locations.id];
         } else locations = [req.session.locations.id];
-
-        var reqId = new Date().getTime();
 
         oneHour = 1000 * 60 * 60;
         oneDay = oneHour * 24;
         oneWeek = oneDay * 7;
         oneMonth = oneDay * 31;
 
+        // define the array of periods to compare.
+        // The number of entries and the values of each of them depends on the time range
+        // if the time range is less than one day
         if (range <= oneDay) {
             reqPeriods = [{period: 'Today', start: startTime, end: endTime, times: null}];
             for (i = 1; i <= 7; i++) {
@@ -412,6 +528,8 @@ router.post('/api/period/timeline/', function (req, res, next) {
                 reqPeriods.unshift({period: 'Day -' + i, start: startDay, end: endDay, times: null})
             }
         }
+        // define the array of periods to compare.
+        // same as above, but range difference is 1 week
         else if (range <= oneWeek) {
             reqPeriods = [{period: 'This Week', start: startTime, end: endTime, times: null}];
             for (i = 1; i <= 5; i++) {
@@ -424,6 +542,8 @@ router.post('/api/period/timeline/', function (req, res, next) {
                 })
             }
         }
+        // define the array of periods to compare.
+        // but range difference is 1 month
         else if (range <= oneMonth) {
             reqPeriods = [{period: 'This Month', start: startTime, end: endTime, times: null}];
             for (i = 1; i <= 6; i++) {
@@ -434,12 +554,28 @@ router.post('/api/period/timeline/', function (req, res, next) {
                 reqPeriods.unshift({period: 'Month -' + i, start: startMonth, end: endMonth, times: null})
             }
         }
+        // define the array of periods to compare.
+        // same as above, but range difference is 1 year
+        else {
+            reqPeriods = [{period: 'This Year', start: startTime, end: endTime, times: null}];
+            for (i = 1; i <= 2; i++) {
+                var startYear = new Date(startTime);
+                startYear.setFullYear(startYear.getFullYear() - i);
+                var endYear = new Date(endTime);
+                endYear.setFullYear(endYear.getFullYear() - i);
+                reqPeriods.unshift({period: 'Month -' + i, start: startYear, end: endYear, times: null})
+            }
+        }
 
         var reqDone = 0;
+        // calculate the total number of ACS API calls we have to do.
+        // this will be used to validate that all the requests are done
         var reqTotal = locations.length * reqPeriods.length;
 
         locations.forEach(function(location){
+            // loop over all the selected locations
             reqPeriods.forEach(function(currentPeriod){
+                // loop over all the defined periods
                 API.clientlocation.clienttimeseries(
                     req.session.vpcUrl,
                     req.session.accessToken,
@@ -449,9 +585,12 @@ router.post('/api/period/timeline/', function (req, res, next) {
                     currentPeriod['end'].toISOString(),
                     timeUnit,
                     function (err, data) {
+                        // if there is an error, send the error message to the web browser
                         if (err) res.json({error: err});
                         else {
+                            // if it is the first location done for this period of time, set the values
                             if (this.currentPeriod['times'] == null) this.currentPeriod["times"] = data['times'];
+                            // otherwise add the new values to the values from the previous location
                             else {
                                 for (var k = 0; k < data['times'].length; k++) {
                                     this.currentPeriod["times"][k]['uniqueClients'] += data['times'][k]['uniqueClients'];
@@ -462,16 +601,20 @@ router.post('/api/period/timeline/', function (req, res, next) {
                                 }
                             }
                             reqDone++;
+                            // if all the periods and all the locations are done
                             if (reqDone == reqTotal) {
                                 var storeFrontClients;
                                 reqPeriods.forEach(function (currentPeriod){
                                     currentPeriod['times'].forEach(function (currentData){
+                                        // generate the "timeserie" array for the xAxis
                                         timeserie.push(currentData['time']);
-                                        if (currentData['unassociatedClients'] == 0) storeFrontClients = 0;
-                                        else storeFrontClients = ((currentData['engagedClients'] / currentData['unassociatedClients']) * 100).toFixed(0);
+                                        // calculate and add the storefront conversion to the entry
+                                        if (currentData['uniqueClients'] == 0) storeFrontClients = 0;
+                                        else storeFrontClients = ((currentData['engagedClients'] / currentData['uniqueClients']) * 100).toFixed(0);
                                         currentData['storefrontClients'] = parseInt(storeFrontClients);
                                     });
                                 });
+                                // send back the response to the web browser
                                 res.json({
                                     error: null,
                                     timeserie: timeserie,

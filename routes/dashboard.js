@@ -4,37 +4,7 @@ var router = express.Router();
 var API = require(appRoot + "/bin/aerohive/api/main");
 var Device = require(appRoot + "/bin/aerohive/models/device");
 var Location = require(appRoot + "/bin/aerohive/models/location");
-/*================================================================
- PARAMETERS
- ================================================================*/
 
-router.param("vpcUrl", function (req, res, next, vpcUrl) {
-    var apiServers = ["cloud-va.aerohive.com", "cloud-ie.aerohive.com"];
-    if (!apiServers.hasOwnProperty(vpcUrl)) {
-        res.redirect("/?errorcode=1");
-    } else {
-        req.session.vpcUrl = apiServers[vpcUrl];
-        next();
-    }
-});
-router.param("ownerID", function (req, res, next, ownerID) {
-    var ownerIdRegexp = new RegExp("^[0-9]*$");
-    if (!ownerIdRegexp.test(ownerID)) {
-        res.redirect("/?errorcode=2");
-    } else {
-        req.session.ownerID = ownerID;
-        next();
-    }
-});
-router.param("accessToken", function (req, res, next, accessToken) {
-    var accessTokenRegexp = new RegExp("^[a-zA-Z0-9]{40}$");
-    if (!accessTokenRegexp.test(accessToken)) {
-        res.redirect("/?errorcode=3");
-    } else {
-        req.session.accessToken = accessToken;
-        next();
-    }
-});
 
 /*================================================================
  ROUTES
@@ -57,21 +27,26 @@ router.get('/', function (req, res, next) {
 /*================================================================
  API
  ================================================================*/
-
-
+// route called to get the data for the cards at the top of the dashboard
 router.post('/api/update/cards/', function (req, res, next) {
     var locations = [];
     if (req.body.hasOwnProperty('locations')) locations = JSON.parse(req.body['locations']);
 
     API.monitor.device(req.session.vpcUrl, req.session.accessToken, req.session.ownerID, function (err, devices) {
         if (err) res.send(err);
-        var floorsFilter = Location.getFilteredFloorsId(req.session.locations, locations);
-        var locationsCount = Location.countBuildings(req.session.locations, floorsFilter);
-        var devicesCount = Device.countDevices(devices, floorsFilter);
+        else {
+            // get the list of locationID based on the selection made by the user
+            var floorsFilter = Location.getFilteredFloorsId(req.session.locations, locations);
+            // get the counters about location and devices, filtered on the locations
+            var locationsCount = Location.countBuildings(req.session.locations, floorsFilter);
+            var devicesCount = Device.countDevices(devices, floorsFilter);
 
-        res.json({error: null, locationsCount: locationsCount, devicesCount: devicesCount});
+            res.json({error: null, locationsCount: locationsCount, devicesCount: devicesCount});
+        }
     });
 });
+
+// route called to get the values for the charts on the dashboard
 router.post('/api/update/widgets/', function (req, res, next) {
     var startTime, endTime, locations, locNowDone, locWeekDone, locMonthDone, locYearDone,
         startLastWeek, endLastWeek, startLastMonth, endLastMonth, startLastYear, endLastYear;
@@ -104,26 +79,12 @@ router.post('/api/update/widgets/', function (req, res, next) {
         "unassociatedClients": 0
     };
     if (req.body.hasOwnProperty('startTime') && req.body.hasOwnProperty('endTime')) {
+        // retrieve the start time and end time from the POST method
         startTime = new Date(req.body['startTime']);
         endTime = new Date(req.body['endTime']);
-        if (endTime - startTime <= 604800000) {
-            startLastWeek = new Date(startTime);
-            startLastWeek.setDate(startLastWeek.getDate() - 7);
-            endLastWeek = new Date(endTime);
-            endLastWeek.setDate(endLastWeek.getDate() - 7);
-        }
-        if (endTime - startTime <= 2678400000) {
-            startLastMonth = new Date(startTime);
-            startLastMonth.setMonth(startLastMonth.getMonth() - 1);
-            endLastMonth = new Date(endTime);
-            endLastMonth.setMonth(endLastMonth.getMonth() - 1);
-        }
 
-        startLastYear = new Date(startTime);
-        startLastYear.setFullYear(startLastYear.getFullYear() - 1);
-        endLastYear = new Date(endTime);
-        endLastYear.setFullYear(endLastYear.getFullYear() - 1);
-
+        // if the "locations" parameter exists, and is not null, will filter the request based on the locations selected by the user
+        // otherwise takes the "root" folder
         if (req.body.hasOwnProperty("locations")) {
             locations = JSON.parse(req.body['locations']);
             if (locations.length == 0) locations = [req.session.locations.id];
@@ -134,9 +95,14 @@ router.post('/api/update/widgets/', function (req, res, next) {
         locMonthDone = 0;
         locYearDone = 0;
 
+        // this "widgetReqId" is used to identify the calls to ACS API.
+        // It is needed because of the use of "Event Emitter" instead of the callback method
         var widgetReqId = new Date().getTime();
 
         locations.forEach(function (location){
+
+            // get the values for the time range defined by the user
+            // once done, call the Event "dashboard widget now"
             API.clientlocation.clientcountWithEE(
                 req.session.vpcUrl,
                 req.session.accessToken,
@@ -145,7 +111,15 @@ router.post('/api/update/widgets/', function (req, res, next) {
                 startTime.toISOString(),
                 endTime.toISOString(),
                 "dashboard widget now", widgetReqId);
+
+            // if time range < 1 week, get the value for the previous week
+            // once done, call the Event "dashboard widget lastWeek"
             if (endTime - startTime <= 604800000) {
+                // calculate the start/end dates for the previous week
+                startLastWeek = new Date(startTime);
+                startLastWeek.setDate(startLastWeek.getDate() - 7);
+                endLastWeek = new Date(endTime);
+                endLastWeek.setDate(endLastWeek.getDate() - 7);
                 API.clientlocation.clientcountWithEE(
                     req.session.vpcUrl,
                     req.session.accessToken,
@@ -154,8 +128,17 @@ router.post('/api/update/widgets/', function (req, res, next) {
                     startLastWeek.toISOString(),
                     endLastWeek.toISOString(),
                     "dashboard widget lastWeek", widgetReqId);
+            // else, indicate that all the "weeks" are done
             } else locWeekDone = locations.length;
+
+            // if time range < 1 month, get the value for the previous week
+            // once done, call the Event "dashboard widget lastMonth"
             if (endTime - startTime <= 2678400000) {
+                // calculate the start/end dates for the previous month
+                startLastMonth = new Date(startTime);
+                startLastMonth.setMonth(startLastMonth.getMonth() - 1);
+                endLastMonth = new Date(endTime);
+                endLastMonth.setMonth(endLastMonth.getMonth() - 1);
                 API.clientlocation.clientcountWithEE(
                     req.session.vpcUrl,
                     req.session.accessToken,
@@ -164,7 +147,16 @@ router.post('/api/update/widgets/', function (req, res, next) {
                     startLastMonth.toISOString(),
                     endLastMonth.toISOString(),
                     "dashboard widget lastMonth", widgetReqId);
+            // else, indicate that all the "months" are done
             } else locMonthDone = locations.length;
+
+            // Get the value for the previous Year
+            // once done, call the Event "dashboard widget lastYear"
+            // calculate the start/end dates for the previous Year
+            startLastYear = new Date(startTime);
+            startLastYear.setFullYear(startLastYear.getFullYear() - 1);
+            endLastYear = new Date(endTime);
+            endLastYear.setFullYear(endLastYear.getFullYear() - 1);
             API.clientlocation.clientcountWithEE(
                 req.session.vpcUrl,
                 req.session.accessToken,
@@ -176,68 +168,73 @@ router.post('/api/update/widgets/', function (req, res, next) {
         });
     } else res.json({error: "missing parameters"});
 
-
-    eventEmitter.on("dashboard widget now", function (eventId, locId, err, data) {
+    // here is the list of events
+    eventEmitter
+        // for the period of time defined by the user
+        .on("dashboard widget now", function (eventId, locId, err, data) {
         if (eventId == widgetReqId) {
-            if (err) {
-                res.json({error: err});
-                locNowDone = -1;
-            } else {
+            // if there is an error, send the error message to the web browser
+            if (err) res.json({error: err});
+            else {
+                // otherwise, add the values for the period of time defined by the user to the values for all the locations
                 dataNow['uniqueClients'] += data['uniqueClients'];
                 dataNow['engagedClients'] += data['engagedClients'];
                 dataNow['passersbyClients'] += data['passersbyClients'];
                 dataNow['associatedClients'] += data['associatedClients'];
                 dataNow['unassociatedClients'] += data['unassociatedClients'];
                 locNowDone++;
+                // call the last event to send back the data to the web browser (will check if all locations/periods are done)
                 eventEmitter.emit("dashboard widget finished", eventId);
             }
         }
     })
         .on("dashboard widget lastWeek", function (eventId, locId, err, data) {
             if (eventId == widgetReqId) {
-                if (err) {
-                    res.json({error: err});
-                    locWeekDone = -1;
-                } else {
+                // if there is an error, send the error message to the web browser
+                if (err) res.json({error: err});
+                else {
+                    // otherwise, add the values for previous week to the values for all the locations
                     dataLastWeek['uniqueClients'] += data['uniqueClients'];
                     dataLastWeek['engagedClients'] += data['engagedClients'];
                     dataLastWeek['passersbyClients'] += data['passersbyClients'];
                     dataLastWeek['associatedClients'] += data['associatedClients'];
                     dataLastWeek['unassociatedClients'] += data['unassociatedClients'];
                     locWeekDone++;
+                    // call the last event to send back the data to the web browser (will check if all locations/periods are done)
                     eventEmitter.emit("dashboard widget finished", eventId);
                 }
             }
         })
         .on("dashboard widget lastMonth", function (eventId, locId, err, data) {
             if (eventId == widgetReqId) {
-                if (err) {
-                    res.json({error: err});
-                    locMonthDone = -1;
-                } else {
+                // if there is an error, send the error message to the web browser
+                if (err) res.json({error: err});
+                else {
+                    // otherwise, add the values for previous month to the values for all the locations
                     dataLastMonth['uniqueClients'] += data['uniqueClients'];
                     dataLastMonth['engagedClients'] += data['engagedClients'];
                     dataLastMonth['passersbyClients'] += data['passersbyClients'];
                     dataLastMonth['associatedClients'] += data['associatedClients'];
                     dataLastMonth['unassociatedClients'] += data['unassociatedClients'];
                     locMonthDone++;
+                    // call the last event to send back the data to the web browser (will check if all locations/periods are done)
                     eventEmitter.emit("dashboard widget finished", eventId);
                 }
             }
         })
         .on("dashboard widget lastYear", function (eventId, locId, err, data) {
             if (eventId == widgetReqId) {
-                if (err) {
-                    res.json({error: err});
-                    locYearDone = -1;
-                }
+                // if there is an error, send the error message to the web browser
+                if (err) res.json({error: err});
                 else {
+                    // otherwise, add the values for previous year to the values for all the locations
                     dataLastYear['uniqueClients'] += data['uniqueClients'];
                     dataLastYear['engagedClients'] += data['engagedClients'];
                     dataLastYear['passersbyClients'] += data['passersbyClients'];
                     dataLastYear['associatedClients'] += data['associatedClients'];
                     dataLastYear['unassociatedClients'] += data['unassociatedClients'];
                     locYearDone++;
+                    // call the last event to send back the data to the web browser (will check if all locations/periods are done)
                     eventEmitter.emit("dashboard widget finished", eventId);
                 }
             }
@@ -248,6 +245,7 @@ router.post('/api/update/widgets/', function (req, res, next) {
                     && locWeekDone == locations.length
                     && locMonthDone == locations.length
                     && locYearDone == locations.length) {
+                    // if all locations/periods are done, send back the response to the web browser
                     res.json({
                         error: null,
                         dataNow: dataNow,
@@ -259,12 +257,17 @@ router.post('/api/update/widgets/', function (req, res, next) {
             }
         });
 });
+
+//api call to get the values for the "Best locations by" charts
 router.post("/api/update/widget-best/", function (req, res, next) {
-    var startTime, endTime, locDone, bestLocations, locations, locationsToGet, i;
+    var startTime, endTime, locDone, bestLocations, locations, buildings;
     if (req.body.hasOwnProperty('startTime') && req.body.hasOwnProperty('endTime')) {
+        // retrieve the start time and end time from the POST method
         startTime = new Date(req.body['startTime']);
         endTime = new Date(req.body['endTime']);
 
+        // if the "locations" parameter exists, and is not null, will filter the request based on the locations selected by the user
+        // otherwise takes the "root" folder
         if (req.body.hasOwnProperty("locations")) {
             locations = JSON.parse(req.body['locations']);
             if (locations.length == 0) locations = [req.session.locations.id];
@@ -272,8 +275,10 @@ router.post("/api/update/widget-best/", function (req, res, next) {
 
         locDone = 0;
         bestLocations = {};
-        locationsToGet = Location.getFilteredFloorsId(req.session.locations, locations, "BUILDING");
-        locationsToGet.forEach(function (location){
+        // get the list of buildings
+        buildings = Location.getFilteredFloorsId(req.session.locations, locations, "BUILDING");
+        buildings.forEach(function (location){
+            // for each building, get the data from ACS
             API.clientlocation.clientcount(
                 req.session.vpcUrl,
                 req.session.accessToken,
@@ -282,15 +287,15 @@ router.post("/api/update/widget-best/", function (req, res, next) {
                 startTime.toISOString(),
                 endTime.toISOString(),
                 function (err, data) {
-                    if (err) {
-                        res.json({error: err});
-                        locDone = -1;
-                    }
+                    if (err) res.json({error: err});
                     else {
                         var storeFrontClients, name;
-                        if (data['unassociatedClients'] == 0) storeFrontClients = 0;
-                        else storeFrontClients = ((data['engagedClients']/data['unassociatedClients'])*100).toFixed(0);
+                        // calculate the storefront conversion
+                        if (data['uniqueClients'] == 0) storeFrontClients = 0;
+                        else storeFrontClients = ((data['engagedClients']/data['uniqueClients'])*100).toFixed(0);
+                        // get the location name
                         name = Location.getLocationName(req.session.locations, this.location);
+                        // add each locations to the "bestLocations" dictionary
                         bestLocations[this.location] = {
                             name: name,
                             uniqueClients: data['uniqueClients'],
@@ -301,7 +306,8 @@ router.post("/api/update/widget-best/", function (req, res, next) {
                             storeFrontClients: storeFrontClients
                         };
                         locDone++;
-                        if (locDone == locationsToGet.length) {
+                        // if all the locations are done, will send the response back to the web browser
+                        if (locDone == buildings.length) {
                             res.json({
                                 error: null,
                                 data: {
