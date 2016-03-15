@@ -243,7 +243,12 @@ router.post('/api/location/timeline/', function (req, res, next) {
                             currentData['storefrontClients'] = parseInt(storeFrontClients);
                         });
                         // create an array with all the time values (used for the xAxis on the charts)
-                        timeserie = data['times']["time"];
+                        if (timeserie.length == 0){
+                            data['times'].forEach(function(entry){
+                                timeserie.push(entry['time']);
+                            })
+                        }
+                        //timeserie = data['times']["time"];
                         // add the array of values from this location to the final array
                         dataLocation.push({
                             name: name,
