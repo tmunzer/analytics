@@ -55,28 +55,36 @@ router.post('/api/update/widgets/', function (req, res, next) {
         "engagedClients": 0,
         "passersbyClients": 0,
         "associatedClients": 0,
-        "unassociatedClients": 0
+        "unassociatedClients": 0,
+        "newClients": 0,
+        "returningClients": 0
     };
     var dataLastWeek = {
         "uniqueClients": 0,
         "engagedClients": 0,
         "passersbyClients": 0,
         "associatedClients": 0,
-        "unassociatedClients": 0
+        "unassociatedClients": 0,
+        "newClients": 0,
+        "returningClients": 0
     };
     var dataLastMonth = {
         "uniqueClients": 0,
         "engagedClients": 0,
         "passersbyClients": 0,
         "associatedClients": 0,
-        "unassociatedClients": 0
+        "unassociatedClients": 0,
+        "newClients": 0,
+        "returningClients": 0
     };
     var dataLastYear = {
         "uniqueClients": 0,
         "engagedClients": 0,
         "passersbyClients": 0,
         "associatedClients": 0,
-        "unassociatedClients": 0
+        "unassociatedClients": 0,
+        "newClients": 0,
+        "returningClients": 0
     };
     if (req.body.hasOwnProperty('startTime') && req.body.hasOwnProperty('endTime')) {
         // retrieve the start time and end time from the POST method
@@ -182,6 +190,8 @@ router.post('/api/update/widgets/', function (req, res, next) {
                 dataNow['passersbyClients'] += data['passersbyClients'];
                 dataNow['associatedClients'] += data['associatedClients'];
                 dataNow['unassociatedClients'] += data['unassociatedClients'];
+                dataNow['newClients'] += data['newClients'];
+                dataNow['returningClients'] += data['returningClients'];
                 locNowDone++;
                 // call the last event to send back the data to the web browser (will check if all locations/periods are done)
                 eventEmitter.emit("dashboard widget finished", eventId);
@@ -199,6 +209,8 @@ router.post('/api/update/widgets/', function (req, res, next) {
                     dataLastWeek['passersbyClients'] += data['passersbyClients'];
                     dataLastWeek['associatedClients'] += data['associatedClients'];
                     dataLastWeek['unassociatedClients'] += data['unassociatedClients'];
+                    dataLastWeek['newClients'] += data['newClients'];
+                    dataLastWeek['returningClients'] += data['returningClients'];
                     locWeekDone++;
                     // call the last event to send back the data to the web browser (will check if all locations/periods are done)
                     eventEmitter.emit("dashboard widget finished", eventId);
@@ -216,6 +228,8 @@ router.post('/api/update/widgets/', function (req, res, next) {
                     dataLastMonth['passersbyClients'] += data['passersbyClients'];
                     dataLastMonth['associatedClients'] += data['associatedClients'];
                     dataLastMonth['unassociatedClients'] += data['unassociatedClients'];
+                    dataLastMonth['newClients'] += data['newClients'];
+                    dataLastMonth['returningClients'] += data['returningClients'];
                     locMonthDone++;
                     // call the last event to send back the data to the web browser (will check if all locations/periods are done)
                     eventEmitter.emit("dashboard widget finished", eventId);
@@ -233,6 +247,8 @@ router.post('/api/update/widgets/', function (req, res, next) {
                     dataLastYear['passersbyClients'] += data['passersbyClients'];
                     dataLastYear['associatedClients'] += data['associatedClients'];
                     dataLastYear['unassociatedClients'] += data['unassociatedClients'];
+                    dataLastYear['newClients'] += data['newClients'];
+                    dataLastYear['returningClients'] += data['returningClients'];
                     locYearDone++;
                     // call the last event to send back the data to the web browser (will check if all locations/periods are done)
                     eventEmitter.emit("dashboard widget finished", eventId);
@@ -303,6 +319,8 @@ router.post("/api/update/widget-best/", function (req, res, next) {
                             passersbyClients: data['passersbyClients'],
                             associatedClients: data['associatedClients'],
                             unassociatedClients: data['unassociatedClients'],
+                            newClients: data['newClients'],
+                            returningClients: data['returningClients'],
                             storeFrontClients: storeFrontClients
                         };
                         locDone++;

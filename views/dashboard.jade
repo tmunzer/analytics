@@ -163,4 +163,52 @@ block content
                                         span.num-indicator.widget-number(id="engagedYear")
                                         span.num-label.tagBlockTitle.widget-info Previous Year
 
+        div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
+            div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
+                div.widget-loading.topApplicationGroup(style="height: 300px;")
+                    div.widget-content
+                        div.widget-label
+                            span.widget-block
+                            span.widget-label-title New Clients
+                        div.clearfix(id="newClientsEmpty")
+                            div(style="text-align: center; line-height: 250px;")= waiting
+                        div.entity-loading-widget(id="newClientsLoading" style="display:none;")
+                        div(id="newClientsData" style="display:none")
+                            div.column.grid_4.first(style="position: relative;display: inline-flex;")
+                                div.grid_4.column(style="height: 250px;" id="newClientsChart")
+                                div.column.grid_4.last
+                                    div.topAppGroupTitle Progress Compared to
+                                    div.usageSection.widget-section
+                                        span.num-indicator.widget-number(id="newClientsWeek")
+                                        span.num-label.tagBlockTitle.widget-info Previous Week
+                                    div.usageSection.widget-section
+                                        span.num-indicator.widget-number(id="newClientsMonth")
+                                        span.num-label.tagBlockTitle.widget-info Previous Month
+                                    div.usageSection.widget-section
+                                        span.num-indicator.widget-number(id="newClientsYear")
+                                        span.num-label.tagBlockTitle.widget-info Previous Year
 
+        div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
+            div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
+                div.widget-loading.topApplicationGroup(style="height: 300px;")
+                    div.widget-content
+                        div.widget-label
+                            span.widget-block
+                            span.widget-label-title Returning Clients
+                        div.clearfix(id="returningClientsEmpty")
+                            div(style="text-align: center; line-height: 250px;")= waiting
+                        div.entity-loading-widget(id="returningClientsLoading" style="display:none;")
+                        div(id="returningClientsData" style="display:none")
+                            div.column.grid_4.first(style="position: relative;display: inline-flex;")
+                                div.grid_4.column(style="height: 250px;" id="returningClientsChart")
+                                div.column.grid_4.last
+                                    div.topAppGroupTitle Progress Compared to
+                                    div.usageSection.widget-section
+                                        span.num-indicator.widget-number(id="returningClientsWeek")
+                                        span.num-label.tagBlockTitle.widget-info Previous Week
+                                    div.usageSection.widget-section
+                                        span.num-indicator.widget-number(id="returningClientsMonth")
+                                        span.num-label.tagBlockTitle.widget-info Previous Month
+                                    div.usageSection.widget-section
+                                        span.num-indicator.widget-number(id="returningClientsYear")
+                                        span.num-label.tagBlockTitle.widget-info Previous Year
