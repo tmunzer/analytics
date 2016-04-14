@@ -1,4 +1,4 @@
-//move this file to ./bin/ah_api/config
+//move this file to ./bin/aerohive/config
 
 module.exports.redirectUrl = "put_here_your_redirectURL/conf/api/reg";
 module.exports.secret = "put_here_your_secret";
