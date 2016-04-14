@@ -1,5 +1,5 @@
 //move this file to ./bin/aerohive/config
 
-module.exports.redirectUrl = "put_here_your_redirectURL/conf/api/reg";
+module.exports.redirectUrl = "put_here_your_redirectURL";
 module.exports.secret = "put_here_your_secret";
 module.exports.clientId = "put_here_your_clientID";
