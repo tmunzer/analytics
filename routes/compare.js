@@ -124,7 +124,9 @@ router.post('/api/location/polar/', function (req, res, next) {
                         engagedClients: data['engagedClients'],
                         passersbyClients: data['passersbyClients'],
                         associatedClients: data['associatedClients'],
-                        unassociatedClients: data['unassociatedClients']
+                        unassociatedClients: data['unassociatedClients'],
+                        newClients: data['newClients'],
+                        returningClients: data['returningClients']
                     };
                     // store the result
                     locResult.push(result);
@@ -146,7 +148,9 @@ router.post('/api/location/polar/', function (req, res, next) {
                             engagedClients: parseInt((data['engagedClients'] / numLoc).toFixed(0)),
                             passersbyClients: parseInt((data['passersbyClients'] / numLoc).toFixed(0)),
                             associatedClients: parseInt((data['associatedClients'] / numLoc).toFixed(0)),
-                            unassociatedClients: parseInt((data['unassociatedClients'] / numLoc).toFixed(0))
+                            unassociatedClients: parseInt((data['unassociatedClients'] / numLoc).toFixed(0)),
+                            newClients: parseInt((data['newClients'] / numLoc).toFixed(0)),
+                            returningClients: parseInt((data['returningClients'] / numLoc).toFixed(0))
 
                         };
                         averageDone = true;

@@ -11,6 +11,7 @@ function updatePolarAndBars() {
         showLoading("storefrontBar");
         showLoading("wifiBar");
         showLoading("uniqueBar");
+        showLoading("loyaltyBar");
 
         locationPolarReq = new Date().getTime();
         $.ajax({
@@ -34,6 +35,8 @@ function updatePolarAndBars() {
                 var uniqueBars = [];
                 var associatedBars = [];
                 var unassociatedBars = [];
+                var newBars = [];
+                var returningdBars = [];
                 var storeFrontClients;
                 var bestLocations;
                 dataLocation = data.dataLocation;
@@ -42,7 +45,9 @@ function updatePolarAndBars() {
                     data.dataAverage['engagedClients'],
                     data.dataAverage['passersbyClients'],
                     data.dataAverage['associatedClients'],
-                    data.dataAverage['unassociatedClients']
+                    data.dataAverage['unassociatedClients'],
+                    data.dataAverage['newClients'],
+                    data.dataAverage['returningClients']
                 ];
                 if (data.dataAverage['uniqueClients'] == 0) storeFrontClients = 0;
                 else storeFrontClients = ((data.dataAverage['engagedClients']/data.dataAverage['uniqueClients'])*100).toFixed(0);
@@ -78,6 +83,18 @@ function updatePolarAndBars() {
                         bestValue: null,
                         worst: "",
                         worstValue: null
+                    },
+                    new: {
+                        best: "",
+                        bestValue: null,
+                        worst: "",
+                        worstValue: null
+                    },
+                    returning: {
+                        best: "",
+                        bestValue: null,
+                        worst: "",
+                        worstValue: null
                     }
                 };
                 dataLocation.forEach(function(currentLocation){
@@ -86,7 +103,9 @@ function updatePolarAndBars() {
                         currentLocation['engagedClients'],
                         currentLocation['passersbyClients'],
                         currentLocation['associatedClients'],
-                        currentLocation['unassociatedClients']
+                        currentLocation['unassociatedClients'],
+                        currentLocation['newClients'],
+                        currentLocation['returningClients']
                     ];
 
                     series.push({
@@ -106,6 +125,8 @@ function updatePolarAndBars() {
                     uniqueBars.push(currentLocation['uniqueClients']);
                     associatedBars.push(currentLocation['associatedClients']);
                     unassociatedBars.push(currentLocation['unassociatedClients']);
+                    newBars.push(currentLocation['newClients']);
+                    returningdBars.push(currentLocation['returningClients']);
 
                     if (bestLocations.storefront.bestValue == null || bestLocations.storefront.bestValue < parseInt(storeFrontClients)){
                         bestLocations.storefront.bestValue = parseInt(storeFrontClients);
@@ -135,6 +156,20 @@ function updatePolarAndBars() {
                         bestLocations.wifi.worstValue = currentLocation['associatedClients'];
                         bestLocations.wifi.worst = currentLocation.name;
                     }
+                    if (bestLocations.wifi.bestValue == null || bestLocations.wifi.bestValue < currentLocation['associatedClients']){
+                        bestLocations.wifi.bestValue = currentLocation['associatedClients'];
+                        bestLocations.wifi.best = currentLocation.name;
+                    } else if (bestLocations.wifi.worstValue == null || bestLocations.wifi.worstValue > currentLocation['associatedClients']) {
+                        bestLocations.wifi.worstValue = currentLocation['associatedClients'];
+                        bestLocations.wifi.worst = currentLocation.name;
+                    }
+                    if (bestLocations.new.bestValue == null || bestLocations.new.bestValue < currentLocation['newClients']){
+                        bestLocations.new.bestValue = currentLocation['newClients'];
+                        bestLocations.new.best = currentLocation.name;
+                    } else if (bestLocations.returning.worstValue == null || bestLocations.returning.worstValue > currentLocation['returningClients']) {
+                        bestLocations.returning.worstValue = currentLocation['returningClients'];
+                        bestLocations.returning.worst = currentLocation.name;
+                    }
                 });
                 console.log(bestLocations);
                 $("#storefrontBest").html(bestLocations.storefront.best);
@@ -145,6 +180,10 @@ function updatePolarAndBars() {
                 $("#visitorsWorst").html(bestLocations.visitors.worst);
                 $("#wifiBest").html(bestLocations.wifi.best);
                 $("#wifiWorst").html(bestLocations.wifi.worst);
+                $("#newBest").html(bestLocations.new.best);
+                $("#newWorst").html(bestLocations.new.worst);
+                $("#returningBest").html(bestLocations.returning.best);
+                $("#returningWorst").html(bestLocations.returning.worst);
 
                 var uniqueClients = [{
                     name: 'Engaged Clients',
@@ -160,6 +199,13 @@ function updatePolarAndBars() {
                     name: 'Unassociated Clients',
                     data: unassociatedBars
                 }];
+                var loyaltyClients = [{
+                    name: 'New Clients',
+                    data: newBars
+                }, {
+                    name: "Returning Clients",
+                    data: returningdBars
+                }];
 
                 displayLocationPole('polarChart', "", series);
                 showData("polar");
@@ -170,10 +216,11 @@ function updatePolarAndBars() {
                 displayStackedBarChart("uniqueBarChart", "", locationsSeries, uniqueClients);
                 showData("uniqueBar");
 
-
                 displayStackedBarChart("wifiBarChart", "", locationsSeries, wifiClients);
                 showData("wifiBar");
 
+                displayStackedBarChart("loyaltyBarChart", "", locationsSeries, loyaltyClients);
+                showData("loyaltyBar");
             }
         })
     }
@@ -201,7 +248,7 @@ function displayLocationPole(containerId, title, series) {
 
         xAxis: {
             categories: ['uniqueClients', 'engagedClients', 'passersbyClients', 'associatedClients',
-                'unassociatedClients', 'storeFrontClients'],
+                'unassociatedClients', 'newClients', 'returningClients'],
             tickmarkPlacement: 'on',
             lineWidth: 0
         },

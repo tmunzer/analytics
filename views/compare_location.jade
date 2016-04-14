@@ -58,24 +58,9 @@ block content
                                         div.column.grid_16(style="position: relative;display: inline-flex;")
                                             div.grid_16(style="height: 250px;" id="polarChart")
 
-                    // Best locations by
-                    div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
-                        div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
-                            div.widget-loading.topApplicationGroup(style="height: 300px;")
-                                div.widget-content
-                                    div.widget-label.clearfix
-                                        span.widget-block
-                                        span.widget-label-title Storefront Conversion
-                                    div.clearfix(id="storefrontBarEmpty")
-                                        div(style="text-align: center; line-height: 250px;")= waiting
-                                    div.entity-loading-widget(id="storefrontBarLoading" style="display:none;")
-                                    div(id="storefrontBarData" style="display:none")
-                                        div.column.grid_8(style="position: relative;display: inline-flex;")
-                                            div.grid_8(style="height: 250px;" id="storefrontBarChart")
-
                     // STORE FRONT CONVERSION BARS
-                    div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
-                        div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
+                    div.dojoDndItem.column.grid_16.dashboard-item(style="margin-right: 33px;height: 300px!important;")
+                        div.dashboard-widget.dojoDndHandle.grid_16(style="float:left;margin-right:10px;")
                             div.widget-loading.topApplicationGroup(style="height: 300px;")
                                 div.widget-content
                                     div.widget-label.clearfix
@@ -85,11 +70,11 @@ block content
                                         div(style="text-align: center; line-height: 250px;")= waiting
                                     div.entity-loading-widget(id="bestLocationLoading" style="display:none;")
                                     div(id="bestLocationData" )
-                                        div.column.grid_8(style="position: relative;display: inline-flex;")
+                                        div.column.grid_16(style="position: relative;display: inline-flex;")
                                             div.column.grid_8
                                                 div.usageSection.widget-section.bestLoc
                                                     span.num-label.tagBlockTitle.widget-info(style="width: 40%; float: left;") StoreFront Conversion
-                                                    span.num-indicator.widget-number(id="storeFrontWeek" style="width: 60%;")
+                                                    span.num-indicator.widget-number(style="width: 60%;")
                                                         div.compare
                                                             span.compare(style="color: green;") Best:
                                                             span.compare(id="storefrontBest")
@@ -98,7 +83,7 @@ block content
                                                             span.compare(id="storefrontWorst")
                                                 div.usageSection.widget-section.bestLoc
                                                     span.num-label.tagBlockTitle.widget-info(style="width: 40%; float: left;") Passers By
-                                                    span.num-indicator.widget-number(id="storeFrontMonth" style="width: 60%;")
+                                                    span.num-indicator.widget-number(style="width: 60%;")
                                                         div.compare
                                                             span.compare(style="color: green;") Best:
                                                             span.compare(id="passersByBest")
@@ -107,16 +92,35 @@ block content
                                                             span.compare(id="passersByWorst")
                                                 div.usageSection.widget-section.bestLoc
                                                     span.num-label.tagBlockTitle.widget-info(style="width: 40%; float: left;") Visitors
-                                                    span.num-indicator.widget-number(id="storeFrontYear" style="width: 60%;")
+                                                    span.num-indicator.widget-number(style="width: 60%;")
                                                         div.compare
                                                             span.compare(style="color: green;") Best:
                                                             span.compare(id="visitorsBest")
                                                         div.compare
                                                             span.compare(style="color: red;") Worst:
                                                             span.compare(id="visitorsWorst")
+                                            div.column.grid_8
+                                                div.usageSection.widget-section.bestLoc
+                                                    span.num-label.tagBlockTitle.widget-info(style="width: 40%; float: left;") New Clients
+                                                    span.num-indicator.widget-number(style="width: 60%;")
+                                                        div.compare
+                                                            span.compare(style="color: green;") Best:
+                                                            span.compare(id="newBest")
+                                                        div.compare
+                                                            span.compare(style="color: red;") Worst:
+                                                            span.compare(id="newWorst")
+                                                div.usageSection.widget-section.bestLoc
+                                                    span.num-label.tagBlockTitle.widget-info(style="width: 40%; float: left;") Returning Clients
+                                                    span.num-indicator.widget-number(style="width: 60%;")
+                                                        div.compare
+                                                            span.compare(style="color: green;") Best:
+                                                            span.compare(id="returningBest")
+                                                        div.compare
+                                                            span.compare(style="color: red;") Worst:
+                                                            span.compare(id="returningWorst")
                                                 div.usageSection.widget-section.bestLoc
                                                     span.num-label.tagBlockTitle.widget-info(style="width: 40%; float: left;") Wi-Fi Connections
-                                                    span.num-indicator.widget-number(id="storeFrontYear" style="width: 60%;")
+                                                    span.num-indicator.widget-number(style="width: 60%;")
                                                         div.compare
                                                             span.compare(style="color: green;") Best:
                                                             span.compare(id="wifiBest")
@@ -124,6 +128,34 @@ block content
                                                             span.compare(style="color: red;") Worst:
                                                             span.compare(id="wifiWorst")
 
+                    // Best locations by
+                    div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
+                       div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
+                           div.widget-loading.topApplicationGroup(style="height: 300px;")
+                               div.widget-content
+                                   div.widget-label.clearfix
+                                       span.widget-block
+                                       span.widget-label-title Storefront Conversion
+                                   div.clearfix(id="storefrontBarEmpty")
+                                       div(style="text-align: center; line-height: 250px;")= waiting
+                                   div.entity-loading-widget(id="storefrontBarLoading" style="display:none;")
+                                   div(id="storefrontBarData" style="display:none")
+                                       div.column.grid_8(style="position: relative;display: inline-flex;")
+                                           div.grid_8(style="height: 250px;" id="storefrontBarChart")
+                    // NEW/RETURNING CLIENTS PER LOCATION
+                    div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
+                        div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
+                            div.widget-loading.topApplicationGroup(style="height: 300px;")
+                                div.widget-content
+                                    div.widget-label
+                                        span.widget-block
+                                        span.widget-label-title Loyalty
+                                    div.clearfix(id="loyaltyBarEmpty")
+                                        div(style="text-align: center; line-height: 250px;")= waiting
+                                    div.entity-loading-widget(id="loyaltyBarLoading" style="display:none;")
+                                    div(id="loyaltyBarData" style="display:none")
+                                        div.column.grid_8(style="position: relative;display: inline-flex;")
+                                            div.grid_8(style="height: 250px;" id="loyaltyBarChart")
                     // UNIQUE CLIENTS PER LOCATION
                     div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
                         div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
@@ -203,6 +235,30 @@ block content
                                         div(style="text-align: center; line-height: 250px;")= waiting
                                     div.entity-loading-widget(id="uniqueLoading" style="display:none;")
                                     div(id="uniqueData" style="display:none;")
+                    // NEW CLIENTS CONVERSION OVER TIME
+                    div.dojoDndItem.column.grid_16.dashboard-item(style="margin-right: 33px;height: 400px!important;")
+                        div.dashboard-widget.dojoDndHandle
+                            div.widget-loading.topApplicationGroup
+                                div.widget-content
+                                    div.widget-label.clearfix
+                                        span.widget-block
+                                        span.widget-label-title Number of New Clients over time
+                                    div.clearfix(id="newEmpty")
+                                        div(style="text-align: center; line-height: 250px;")= waiting
+                                    div.entity-loading-widget(id="newLoading" style="display:none;")
+                                    div(id="newData" style="display:none;")
+                    // RETURNING CLIENTS CONVERSION OVER TIME
+                    div.dojoDndItem.column.grid_16.dashboard-item(style="margin-right: 33px;height: 400px!important;")
+                        div.dashboard-widget.dojoDndHandle
+                            div.widget-loading.topApplicationGroup
+                                div.widget-content
+                                    div.widget-label.clearfix
+                                        span.widget-block
+                                        span.widget-label-title Number of Returning Clients over time
+                                    div.clearfix(id="returningEmpty")
+                                        div(style="text-align: center; line-height: 250px;")= waiting
+                                    div.entity-loading-widget(id="returningLoading" style="display:none;")
+                                    div(id="returningData" style="display:none;")
                     // ASSOCIATED CLIENTS CONVERSION OVER TIME
                     div.dojoDndItem.column.grid_16.dashboard-item(style="margin-right: 33px;height: 400px!important;")
                         div.dashboard-widget.dojoDndHandle

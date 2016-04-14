@@ -1,0 +1,7 @@
+
+//module.exports.redirectUrl = "https://127.0.0.1:3443/conf/api/reg";
+//module.exports.secret = "30d58fb77a55ea5593c396cae8b93f94";
+//module.exports.clientId = "f4d129a2";
+module.exports.redirectUrl = "https://hm1.wiconnect.fr/conf/api/reg";
+module.exports.secret = "a22499bb512f93948f0c3ab195a083d4";
+module.exports.clientId = "ada4b3cf";

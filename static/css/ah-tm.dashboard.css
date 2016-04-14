@@ -9,11 +9,13 @@ body {
 
 .dropdown button {
     width: 100px;
-    border: 1px solid #5897FB;
+    border: none;
     padding: 0.5em 0.5em 0.2em 18px;
-    background-color: #799EB7;
+    background-color: #28B463;
     color: #FFF;
     margin-top: 0.34em;
+    border-radius: 0 5px 0 0;
+    transition:all .2s ease-in-out;
 }
 
 .dropdown.large button,
@@ -23,7 +25,9 @@ body {
 }
 
 .dropdown button:hover {
-    background-color: #4C7D99;
+    background-color: #2ECC71;
+    box-shadow: 0 0 1px 1px rgba(100,100,100,0.5) inset;
+    transition:all .2s ease-in-out;
 }
 
 .dropdown {
@@ -33,6 +37,7 @@ body {
 ul.dropdown-menu.medium,
 .dropdown.medium {
     width: 200px !important;
+
 }
 .dropdown.tree button,
 ul.dropdown-menu.tree,
@@ -40,7 +45,7 @@ ul.dropdown-menu.tree,
     width: 196px !important;
 }
 .dropdown.tree {
-    height: 35px;
+    height: 34px;
 }
 
 .dropdown.large button,
@@ -92,7 +97,7 @@ ul.dropdown-menu {
 .dropdown-menu > li:hover,
 .dropdown-menu > li:hover > i,
 .dropdown-menu > li:hover > div > i{
-    background-color: #4C7D99;
+    background-color: #28B463;
     color: #FFF;
     cursor: pointer;
 }
@@ -188,7 +193,7 @@ span.dashboard-span{
     position: relative;
     text-decoration: underline;
     cursor: pointer;
-    color: #73D5D8;
+    color: #2ECC71;
 }
 .dashboard-card {
     width: 45% !important;
@@ -218,10 +223,10 @@ span.dashboard-span{
 span.widget-label-title {
     font-size: 16px !important;
     text-transform: uppercase !important;
-    color: #000 !important;
+    color: #fff !important;
     border-bottom: 1px solid #DDD !important;
     margin-bottom: 5px !important;
-    background: #f0f0f4 !important;
+    background: #2C3E50 !important;
     height: 35px !important;
     width: 90% !important;
     text-align: left !important;
