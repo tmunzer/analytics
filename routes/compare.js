@@ -321,7 +321,9 @@ router.post("/api/period/polar/", function (req, res, next) {
                 "engagedClients": 0,
                 "passersbyClients": 0,
                 "associatedClients": 0,
-                "unassociatedClients": 0
+                "unassociatedClients": 0,
+                "newClients": 0,
+                "returningClients": 0
             }];
             for (i = 1; i <= 7; i++) {
                 // calculate the start/end dates (initial -1 day, -2 days, ...)
@@ -336,7 +338,9 @@ router.post("/api/period/polar/", function (req, res, next) {
                     "engagedClients": 0,
                     "passersbyClients": 0,
                     "associatedClients": 0,
-                    "unassociatedClients": 0
+                    "unassociatedClients": 0,
+                    "newClients": 0,
+                    "returningClients": 0
                 })
             }
         }
@@ -349,7 +353,9 @@ router.post("/api/period/polar/", function (req, res, next) {
                 "engagedClients": 0,
                 "passersbyClients": 0,
                 "associatedClients": 0,
-                "unassociatedClients": 0
+                "unassociatedClients": 0,
+                "newClients": 0,
+                "returningClients": 0
             }];
             for (i = 1; i <= 5; i++) {
                 var startWeek = new Date(startTime);
@@ -362,7 +368,9 @@ router.post("/api/period/polar/", function (req, res, next) {
                     "engagedClients": 0,
                     "passersbyClients": 0,
                     "associatedClients": 0,
-                    "unassociatedClients": 0
+                    "unassociatedClients": 0,
+                    "newClients": 0,
+                    "returningClients": 0
                 })
             }
         }
@@ -375,7 +383,9 @@ router.post("/api/period/polar/", function (req, res, next) {
                 "engagedClients": 0,
                 "passersbyClients": 0,
                 "associatedClients": 0,
-                "unassociatedClients": 0
+                "unassociatedClients": 0,
+                "newClients": 0,
+                "returningClients": 0
             }];
             for (i = 1; i <= 6; i++) {
                 var startMonth = new Date(startTime);
@@ -388,7 +398,9 @@ router.post("/api/period/polar/", function (req, res, next) {
                     "engagedClients": 0,
                     "passersbyClients": 0,
                     "associatedClients": 0,
-                    "unassociatedClients": 0
+                    "unassociatedClients": 0,
+                    "newClients": 0,
+                    "returningClients": 0
                 })
             }
         }
@@ -401,7 +413,9 @@ router.post("/api/period/polar/", function (req, res, next) {
                 "engagedClients": 0,
                 "passersbyClients": 0,
                 "associatedClients": 0,
-                "unassociatedClients": 0
+                "unassociatedClients": 0,
+                "newClients": 0,
+                "returningClients": 0
             }];
             for (i = 1; i <= 2; i++) {
                 var startYear = new Date(startTime);
@@ -414,7 +428,9 @@ router.post("/api/period/polar/", function (req, res, next) {
                     "engagedClients": 0,
                     "passersbyClients": 0,
                     "associatedClients": 0,
-                    "unassociatedClients": 0
+                    "unassociatedClients": 0,
+                    "newClients": 0,
+                    "returningClients": 0
                 })
             }
         }
@@ -446,6 +462,8 @@ router.post("/api/period/polar/", function (req, res, next) {
                             this.currentPeriod['passersbyClients'] += result['passersbyClients'];
                             this.currentPeriod['associatedClients'] += result['associatedClients'];
                             this.currentPeriod['unassociatedClients'] += result['unassociatedClients'];
+                            this.currentPeriod['newClients'] += result['newClients'];
+                            this.currentPeriod['returningClients'] += result['returningClients'];
                             reqDone++;
                             // if all the locations and the periods are done
                             if (reqDone == reqTotal) {
@@ -454,7 +472,9 @@ router.post("/api/period/polar/", function (req, res, next) {
                                     "engagedClients": 0,
                                     "passersbyClients": 0,
                                     "associatedClients": 0,
-                                    "unassociatedClients": 0
+                                    "unassociatedClients": 0,
+                                    "newClients": 0,
+                                    "returningClients": 0
                                 };
                                 // calculate the average over all the periods
                                 reqPeriods.forEach(function(resultPeriod){
@@ -463,12 +483,16 @@ router.post("/api/period/polar/", function (req, res, next) {
                                     dataAverage['passersbyClients'] += resultPeriod['passersbyClients'];
                                     dataAverage['associatedClients'] += resultPeriod['associatedClients'];
                                     dataAverage['unassociatedClients'] += resultPeriod['unassociatedClients'];
+                                    dataAverage['newClients'] += resultPeriod['newClients'];
+                                    dataAverage['returningClients'] += resultPeriod['returningClients'];
                                 });
                                 dataAverage['uniqueClients'] = parseInt((dataAverage['uniqueClients'] / reqPeriods.length).toFixed(0));
                                 dataAverage['engagedClients'] = parseInt((dataAverage['engagedClients'] / reqPeriods.length).toFixed(0));
                                 dataAverage['passersbyClients'] = parseInt((dataAverage['passersbyClients'] / reqPeriods.length).toFixed(0));
                                 dataAverage['associatedClients'] = parseInt((dataAverage['associatedClients'] / reqPeriods.length).toFixed(0));
                                 dataAverage['unassociatedClients'] = parseInt((dataAverage['unassociatedClients'] / reqPeriods.length).toFixed(0));
+                                dataAverage['newClients'] = parseInt((dataAverage['newClients'] / reqPeriods.length).toFixed(0));
+                                dataAverage['returningClients'] = parseInt((dataAverage['returningClients'] / reqPeriods.length).toFixed(0));
                                 // send back the response to the web browser
                                 res.json({
                                     error: null,
@@ -607,6 +631,8 @@ router.post('/api/period/timeline/', function (req, res, next) {
                                     this.currentPeriod["times"][k]['passersbyClients'] += data['times'][k]['passersbyClients'];
                                     this.currentPeriod["times"][k]['associatedClients'] += data['times'][k]['associatedClients'];
                                     this.currentPeriod["times"][k]['unassociatedClients'] += data['times'][k]['unassociatedClients'];
+                                    this.currentPeriod["times"][k]['newClients'] += data['times'][k]['newClients'];
+                                    this.currentPeriod["times"][k]['returningClients'] += data['times'][k]['returningClients'];
                                 }
                             }
                             reqDone++;

@@ -215,7 +215,7 @@ span.dashboard-span{
 
 .entity-timeline-loading {
     min-height: 100px !important;
-    background-image: url(../images/common/loading/grid_loading.gif);
+    background-image: url(../images/common/loading/grid_loading_gray.gif);
     background-position: center center;
     background-repeat: no-repeat;
 }
@@ -244,13 +244,13 @@ li.location {
 
 .entity-loading {
     min-height: 100px !important;
-    background-image: url(../images/common/loading/grid_loading.gif);
+    background-image: url(../images/common/loading/grid_loading_gray.gif);
     background-position: center center;
     background-repeat: no-repeat;
 }
 .entity-loading-widget {
     min-height: 250px !important;
-    background-image: url(../images/common/loading/grid_loading.gif);
+    background-image: url(../images/common/loading/grid_loading_gray.gif);
     background-position: center center;
     background-repeat: no-repeat;
 }

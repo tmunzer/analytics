@@ -413,7 +413,7 @@ a:hover.tooltips .help-tip {
 }
 
 .widget-loading {
-    background-image:url(../images/common/loading/grid_loading.gif);
+    background-image:url(../images/common/loading/grid_loading_gray.gif);
     background-repeat:no-repeat;
     background-position:center center;
     height: 100% !important;
@@ -1986,7 +1986,7 @@ h3.ui-filter-categ-tle,h3.ui-filter-categ-tle:hover {
 }
 .gridloading {
     height:150px;
-    background:#fff url(../images/common/loading/grid_loading.gif) center center no-repeat
+    background:#fff url(../images/common/loading/grid_loading_gray.gif) center center no-repeat
 }
 .grid-mark {
     position:absolute;
@@ -1995,7 +1995,7 @@ h3.ui-filter-categ-tle,h3.ui-filter-categ-tle:hover {
     left:0;
     right:0;
     z-index:12;
-    background:#fff url(../images/common/loading/grid_loading.gif) center center no-repeat;
+    background:#fff url(../images/common/loading/grid_loading_gray.gif) center center no-repeat;
     opacity:.5
 }
 
@@ -9761,7 +9761,7 @@ span.progress-portion:after {
 .DashboardPage .entity-timeline-loading {
     margin-top:-6px;
     min-height:260px;
-    background-image:url(../images/common/loading/grid_loading.gif);
+    background-image:url(../images/common/loading/grid_loading_gray.gif);
     background-position:center center;
     background-repeat:no-repeat
 }
@@ -17139,7 +17139,7 @@ li.entity-radioset-cur:hover {
 }
 .entity-timeline-loading {
     min-height:260px;
-    background-image:url(../images/common/loading/grid_loading.gif);
+    background-image:url(../images/common/loading/grid_loading_gray.gif);
     background-position:center center;
     background-repeat:no-repeat
 }
@@ -17938,7 +17938,7 @@ li.entity-radioset-cur:hover {
 }
 .enitity-search-loading {
     height:50px;
-    background:#fff url(../images/common/loading/grid_loading.gif) center center no-repeat
+    background:#fff url(../images/common/loading/grid_loading_gray.gif) center center no-repeat
 }
 .enitity-search-small {
     width:235px;

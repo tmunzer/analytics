@@ -37,24 +37,9 @@ block content
                                         div.column.grid_16(style="position: relative;display: inline-flex;")
                                             div.grid_16(style="height: 250px;" id="polarChart")
 
-                    // Best locations by
-                    div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
-                        div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
-                            div.widget-loading.topApplicationGroup(style="height: 300px;")
-                                div.widget-content
-                                    div.widget-label.clearfix
-                                        span.widget-block
-                                        span.widget-label-title Storefront Conversion
-                                    div.clearfix(id="storefrontBarEmpty")
-                                        div(style="text-align: center; line-height: 250px;")= waiting
-                                    div.entity-loading-widget(id="storefrontBarLoading" style="display:none;")
-                                    div(id="storefrontBarData" style="display:none")
-                                        div.column.grid_8(style="position: relative;display: inline-flex;")
-                                            div.grid_8(style="height: 250px;" id="storefrontBarChart")
-
-                    // STORE FRONT CONVERSION BARS
-                    div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
-                        div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
+                    // Compare
+                    div.dojoDndItem.column.grid_16.dashboard-item(style="margin-right: 33px;height: 300px!important;")
+                        div.dashboard-widget.dojoDndHandle.grid_16(style="float:left;margin-right:10px;")
                             div.widget-loading.topApplicationGroup(style="height: 300px;")
                                 div.widget-content
                                     div.widget-label.clearfix
@@ -64,40 +49,95 @@ block content
                                         div(style="text-align: center; line-height: 250px;")= waiting
                                     div.entity-loading-widget(id="tableCompareLoading" style="display:none;")
                                     div(id="tableCompareData" )
-                                        div.column.grid_8(style="position: relative;display: inline-flex;")
-                                            div.column.grid_8(style="height: 250px;" id="tableCompare")
-
-
-                    // UNIQUE CLIENTS PER LOCATION
+                                        div.column.grid_16(style="position: relative;display: inline-flex;")
+                                            div.column.grid_16(style="height: 250px;" id="tableCompare")
+                    // UNIQUE CLIENTS PER LOCATION (%)
                     div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
                         div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
                             div.widget-loading.topApplicationGroup(style="height: 300px;")
                                 div.widget-content
-                                    div.widget-label
+                                    div.widget-label.clearfix
                                         span.widget-block
-                                        span.widget-label-title Unique Clients
-                                    div.clearfix(id="uniqueBarEmpty")
+                                        span.widget-label-title StoreFront Conversion (%)
+                                    div.clearfix(id="visitorsVsEngagedBarEmpty")
                                         div(style="text-align: center; line-height: 250px;")= waiting
-                                    div.entity-loading-widget(id="uniqueBarLoading" style="display:none;")
-                                    div(id="uniqueBarData" style="display:none")
+                                    div.entity-loading-widget(id="visitorsVsEngagedBarLoading" style="display:none;")
+                                    div(id="visitorsVsEngagedBarData" style="display:none")
                                         div.column.grid_8(style="position: relative;display: inline-flex;")
-                                            div.grid_8(style="height: 250px;" id="uniqueBarChart")
-
-                    // ASSOCIATED/UNASSOCIATED CLIENTS PER LOCATION
+                                            div.grid_8(style="height: 250px;" id="visitorsVsEngagedBarChart")
+                    // UNIQUE CLIENTS PER LOCATION (Count)
                     div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
                         div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
                             div.widget-loading.topApplicationGroup(style="height: 300px;")
                                 div.widget-content
                                     div.widget-label
                                         span.widget-block
-                                        span.widget-label-title Wi-Fi Usage
+                                        span.widget-label-title StoreFront Conversion (Clients count)
+                                    div.clearfix(id="visitorsVsEngagedCountBarEmpty")
+                                        div(style="text-align: center; line-height: 250px;")= waiting
+                                    div.entity-loading-widget(id="visitorsVsEngagedCountBarLoading" style="display:none;")
+                                    div(id="visitorsVsEngagedCountBarData" style="display:none")
+                                        div.column.grid_8(style="position: relative;display: inline-flex;")
+                                            div.grid_8(style="height: 250px;" id="visitorsVsEngagedCountBarChart")
+                    // NEW/RETURNING CLIENTS PER LOCATION
+                    div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
+                        div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
+                            div.widget-loading.topApplicationGroup(style="height: 300px;")
+                                div.widget-content
+                                    div.widget-label
+                                        span.widget-block
+                                        span.widget-label-title Loyalty (%)
+                                    div.clearfix(id="loyaltyBarEmpty")
+                                        div(style="text-align: center; line-height: 250px;")= waiting
+                                    div.entity-loading-widget(id="loyaltyBarLoading" style="display:none;")
+                                    div(id="loyaltyBarData" style="display:none")
+                                        div.column.grid_8(style="position: relative;display: inline-flex;")
+                                            div.grid_8(style="height: 250px;" id="loyaltyBarChart")
+                    // NEW/RETURNING CLIENTS PER LOCATION
+                    div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
+                        div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
+                            div.widget-loading.topApplicationGroup(style="height: 300px;")
+                                div.widget-content
+                                    div.widget-label
+                                        span.widget-block
+                                        span.widget-label-title Loyalty (Clients count)
+                                    div.clearfix(id="loyaltyCountBarEmpty")
+                                        div(style="text-align: center; line-height: 250px;")= waiting
+                                    div.entity-loading-widget(id="loyaltyCountBarLoading" style="display:none;")
+                                    div(id="loyaltyCountBarData" style="display:none")
+                                        div.column.grid_8(style="position: relative;display: inline-flex;")
+                                            div.grid_8(style="height: 250px;" id="loyaltyCountBarChart")
+                    // ASSOCIATED/UNASSOCIATED CLIENTS PER LOCATION (%)
+                    div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
+                        div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
+                            div.widget-loading.topApplicationGroup(style="height: 300px;")
+                                div.widget-content
+                                    div.widget-label
+                                        span.widget-block
+                                        span.widget-label-title Wi-Fi Connections (%)
                                     div.clearfix(id="wifiBarEmpty")
                                         div(style="text-align: center; line-height: 250px;")= waiting
                                     div.entity-loading-widget(id="wifiBarLoading" style="display:none;")
                                     div(id="wifiBarData" style="display:none")
                                         div.column.grid_8(style="position: relative;display: inline-flex;")
                                             div.grid_8(style="height: 250px;" id="wifiBarChart")
+                    // ASSOCIATED/UNASSOCIATED CLIENTS PER LOCATION (Count)
+                    div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
+                        div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
+                            div.widget-loading.topApplicationGroup(style="height: 300px;")
+                                div.widget-content
+                                    div.widget-label
+                                        span.widget-block
+                                        span.widget-label-title Wi-Fi Connections (Clients count)
+                                    div.clearfix(id="wifiCountBarEmpty")
+                                        div(style="text-align: center; line-height: 250px;")= waiting
+                                    div.entity-loading-widget(id="wifiCountBarLoading" style="display:none;")
+                                    div(id="wifiCountBarData" style="display:none")
+                                        div.column.grid_8(style="position: relative;display: inline-flex;")
+                                            div.grid_8(style="height: 250px;" id="wifiCountBarChart")
 
+
+                // ************ OVER TIME ************
                 div.ui-tab-panel(id="overTime" style="display: none;")
                     // STORE FRONT CONVERSION OVER TIME
                     div.dojoDndItem.column.grid_16.dashboard-item(style="margin-right: 33px;height: 400px!important;")
@@ -175,9 +215,9 @@ block content
 
 block scriptBelow
     script.
-        function changeTab(tab){
+        function changeTab(tab) {
             $(".ui-tab").removeClass("ui-tab-active").addClass("ui-tab-inactive");
             $(".ui-tab-panel").hide()
-            $("#tab-"+tab).addClass("ui-tab-active").removeClass("ui-tab-inactive");
-            $("#"+tab).show();
+            $("#tab-" + tab).addClass("ui-tab-active").removeClass("ui-tab-inactive");
+            $("#" + tab).show();
         }

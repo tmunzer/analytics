@@ -10,10 +10,16 @@ function updatePeriod() {
     if (endTime - startTime <= 2678400000) {
 
         showLoading("polar");
-        showLoading("storefrontBar");
-        showLoading("wifiBar");
-        showLoading("uniqueBar");
         showLoading("tableCompare");
+
+
+        showLoading("visitorsVsEngagedBar");
+        showLoading("visitorsVsEngagedCountBar");
+        showLoading("wifiBar");
+        showLoading("wifiCountBar");
+        showLoading("loyaltyBar");
+        showLoading("loyaltyCountBar");
+
         periodPolarReq = new Date().getTime();
 
         $.ajax({
@@ -32,12 +38,29 @@ function updatePeriod() {
                 var series = [];
                 var locationsSeries = [];
                 var storefrontBars = [];
+                var storeFrontClients;
+
+                var engagedCountBars = [];
+                var passersByCountBars = [];
                 var engagedBars = [];
                 var passersByBars = [];
-                var uniqueBars = [];
+                var engaged;
+                var passersBy;
+
+                var associatedCountBars = [];
+                var unassociatedCountBars = [];
                 var associatedBars = [];
                 var unassociatedBars = [];
-                var storeFrontClients;
+                var associated;
+                var unassociated;
+
+                var newCountBars = [];
+                var returningCountBars = [];
+                var newBars = [];
+                var returningBars = [];
+                var newClients;
+                var returningClients;
+
 
                 dataPeriod = data.dataPeriod;
                 dataAverage = [
@@ -45,7 +68,9 @@ function updatePeriod() {
                     data.dataAverage['engagedClients'],
                     data.dataAverage['passersbyClients'],
                     data.dataAverage['associatedClients'],
-                    data.dataAverage['unassociatedClients']
+                    data.dataAverage['unassociatedClients'],
+                    data.dataAverage['newClients'],
+                    data.dataAverage['returningClients']
                 ];
                 if (data.dataAverage['uniqueClients'] == 0) storeFrontClients = 0;
                 else storeFrontClients = ((data.dataAverage['engagedClients'] / data.dataAverage['uniqueClients']) * 100).toFixed(0);
@@ -61,11 +86,13 @@ function updatePeriod() {
                 dataPeriod.forEach(function (currentPeriod) {
 
                     var dataChart = [
-                        currentPeriod['uniqueClients'],
-                        currentPeriod['engagedClients'],
-                        currentPeriod['passersbyClients'],
-                        currentPeriod['associatedClients'],
-                        currentPeriod['unassociatedClients']
+                        data.dataAverage['uniqueClients'],
+                        data.dataAverage['engagedClients'],
+                        data.dataAverage['passersbyClients'],
+                        data.dataAverage['associatedClients'],
+                        data.dataAverage['unassociatedClients'],
+                        data.dataAverage['newClients'],
+                        data.dataAverage['returningClients']
                     ];
 
                     series.push({
@@ -75,57 +102,116 @@ function updatePeriod() {
                         pointPlacement: 'on'
                     });
 
-                    if (currentPeriod['uniqueClients'] == 0) storeFrontClients = 0;
-                    else storeFrontClients = ((currentPeriod['engagedClients'] / currentPeriod['uniqueClients']) * 100).toFixed(0);
-                    currentPeriod['storefrontClients'] = storeFrontClients;
+
+
+
+
+                    if (currentPeriod['uniqueClients'] == 0) {
+                        engaged = 0;
+                        passersBy = 0;
+                        associated = 0;
+                        unassociated = 0;
+                        newClients = 0;
+                        returningClients = 0;
+                    }
+                    else {
+                        engaged = ((currentPeriod['engagedClients']/currentPeriod['uniqueClients'])*100).toFixed(0);
+                        passersBy = ((currentPeriod['passersbyClients']/currentPeriod['uniqueClients'])*100).toFixed(0);
+                        associated = ((currentPeriod['associatedClients']/currentPeriod['uniqueClients'])*100).toFixed(0);
+                        unassociated = ((currentPeriod['unassociatedClients']/currentPeriod['uniqueClients'])*100).toFixed(0);
+                        newClients = ((currentPeriod['newClients']/currentPeriod['uniqueClients'])*100).toFixed(0);
+                        returningClients = ((currentPeriod['returningClients']/currentPeriod['uniqueClients'])*100).toFixed(0);
+                    }
 
                     locationsSeries.push(currentPeriod['period']);
-                    storefrontBars.push(parseInt(storeFrontClients));
-                    engagedBars.push(currentPeriod['engagedClients']);
-                    passersByBars.push(currentPeriod['passersbyClients']);
-                    uniqueBars.push(currentPeriod['uniqueClients']);
-                    associatedBars.push(currentPeriod['associatedClients']);
-                    unassociatedBars.push(currentPeriod['unassociatedClients']);
 
+                    engagedBars.push(parseInt(engaged));
+                    passersByBars.push(parseInt(passersBy));
+                    engagedCountBars.push(currentPeriod['engagedClients']);
+                    passersByCountBars.push(currentPeriod['passersbyClients']);
+
+                    associatedBars.push(parseInt(associated));
+                    unassociatedBars.push(parseInt(unassociated));
+                    associatedCountBars.push(currentPeriod['associatedClients']);
+                    unassociatedCountBars.push(currentPeriod['unassociatedClients']);
+
+                    newBars.push(parseInt(newClients));
+                    returningBars.push(parseInt(returningClients));
+                    newCountBars.push(currentPeriod['newClients']);
+                    returningCountBars.push(currentPeriod['returningClients']);
 
                 });
 
-                var uniqueClients = [{
+                var visitorsVsEngaged = [{
                     name: 'Engaged Clients',
                     data: engagedBars
                 }, {
                     name: 'Passers By',
                     data: passersByBars
                 }];
-                var wifiClients = [{
+                var visitorsVsEngagedCount = [{
+                    name: 'Engaged Clients',
+                    data: engagedCountBars
+                }, {
+                    name: 'Passers By',
+                    data: passersByCountBars
+                }];
+                var wifiClients  = [{
                     name: 'Associated Clients',
                     data: associatedBars
                 }, {
                     name: 'Unassociated Clients',
                     data: unassociatedBars
                 }];
+                var wifiClientsCount  = [{
+                    name: 'Associated Clients',
+                    data: associatedCountBars
+                }, {
+                    name: 'Unassociated Clients',
+                    data: unassociatedCountBars
+                }];
+                var loyaltyClients = [{
+                    name: 'New Clients',
+                    data: newBars
+                }, {
+                    name: "Returning Clients",
+                    data: returningBars
+                }];
+                var loyaltyClientsCount = [{
+                    name: 'New Clients',
+                    data: newCountBars
+                }, {
+                    name: "Returning Clients",
+                    data: returningCountBars
+                }];
 
                 displayLocationPole('polarChart', "", series);
                 showData("polar");
 
-                displayBarChart("storefrontBarChart", "", locationsSeries, storefrontBars, true);
-                showData("storefrontBar");
+                displayStackedBarChart("visitorsVsEngagedBarChart", "", locationsSeries, visitorsVsEngaged, true);
+                showData("visitorsVsEngagedBar");
+                displayStackedBarChart("visitorsVsEngagedCountBarChart", "", locationsSeries, visitorsVsEngagedCount);
+                showData("visitorsVsEngagedCountBar");
 
-                displayStackedBarChart("uniqueBarChart", "", locationsSeries, uniqueClients);
-                showData("uniqueBar");
-
-
-                displayStackedBarChart("wifiBarChart", "", locationsSeries, wifiClients);
+                displayStackedBarChart("wifiBarChart", "", locationsSeries, wifiClients, true);
                 showData("wifiBar");
+                displayStackedBarChart("wifiCountBarChart", "", locationsSeries, wifiClientsCount);
+                showData("wifiCountBar");
+
+                displayStackedBarChart("loyaltyBarChart", "", locationsSeries, loyaltyClients, true);
+                showData("loyaltyBar");
+                displayStackedBarChart("loyaltyCountBarChart", "", locationsSeries, loyaltyClientsCount);
+                showData("loyaltyCountBar");
 
                 var htmlString = "<table class='table table-hover'><thead><tr><th></th>";
                 for (var i = 0; i < dataPeriod.length - 1; i++) {
                     htmlString += "<th>" + dataPeriod[i]['period'] + "</th>";
                 }
                 htmlString += "</tr></thead><tbody>";
-                htmlString += "<tr><th>StoreFront Conversion</th>" + getTableRow(dataPeriod, "storefrontClients") + "</tr>";
                 htmlString += "<tr><th>Engaged Clients</th>" + getTableRow(dataPeriod, "engagedClients") + "</tr>";
                 htmlString += "<tr><th>PassersBy Clients</th>" + getTableRow(dataPeriod, "passersbyClients") + "</tr>";
+                htmlString += "<tr><th>New Clients</th>" + getTableRow(dataPeriod, "newClients") + "</tr>";
+                htmlString += "<tr><th>Returning Clients</th>" + getTableRow(dataPeriod, "returningClients") + "</tr>";
                 htmlString += "<tr><th>Associated Clients</th>" + getTableRow(dataPeriod, "associatedClients") + "</tr>";
                 htmlString += "<tr><th>Unassociated Clients</th>" + getTableRow(dataPeriod, "unassociatedClients") + "</tr>";
                 htmlString += "</tbody></table>";
