@@ -1,23 +1,39 @@
-.login-form button {
-    width: 323px;
-    border: 1px solid #5897FB;
-    padding: 1em 1em 1em 18px;
-    background-color: #799EB7;
-    color: #FFF;
+html,body {
+    height:100%;
+    background-color: #2C3E50;
 }
 
+.LoginPage {
+    background-color: #2C3E50;
+}
+
+.login-box {
+    border-radius: 100px 20px;
+}
+
+.login-form button {
+    width: 323px;
+    border: none;
+    padding: 1em 1em 1em 18px;
+    background-color: #28B463;
+    color: #fff;
+    transition:all .2s ease-in-out;
+}
+.login-form button:hover {
+    background-color: #2ECC71;
+    box-shadow: 0 0 1px 1px rgba(100,100,100,0.5) inset;
+    transition:all .2s ease-in-out;
+}
 .login-form input {
     width: 323px !important;
 }
 
-.login-form button:hover {
-    background-color: #4C7D99;
-}
+
 .LoginPage .login-box {
     height: 520px;
 }
 .LoginPage .leftColumn input[type='text'] {
-    color:    #4C7D99 !important;
+    color:    #2C3E50 !important;
 }
 input::-webkit-input-placeholder
 {
@@ -56,6 +72,7 @@ ul.dropdown-menu {
     top: 49px;
     left: 54px;
     width: 323px;
+    border-radius: 0;
 }
 
 .dropdown-menu > li {
@@ -64,7 +81,7 @@ ul.dropdown-menu {
 }
 
 .dropdown-menu > li:hover {
-    background-color: #4C7D99;
+    background-color: #28B463;
     color: #FFF;
     cursor: pointer;
 }

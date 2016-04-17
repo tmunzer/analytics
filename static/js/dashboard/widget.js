@@ -9,6 +9,8 @@ function updateWidgets() {
         showLoading("passersBy");
         showLoading("engaged");
         showLoading("storeFront");
+        showLoading("newClients");
+        showLoading("returningClients");
 
         $.ajax({
             method: 'POST',
@@ -21,12 +23,14 @@ function updateWidgets() {
         }).done(function (data) {
             if (data.error) displayModal("API", data.error);
             else {
-                var dataPassersBy, dataEngaged, dataStoreFront, xAxisData;
+                var dataPassersBy, dataEngaged, dataStoreFront, dataNewClients, dataReturningClients, xAxisData;
                 //less than 1 week
                 if (endTime - startTime <= 604800000) {
                     xAxisData = ['Previous Year', 'Previous Month', 'Previous Week', 'Selected Period'];
                     dataPassersBy = [data.dataLastYear.passersbyClients, data.dataLastMonth.passersbyClients, data.dataLastWeek.passersbyClients, data.dataNow.passersbyClients];
                     dataEngaged = [data.dataLastYear.engagedClients, data.dataLastMonth.engagedClients, data.dataLastWeek.engagedClients, data.dataNow.engagedClients];
+                    dataNewClients = [data.dataLastYear.newClients, data.dataLastMonth.newClients, data.dataLastWeek.newClients, data.dataNow.newClients];
+                    dataReturningClients = [data.dataLastYear.returningClients, data.dataLastMonth.returningClients, data.dataLastWeek.returningClients, data.dataNow.returningClients];
                     dataStoreFront = [
                         getStoreFront(data.dataLastYear.engagedClients, data.dataLastYear.uniqueClients),
                         getStoreFront(data.dataLastMonth.engagedClients, data.dataLastMonth.uniqueClients),
@@ -37,6 +41,8 @@ function updateWidgets() {
                     xAxisData = ['Previous Year', 'Previous Month', 'Selected Period'];
                     dataPassersBy = [data.dataLastYear.passersbyClients, data.dataLastMonth.passersbyClients, data.dataNow.passersbyClients];
                     dataEngaged = [data.dataLastYear.engagedClients, data.dataLastMonth.engagedClients, data.dataNow.engagedClients];
+                    dataNewClients = [data.dataLastYear.newClients, data.dataLastMonth.newClients, data.dataNow.newClients];
+                    dataReturningClients = [data.dataLastYear.returningClients, data.dataLastMonth.returningClients, data.dataNow.returningClients];
                     dataStoreFront = [
                         getStoreFront(data.dataLastYear.engagedClients, data.dataLastYear.uniqueClients),
                         getStoreFront(data.dataLastMonth.engagedClients, data.dataLastMonth.uniqueClients),
@@ -46,6 +52,8 @@ function updateWidgets() {
                     xAxisData = ['Previous Year', 'Selected Period'];
                     dataPassersBy = [data.dataLastYear.passersbyClients, data.dataNow.passersbyClients];
                     dataEngaged = [data.dataLastYear.engagedClients, data.dataNow.engagedClients];
+                    dataNewClients = [data.dataLastYear.newClients, data.dataNow.newClients];
+                    dataReturningClients = [data.dataLastYear.returningClients, data.dataNow.returningClients];
                     dataStoreFront = [
                         getStoreFront(data.dataLastYear.engagedClients, data.dataLastYear.uniqueClients),
                         getStoreFront(data.dataNow.engagedClients, data.dataNow.uniqueClients)
@@ -60,7 +68,6 @@ function updateWidgets() {
 
                 showData("engaged");
                 displayWidgetChart("engagedChart", "Number of Engaged Clients", xAxisData, dataEngaged);
-
                 $("#engagedWeek").html(getHtmlPercentage(data.dataNow.engagedClients, data.dataLastWeek.engagedClients));
                 $("#engagedMonth").html(getHtmlPercentage(data.dataNow.engagedClients, data.dataLastMonth.engagedClients));
                 $("#engagedYear").html(getHtmlPercentage(data.dataNow.engagedClients, data.dataLastYear.engagedClients));
@@ -79,12 +86,27 @@ function updateWidgets() {
                     getStoreFront(data.dataNow.engagedClients, data.dataNow.uniqueClients),
                     getStoreFront(data.dataLastYear.engagedClients, data.dataLastYear.uniqueClients)
                 ));
+
+                showData("newClients");
+                displayWidgetChart("newClientsChart", "Number of New Clients", xAxisData, dataNewClients);
+                $("#newClientsWeek").html(getHtmlPercentage(data.dataNow.newClients, data.dataLastWeek.newClients));
+                $("#newClientsMonth").html(getHtmlPercentage(data.dataNow.newClients, data.dataLastMonth.newClients));
+                $("#newClientsYear").html(getHtmlPercentage(data.dataNow.newClients, data.dataLastYear.newClients));
+
+                showData("returningClients");
+                displayWidgetChart("returningClientsChart", "Number of Returning Clients", xAxisData, dataReturningClients);
+                $("#returningClientsWeek").html(getHtmlPercentage(data.dataNow.returningClients, data.dataLastWeek.returningClients));
+                $("#returningClientsMonth").html(getHtmlPercentage(data.dataNow.returningClients, data.dataLastMonth.returningClients));
+                $("#returningClientsYear").html(getHtmlPercentage(data.dataNow.returningClients, data.dataLastYear.returningClients));
+
             }
         });
     } else {
         showEmpty("passersBy");
         showEmpty("engaged");
         showEmpty("storeFront");
+        showEmpty("newClients");
+        showEmpty("returningClients");
 
     }
 

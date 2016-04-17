@@ -64,13 +64,15 @@ function updateLocationLine() {
         }).done(function (data) {
             if (data.error) displayModal("API", data.error);
             else if (data.reqId == locationLineReq) {
-                var tmpUnique, tmpStorefront, tmpEngaged, tmpPassersBy, tmpAssociated, tmpUnassociated, timeserie;
+                var tmpUnique, tmpStorefront, tmpEngaged, tmpPassersBy, tmpAssociated, tmpUnassociated, tmpNew, tmpReturning, timeserie;
                 var seriesUnique = [];
                 var seriesStorefront = [];
                 var seriesEngaged = [];
                 var seriesPassersBy = [];
                 var seriesAssociated = [];
                 var seriesUnassociated = [];
+                var seriesNew= [];
+                var seriesReturning= [];
                 var timeserie = [];
 
                 data.timeserie.forEach(function(time){
@@ -83,6 +85,8 @@ function updateLocationLine() {
                     tmpPassersBy = [];
                     tmpAssociated = [];
                     tmpUnassociated = [];
+                    tmpNew = [];
+                    tmpReturning = [];
                     currentLocation['data'].forEach(function (currentData){
                         tmpUnique.push(currentData['uniqueClients']);
                         tmpStorefront.push(currentData['storefrontClients']);
@@ -90,6 +94,8 @@ function updateLocationLine() {
                         tmpPassersBy.push(currentData['passersbyClients']);
                         tmpAssociated.push(currentData['associatedClients']);
                         tmpUnassociated.push(currentData['unassociatedClients']);
+                        tmpNew.push(currentData['newClients']);
+                        tmpReturning.push(currentData['returningClients']);
                     });
 
                         seriesUnique.push({
@@ -129,7 +135,19 @@ function updateLocationLine() {
                         marker: {
                             symbol: "circle"
                         }                    });
-                });
+                    seriesNew.push({
+                        name: currentLocation.name,
+                        data: tmpNew,
+                        marker: {
+                            symbol: "circle"
+                        } });
+                    seriesReturning.push({
+                        name: currentLocation.name,
+                        data: tmpReturning,
+                        marker: {
+                            symbol: "circle"
+                        } });
+                    });
                 displayLineChart('uniqueData', timeserie, seriesUnique, format, step);
                 $("#uniqueData").show();
                 $("#uniqueEmpty").hide();
@@ -154,6 +172,14 @@ function updateLocationLine() {
                 $("#unassociatedData").show();
                 $("#unassociatedEmpty").hide();
                 $("#unassociatedLoading").hide();
+                displayLineChart('newData', timeserie, seriesNew, format, step);
+                $("#newData").show();
+                $("#newEmpty").hide();
+                $("#newLoading").hide();
+                displayLineChart('returningData', timeserie, seriesReturning, format, step);
+                $("#returningData").show();
+                $("#returningEmpty").hide();
+                $("#returningLoading").hide();
             }
         })
     }

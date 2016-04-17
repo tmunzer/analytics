@@ -69,14 +69,16 @@ block content
                         div.widget-label.clearfix
                             span.widget-block
                             span.widget-label-title Top 5 Locations By
-                            div.dropdown.medium(style="position: absolute;top: -5px;left: 250px;")
-                                button(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="height: 35px;")
+                            div.dropdown.medium(style="position: absolute;top: -4px;right: 0;")
+                                button(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="height: 34px;")
                                     span.init-text(id="button-bestLocation") Storefront Conversion
                                     span.caret
                                 ul.dropdown-menu.medium(aria-labelledby="button-bestLocation" id="myLoc")
                                     li(onclick="displayBestLocation('associatedClients', 'Associated Clients')") Associated Clients
                                     li(onclick="displayBestLocation('engagedClients', 'Engaged Clients')") Engaged Clients
+                                    li(onclick="displayBestLocation('newClients', 'New Clients')") New Clients
                                     li(onclick="displayBestLocation('passersbyClients', 'Passersby Clients')") Passersby Clients
+                                    li(onclick="displayBestLocation('returningClients', 'Returning Clients')") Returning Clients
                                     li(onclick="displayBestLocation('storeFrontClients', 'Storefront Conversion', true)") Storefront Conversion
                                     li(onclick="displayBestLocation('unassociatedClients', 'Unassociated Clients')") Unassociated Clients
                                     li(onclick="displayBestLocation('uniqueClients', 'Unique Clients')") Unique Clients
@@ -163,4 +165,52 @@ block content
                                         span.num-indicator.widget-number(id="engagedYear")
                                         span.num-label.tagBlockTitle.widget-info Previous Year
 
+        div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
+            div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
+                div.widget-loading.topApplicationGroup(style="height: 300px;")
+                    div.widget-content
+                        div.widget-label
+                            span.widget-block
+                            span.widget-label-title New Clients
+                        div.clearfix(id="newClientsEmpty")
+                            div(style="text-align: center; line-height: 250px;")= waiting
+                        div.entity-loading-widget(id="newClientsLoading" style="display:none;")
+                        div(id="newClientsData" style="display:none")
+                            div.column.grid_4.first(style="position: relative;display: inline-flex;")
+                                div.grid_4.column(style="height: 250px;" id="newClientsChart")
+                                div.column.grid_4.last
+                                    div.topAppGroupTitle Progress Compared to
+                                    div.usageSection.widget-section
+                                        span.num-indicator.widget-number(id="newClientsWeek")
+                                        span.num-label.tagBlockTitle.widget-info Previous Week
+                                    div.usageSection.widget-section
+                                        span.num-indicator.widget-number(id="newClientsMonth")
+                                        span.num-label.tagBlockTitle.widget-info Previous Month
+                                    div.usageSection.widget-section
+                                        span.num-indicator.widget-number(id="newClientsYear")
+                                        span.num-label.tagBlockTitle.widget-info Previous Year
 
+        div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
+            div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
+                div.widget-loading.topApplicationGroup(style="height: 300px;")
+                    div.widget-content
+                        div.widget-label
+                            span.widget-block
+                            span.widget-label-title Returning Clients
+                        div.clearfix(id="returningClientsEmpty")
+                            div(style="text-align: center; line-height: 250px;")= waiting
+                        div.entity-loading-widget(id="returningClientsLoading" style="display:none;")
+                        div(id="returningClientsData" style="display:none")
+                            div.column.grid_4.first(style="position: relative;display: inline-flex;")
+                                div.grid_4.column(style="height: 250px;" id="returningClientsChart")
+                                div.column.grid_4.last
+                                    div.topAppGroupTitle Progress Compared to
+                                    div.usageSection.widget-section
+                                        span.num-indicator.widget-number(id="returningClientsWeek")
+                                        span.num-label.tagBlockTitle.widget-info Previous Week
+                                    div.usageSection.widget-section
+                                        span.num-indicator.widget-number(id="returningClientsMonth")
+                                        span.num-label.tagBlockTitle.widget-info Previous Month
+                                    div.usageSection.widget-section
+                                        span.num-indicator.widget-number(id="returningClientsYear")
+                                        span.num-label.tagBlockTitle.widget-info Previous Year
