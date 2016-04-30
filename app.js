@@ -11,6 +11,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var routes = require('./routes/init');
+var oauth = require('./routes/oauth');
 var dashboard = require('./routes/dashboard');
 var details = require('./routes/details');
 var api = require('./routes/api');
@@ -51,6 +52,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'static')));
 
 app.use('/', routes);
+app.use('oauth', oauth);
 app.use('/dashboard/', dashboard);
 app.use('/details/', details);
 app.use('/api/', api);

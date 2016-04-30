@@ -1,5 +1,7 @@
 var express = require('express');
 var router = express.Router();
+var ApiConf = require(appRoot + "/bin/aerohive/config");
+
 
 /*================================================================
  ROUTES
@@ -9,7 +11,7 @@ var router = express.Router();
  ================================================================*/router.get('/', function(req, res, next) {
   var errorcode;
   if (req.query.hasOwnProperty('errorcode')) errorcode = req.query["errorcode"];
-  res.render('init', { title: 'Analytics' , errorcode: errorcode});
+  res.render('init', { title: 'Analytics' , errorcode: errorcode, client_id: ApiConf.clientId, redirect_uri: ApiConf.redirectUrl });
 });
 router.post('/', function (req, res, next) {
   var ownerIdRegexp = new RegExp("^[0-9]*$");
