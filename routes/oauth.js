@@ -18,7 +18,7 @@ router.get('/reg', function (req, res) {
                     req.session.accessToken = data.data[owner].accessToken;
                 }
                 console.log(req.session);
-                res.redirect('/web-app/');
+                res.redirect('/dashboard/');
             }
         });
     } else Error.render("Unknown error", "conf", req, res);
