@@ -52,7 +52,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'static')));
 
 app.use('/', routes);
-app.use('oauth', oauth);
+app.use('/oauth/', oauth);
 app.use('/dashboard/', dashboard);
 app.use('/details/', details);
 app.use('/api/', api);
