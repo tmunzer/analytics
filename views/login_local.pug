@@ -1,0 +1,53 @@
+doctype html5
+html
+    head
+        title= title
+        meta(name="viewport" content="width=device-width, initial-scale=1")
+
+        script(src="/i18n/login_local/en.js")
+        script(src="/i18n/login_local/fr.js")
+
+        link(rel='stylesheet' href='/css/ah-tm.tags.css')
+        link(rel="stylesheet" href="/bower_components/angular-material/angular-material.min.css")
+        link(rel='stylesheet' href='/css/ah-tm.login.css')
+
+        script(src="/bower_components/angular/angular.min.js")
+        script(src="/bower_components/angular-aria/angular-aria.js")
+        script(src="/bower_components/angular-animate/angular-animate.min.js")
+        script(src="/bower_components/angular-material/angular-material.js")
+        script(src="/bower_components/angular-messages/angular-messages.js")
+        script(src="/bower_components/angular-route/angular-route.min.js")
+        script(src="/bower_components/angular-messages/angular-messages.js")
+        script(src="/bower_components/angular-translate/angular-translate.min.js")
+        script(src="/web-app/ng-sanitize.js")
+        script(src="/web-app/login_local.js")
+
+
+    body(ng-app="login")
+        div(style="border-top: 2px solid rgb(255, 195, 15);" class="user-home-wrap" ng-controller="LoginCtrl")
+        img(src="/images/logo.png" alt="Aerohive" class="ah-logo")
+        div.page-footer
+            span(style="border: none;") © 2016 Aerohive Networks. All Rights Reserved.
+
+
+        div(layout="column" layout-align="center center" layout-gt-sm="row" layout-align-gt-sm="center start")
+
+            div(style="width: 450px;" layout-margin)
+                div.inside(md-whiteframe="5" style="width: 100%" )
+                    md-toolbar
+                        div.md-toolbar-tools
+                            h2(translate="LOGIN.TITLE")
+                    md-content(layout="column" layout-padding)
+                        img(src="/images/logo.png" alt="Aerohive" class="ah-logo" style="text-align:center")
+                        form(id="login" action="/login/" method="post")
+                            md-input-container.md-block.flex-gt-sm
+                                label(for="username" translate="LOGIN.USERNAME")
+                                input(required="required" id="username" name="username" type="text" md-autofocus)
+                            md-input-container.md-block.flex-gt-sm
+                                label(for="password" translate="LOGIN.PASSWORD")
+                                input(required="required" id="password" name="password" type="password")
+                            div(style="float: right")
+                                md-button.md-raised.md-primary(type="submit" translate="LOGIN.LOGIN" aria-label="connect Token")
+
+
+

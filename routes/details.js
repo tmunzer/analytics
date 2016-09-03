@@ -10,9 +10,8 @@ var endpoints = require(appRoot + "/bin/aerohive/api/main");
  DETAILS
  ================================================================*/
 router.get('/', function (req, res, next) {
-    var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
-
-    if (req.session.xapi){
+    if (req.session.xapi) {
+        var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
         res.render('details', {
             title: 'Analytics',
             current_page: 'details',

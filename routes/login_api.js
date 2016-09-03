@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var ApiConf = require("./../config").aerohive;
+var devAccount = require("./../config").aerohive;
 
 
 /*================================================================
@@ -12,7 +12,7 @@ var ApiConf = require("./../config").aerohive;
 router.get('/', function (req, res, next) {
   var errorcode;
   if (req.query.hasOwnProperty('errorcode')) errorcode = req.query["errorcode"];
-  res.render('login', { title: 'Analytics', errorcode: errorcode, client_id: ApiConf.clientId, redirect_uri: ApiConf.redirectUrl });
+  res.render('login_api', { title: 'Analytics', errorcode: errorcode, client_id: devAccount.clientId, redirect_uri: devAccount.redirectUrl });
 });
 router.post('/', function (req, res, next) {
   var ownerIdRegexp = new RegExp("^[0-9]*$");
@@ -39,7 +39,6 @@ router.post('/', function (req, res, next) {
       vpcUrl: req.body["vpcUrl"],
       accessToken: req.body["accessToken"].trim()
     });
-    console.log(req.session.xapi);
     res.redirect('/dashboard/');
   }
 });
