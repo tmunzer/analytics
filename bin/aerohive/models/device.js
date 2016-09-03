@@ -1,5 +1,5 @@
-function Device (apiData) {
-    if ( this instanceof Device ) {
+function Device(apiData) {
+    if (this instanceof Device) {
         this.deviceId = apiData.deviceId;
         this.ownerId = apiData.ownerId;
         this.macAddress = apiData.macAddress;
@@ -18,21 +18,23 @@ function Device (apiData) {
 }
 
 
-function countDevices (deviceList, floorFilter){
+function countDevices(deviceList, floorFilter) {
     var device;
     var result = {
         sensor: 0,
         connected: 0,
         count: 0
     };
-    for (var deviceNum in deviceList){
-        device = deviceList[deviceNum];
-        if (floorFilter == null || floorFilter.length == 0 || floorFilter.indexOf(device.locations) >= 0){
-            result.count ++;
-            if (device.connected) result.connected ++;
-            if (device.presenceOn) result.sensor ++;
+    deviceList.forEach(function (device) {
+        if (device.simType == "REAL") {
+            if (floorFilter == null || floorFilter.length == 0 || floorFilter.indexOf(device.locations) >= 0) {
+                result.count++;
+                if (device.connected) result.connected++;
+                if (device.presenceOn) result.sensor++;
+            }
         }
-    }
+    })
+
     return result;
 }
 

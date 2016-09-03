@@ -21,7 +21,9 @@ var events = require('events');
 global.eventEmitter = new events.EventEmitter();
 
 
+
 var app = express();
+app.use('/bower_components', express.static(appRoot + '/bower_components'));
 
 app.use(session({
     secret: 'Aerohive Analytics Ref APP Secret',
@@ -41,7 +43,7 @@ app.use(session({
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));

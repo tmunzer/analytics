@@ -14,14 +14,13 @@ var Location = require(appRoot + "/bin/aerohive/models/location");
  ================================================================*/
 router.get('/', function (req, res, next) {
     if (req.session.xapi) {
-        console.log(req.session.xapi);
-        console.log(req.session.xapi.current());
+        var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
         res.render('dashboard', {
             title: 'Analytics',
             current_page: 'dashboard',
-            server: req.session.xapi.current().vpcUrl,
-            ownerId: req.session.xapi.current().ownerId,
-            accessToken: req.session.xapi.current().accessToken
+            server: currentApi.vpcUrl,
+            ownerId: currentApi.ownerId,
+            accessToken: currentApi.accessToken
         })
     } else res.redirect("/");
 });
@@ -31,10 +30,12 @@ router.get('/', function (req, res, next) {
  ================================================================*/
 // route called to get the data for the cards at the top of the dashboard
 router.post('/api/update/cards/', function (req, res, next) {
+    var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
+
     var locations = [];
     if (req.body.hasOwnProperty('locations')) locations = JSON.parse(req.body['locations']);
 
-    API.monitor.device.deviceList(req.session.xapi.current(), function (err, devices) {
+    API.monitor.device.deviceList(currentApi, function (err, devices) {
         if (err) res.send(err);
         else {
             // get the list of locationID based on the selection made by the user
@@ -50,6 +51,8 @@ router.post('/api/update/cards/', function (req, res, next) {
 
 // route called to get the values for the charts on the dashboard
 router.post('/api/update/widgets/', function (req, res, next) {
+    var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
+
     var startTime, endTime, locations, locNowDone, locWeekDone, locMonthDone, locYearDone,
         startLastWeek, endLastWeek, startLastMonth, endLastMonth, startLastYear, endLastYear;
     var dataNow = {
@@ -114,7 +117,7 @@ router.post('/api/update/widgets/', function (req, res, next) {
             // get the values for the time range defined by the user
             // once done, call the Event "dashboard widget now"
             API.clientlocation.clientcount.GETwithEE(
-                req.session.xapi.current(),
+                currentApi,
                 location,
                 startTime.toISOString(),
                 endTime.toISOString(),
@@ -129,7 +132,7 @@ router.post('/api/update/widgets/', function (req, res, next) {
                 endLastWeek = new Date(endTime);
                 endLastWeek.setDate(endLastWeek.getDate() - 7);
                 API.clientlocation.clientcount.GETwithEE(
-                    req.session.xapi.current(),
+                    currentApi,
                     location,
                     startLastWeek.toISOString(),
                     endLastWeek.toISOString(),
@@ -146,7 +149,7 @@ router.post('/api/update/widgets/', function (req, res, next) {
                 endLastMonth = new Date(endTime);
                 endLastMonth.setMonth(endLastMonth.getMonth() - 1);
                 API.clientlocation.clientcount.GETwithEE(
-                    req.session.xapi.current(),
+                    currentApi,
                     location,
                     startLastMonth.toISOString(),
                     endLastMonth.toISOString(),
@@ -162,7 +165,7 @@ router.post('/api/update/widgets/', function (req, res, next) {
             endLastYear = new Date(endTime);
             endLastYear.setFullYear(endLastYear.getFullYear() - 1);
             API.clientlocation.clientcount.GETwithEE(
-                req.session.xapi.current(),
+                currentApi,
                 location,
                 startLastYear.toISOString(),
                 endLastYear.toISOString(),
@@ -270,6 +273,8 @@ router.post('/api/update/widgets/', function (req, res, next) {
 
 //api call to get the values for the "Best locations by" charts
 router.post("/api/update/widget-best/", function (req, res, next) {
+    var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
+
     var startTime, endTime, locDone, bestLocations, locations, buildings;
     if (req.body.hasOwnProperty('startTime') && req.body.hasOwnProperty('endTime')) {
         // retrieve the start time and end time from the POST method
@@ -290,7 +295,7 @@ router.post("/api/update/widget-best/", function (req, res, next) {
         buildings.forEach(function (location){
             // for each building, get the data from ACS
             API.clientlocation.clientcount.GET(
-                req.session.xapi.current(),
+                currentApi,
                 location,
                 startTime.toISOString(),
                 endTime.toISOString(),
