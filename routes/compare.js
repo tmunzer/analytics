@@ -13,9 +13,8 @@ var Location = require(appRoot + "/bin/aerohive/models/location");
  ==========================================*/
 // Per location comparison
 router.get('/location/', function (req, res, next) {
-    var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
-
     if (req.session.xapi) {
+        var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
         res.render('compare_location', {
             title: 'Analytics',
             current_page: 'compare',
@@ -28,9 +27,8 @@ router.get('/location/', function (req, res, next) {
 });
 // Per period comparison
 router.get('/period/', function (req, res, next) {
-    var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
-
     if (req.session.xapi) {
+        var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
         res.render('compare_period', {
             title: 'Analytics',
             current_page: 'compare',

@@ -14,11 +14,11 @@ doctype html5
 html
     head
         title= title
-        script(language="JavaScript" type="text/javascript" src='/js/jquery-2.1.1.min.js')
+        script(language="JavaScript" type="text/javascript" src='/bower_components/jquery/dist/jquery.min.js')
         script(language="JavaScript" type="text/javascript" src='/js/highstock.js')
         link(rel='stylesheet' href='/css/font-awesome.min.css')
-        script(language="JavaScript" type="text/javascript" src='/js/bootstrap.min.js')
-        link(rel='stylesheet' href='/css/bootstrap.min.css')
+        script(language="JavaScript" type="text/javascript" src="/bower_components/bootstrap/dist/js/bootstrap.min.js")
+        link(rel='stylesheet' href='/bower_components/bootstrap/dist/css/bootstrap.min.css')
         link(rel='stylesheet' href='/css/ah-tm.dashboard.css')
         link(rel='stylesheet' href='/css/ah-tm.input.css')
         link(rel='stylesheet' href='/css/ah-tm.dropdown.css')
@@ -41,7 +41,7 @@ html
                 h4.modal-title(id="modalLabel" style="text-transform: capitalize") Modal title
             div.modal-body(id="modalBody")
             div.modal-footer(id="modalFooter" style="position: absolute; bottom: 0px; width: 100%;")
-        div.modal.fade.bs-example-modal-lg(id="modalAD" tabindex="-1" role="dialog" aria-labelledby="modalLabelAD" style="height: 200px;")
+        div.modal.fade.bs-example-modal-lg(id="modalAD" tabindex="-1" role="dialog" aria-labelledby="modalLabelAD" style="height: 200px;background-color: white;width: 500px;margin: auto")
             div.modal-header
                 h4.modal-title(id="modalLabelAD" style="text-transform: capitalize") Account details
             div.modal-body(id="modalBodyAD")
@@ -66,15 +66,15 @@ html
                     ul.head-nav
                         li(class = dashboard)
                             a(href="/dashboard/")
-                                i.fa.fa-signal.fa-lg
+                                i.fa.fa-home.fa-lg
                                 span Dashboard
                         li(class = compare)
                             a(href="/compare/location/")
-                                i.fa.fa-signal.fa-lg
+                                i.fa.fa-exchange.fa-lg
                                 span Compare
                         li(class = details)
                             a(href="/details/")
-                                i.fa.fa-signal.fa-lg
+                                i.fa.fa-clock-o.fa-lg
                                 span Details
 
                 div.head-button.hdrOptions
@@ -82,11 +82,12 @@ html
                         li.user-list-item-first(onclick="$('#modalAD').modal()") Account Details
                         li
                             a(href="/logout/") Logout
-            div.head-bottom
-                div.sub-tabs
-                    block sub-tabs
+            
         div.clearfix(id="main")
             nav
+                div.head-bottom
+                    div.sub-tabs
+                        block sub-tabs
             div.main-container
                 aside
                     article.grid

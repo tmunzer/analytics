@@ -132,3 +132,16 @@ img {
 }
 
 
+.sub-dashboard > li {
+    display: inline-block;
+    line-height: 50px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+.sub-dashboard .cur, .sub-dashboard .cur a:hover {
+    background-color: #f7f7f7;
+    color: #231f20;
+}
+.sub-dashboard a:hover {
+    color : #f7f7f7;
+}
