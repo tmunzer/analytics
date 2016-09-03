@@ -1,0 +1,7 @@
+//replace the values to match your developper account and move this file to ./config
+
+module.exports.aerohive = {
+    redirectUrl: "https://<server>/oauth/reg",
+    clientSecret: "xxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    clientId: "xxxxxxxxx"
+}

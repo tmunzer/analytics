@@ -1,10 +1,11 @@
 var express = require('express');
 var router = express.Router();
 
-var API = require(appRoot + "/bin/aerohive/api/main");
+var devAccount = require("./../config").aerohive;
+var endpoints = require(appRoot + "/bin/aerohive/api/main");
+
 var Device = require(appRoot + "/bin/aerohive/models/device");
 var Location = require(appRoot + "/bin/aerohive/models/location");
-
 
 /*================================================================
  ROUTES
@@ -35,7 +36,7 @@ router.post('/api/update/cards/', function (req, res, next) {
     var locations = [];
     if (req.body.hasOwnProperty('locations')) locations = JSON.parse(req.body['locations']);
 
-    API.monitor.device.deviceList(currentApi, function (err, devices) {
+    endpoints.monitor.device.getDevices(currentApi, devAccount, function (err, devices) {
         if (err) res.send(err);
         else {
             // get the list of locationID based on the selection made by the user
@@ -44,7 +45,7 @@ router.post('/api/update/cards/', function (req, res, next) {
             var locationsCount = Location.countBuildings(req.session.locations, floorsFilter);
             var devicesCount = Device.countDevices(devices, floorsFilter);
 
-            res.json({error: null, locationsCount: locationsCount, devicesCount: devicesCount});
+            res.json({ error: null, locationsCount: locationsCount, devicesCount: devicesCount });
         }
     });
 });
@@ -112,16 +113,33 @@ router.post('/api/update/widgets/', function (req, res, next) {
         // It is needed because of the use of "Event Emitter" instead of the callback method
         var widgetReqId = new Date().getTime();
 
-        locations.forEach(function (location){
+        locations.forEach(function (location) {
 
             // get the values for the time range defined by the user
             // once done, call the Event "dashboard widget now"
-            API.clientlocation.clientcount.GETwithEE(
+            endpoints.clientlocation.clientcount.GET(
                 currentApi,
+                devAccount,
                 location,
                 startTime.toISOString(),
                 endTime.toISOString(),
-                "dashboard widget now", widgetReqId);
+                function (err, data) {
+                    // if there is an error, send the error message to the web browser
+                    if (err) res.json({ error: err });
+                    else {
+                        // otherwise, add the values for the period of time defined by the user to the values for all the locations
+                        dataNow['uniqueClients'] += data['uniqueClients'];
+                        dataNow['engagedClients'] += data['engagedClients'];
+                        dataNow['passersbyClients'] += data['passersbyClients'];
+                        dataNow['associatedClients'] += data['associatedClients'];
+                        dataNow['unassociatedClients'] += data['unassociatedClients'];
+                        dataNow['newClients'] += data['newClients'];
+                        dataNow['returningClients'] += data['returningClients'];
+                        locNowDone++;
+                        // call the last event to send back the data to the web browser (will check if all locations/periods are done)
+                        end();
+                    }
+                });
 
             // if time range < 1 week, get the value for the previous week
             // once done, call the Event "dashboard widget lastWeek"
@@ -131,13 +149,30 @@ router.post('/api/update/widgets/', function (req, res, next) {
                 startLastWeek.setDate(startLastWeek.getDate() - 7);
                 endLastWeek = new Date(endTime);
                 endLastWeek.setDate(endLastWeek.getDate() - 7);
-                API.clientlocation.clientcount.GETwithEE(
+                endpoints.clientlocation.clientcount.GET(
                     currentApi,
+                    devAccount,
                     location,
                     startLastWeek.toISOString(),
                     endLastWeek.toISOString(),
-                    "dashboard widget lastWeek", widgetReqId);
-            // else, indicate that all the "weeks" are done
+                    function (err, data) {
+                        // if there is an error, send the error message to the web browser
+                        if (err) res.json({ error: err });
+                        else {
+                            // otherwise, add the values for previous week to the values for all the locations
+                            dataLastWeek['uniqueClients'] += data['uniqueClients'];
+                            dataLastWeek['engagedClients'] += data['engagedClients'];
+                            dataLastWeek['passersbyClients'] += data['passersbyClients'];
+                            dataLastWeek['associatedClients'] += data['associatedClients'];
+                            dataLastWeek['unassociatedClients'] += data['unassociatedClients'];
+                            dataLastWeek['newClients'] += data['newClients'];
+                            dataLastWeek['returningClients'] += data['returningClients'];
+                            locWeekDone++;
+                            // call the last event to send back the data to the web browser (will check if all locations/periods are done)
+                            end();
+                        }
+                    });
+                // else, indicate that all the "weeks" are done
             } else locWeekDone = locations.length;
 
             // if time range < 1 month, get the value for the previous week
@@ -148,13 +183,30 @@ router.post('/api/update/widgets/', function (req, res, next) {
                 startLastMonth.setMonth(startLastMonth.getMonth() - 1);
                 endLastMonth = new Date(endTime);
                 endLastMonth.setMonth(endLastMonth.getMonth() - 1);
-                API.clientlocation.clientcount.GETwithEE(
+                endpoints.clientlocation.clientcount.GET(
                     currentApi,
+                    devAccount,
                     location,
                     startLastMonth.toISOString(),
                     endLastMonth.toISOString(),
-                    "dashboard widget lastMonth", widgetReqId);
-            // else, indicate that all the "months" are done
+                    function (err, data) {
+                        // if there is an error, send the error message to the web browser
+                        if (err) res.json({ error: err });
+                        else {
+                            // otherwise, add the values for previous month to the values for all the locations
+                            dataLastMonth['uniqueClients'] += data['uniqueClients'];
+                            dataLastMonth['engagedClients'] += data['engagedClients'];
+                            dataLastMonth['passersbyClients'] += data['passersbyClients'];
+                            dataLastMonth['associatedClients'] += data['associatedClients'];
+                            dataLastMonth['unassociatedClients'] += data['unassociatedClients'];
+                            dataLastMonth['newClients'] += data['newClients'];
+                            dataLastMonth['returningClients'] += data['returningClients'];
+                            locMonthDone++;
+                            // call the last event to send back the data to the web browser (will check if all locations/periods are done)
+                            end();
+                        }
+                    });
+                // else, indicate that all the "months" are done
             } else locMonthDone = locations.length;
 
             // Get the value for the previous Year
@@ -164,111 +216,47 @@ router.post('/api/update/widgets/', function (req, res, next) {
             startLastYear.setFullYear(startLastYear.getFullYear() - 1);
             endLastYear = new Date(endTime);
             endLastYear.setFullYear(endLastYear.getFullYear() - 1);
-            API.clientlocation.clientcount.GETwithEE(
+            endpoints.clientlocation.clientcount.GET(
                 currentApi,
+                devAccount,
                 location,
                 startLastYear.toISOString(),
                 endLastYear.toISOString(),
-                "dashboard widget lastYear", widgetReqId);
+                function (err, data) {
+                    // if there is an error, send the error message to the web browser
+                    if (err) res.json({ error: err });
+                    else {
+                        // otherwise, add the values for previous year to the values for all the locations
+                        dataLastYear['uniqueClients'] += data['uniqueClients'];
+                        dataLastYear['engagedClients'] += data['engagedClients'];
+                        dataLastYear['passersbyClients'] += data['passersbyClients'];
+                        dataLastYear['associatedClients'] += data['associatedClients'];
+                        dataLastYear['unassociatedClients'] += data['unassociatedClients'];
+                        dataLastYear['newClients'] += data['newClients'];
+                        dataLastYear['returningClients'] += data['returningClients'];
+                        locYearDone++;
+                        // call the last event to send back the data to the web browser (will check if all locations/periods are done)
+                        end();
+                    }
+                });
         });
-    } else res.json({error: "missing parameters"});
+    } else res.json({ error: "missing parameters" });
 
-    // here is the list of events
-    eventEmitter
-        // for the period of time defined by the user
-        .on("dashboard widget now", function (eventId, locId, err, data) {
-        if (eventId == widgetReqId) {
-            // if there is an error, send the error message to the web browser
-            if (err) res.json({error: err});
-            else {
-                // otherwise, add the values for the period of time defined by the user to the values for all the locations
-                dataNow['uniqueClients'] += data['uniqueClients'];
-                dataNow['engagedClients'] += data['engagedClients'];
-                dataNow['passersbyClients'] += data['passersbyClients'];
-                dataNow['associatedClients'] += data['associatedClients'];
-                dataNow['unassociatedClients'] += data['unassociatedClients'];
-                dataNow['newClients'] += data['newClients'];
-                dataNow['returningClients'] += data['returningClients'];
-                locNowDone++;
-                // call the last event to send back the data to the web browser (will check if all locations/periods are done)
-                eventEmitter.emit("dashboard widget finished", eventId);
-            }
+    function end() {
+        if (locNowDone == locations.length
+            && locWeekDone == locations.length
+            && locMonthDone == locations.length
+            && locYearDone == locations.length) {
+            // if all locations/periods are done, send back the response to the web browser
+            res.json({
+                error: null,
+                dataNow: dataNow,
+                dataLastWeek: dataLastWeek,
+                dataLastMonth: dataLastMonth,
+                dataLastYear: dataLastYear
+            })
         }
-    })
-        .on("dashboard widget lastWeek", function (eventId, locId, err, data) {
-            if (eventId == widgetReqId) {
-                // if there is an error, send the error message to the web browser
-                if (err) res.json({error: err});
-                else {
-                    // otherwise, add the values for previous week to the values for all the locations
-                    dataLastWeek['uniqueClients'] += data['uniqueClients'];
-                    dataLastWeek['engagedClients'] += data['engagedClients'];
-                    dataLastWeek['passersbyClients'] += data['passersbyClients'];
-                    dataLastWeek['associatedClients'] += data['associatedClients'];
-                    dataLastWeek['unassociatedClients'] += data['unassociatedClients'];
-                    dataLastWeek['newClients'] += data['newClients'];
-                    dataLastWeek['returningClients'] += data['returningClients'];
-                    locWeekDone++;
-                    // call the last event to send back the data to the web browser (will check if all locations/periods are done)
-                    eventEmitter.emit("dashboard widget finished", eventId);
-                }
-            }
-        })
-        .on("dashboard widget lastMonth", function (eventId, locId, err, data) {
-            if (eventId == widgetReqId) {
-                // if there is an error, send the error message to the web browser
-                if (err) res.json({error: err});
-                else {
-                    // otherwise, add the values for previous month to the values for all the locations
-                    dataLastMonth['uniqueClients'] += data['uniqueClients'];
-                    dataLastMonth['engagedClients'] += data['engagedClients'];
-                    dataLastMonth['passersbyClients'] += data['passersbyClients'];
-                    dataLastMonth['associatedClients'] += data['associatedClients'];
-                    dataLastMonth['unassociatedClients'] += data['unassociatedClients'];
-                    dataLastMonth['newClients'] += data['newClients'];
-                    dataLastMonth['returningClients'] += data['returningClients'];
-                    locMonthDone++;
-                    // call the last event to send back the data to the web browser (will check if all locations/periods are done)
-                    eventEmitter.emit("dashboard widget finished", eventId);
-                }
-            }
-        })
-        .on("dashboard widget lastYear", function (eventId, locId, err, data) {
-            if (eventId == widgetReqId) {
-                // if there is an error, send the error message to the web browser
-                if (err) res.json({error: err});
-                else {
-                    // otherwise, add the values for previous year to the values for all the locations
-                    dataLastYear['uniqueClients'] += data['uniqueClients'];
-                    dataLastYear['engagedClients'] += data['engagedClients'];
-                    dataLastYear['passersbyClients'] += data['passersbyClients'];
-                    dataLastYear['associatedClients'] += data['associatedClients'];
-                    dataLastYear['unassociatedClients'] += data['unassociatedClients'];
-                    dataLastYear['newClients'] += data['newClients'];
-                    dataLastYear['returningClients'] += data['returningClients'];
-                    locYearDone++;
-                    // call the last event to send back the data to the web browser (will check if all locations/periods are done)
-                    eventEmitter.emit("dashboard widget finished", eventId);
-                }
-            }
-        })
-        .on("dashboard widget finished", function (eventId) {
-            if (eventId == widgetReqId) {
-                if (locNowDone == locations.length
-                    && locWeekDone == locations.length
-                    && locMonthDone == locations.length
-                    && locYearDone == locations.length) {
-                    // if all locations/periods are done, send back the response to the web browser
-                    res.json({
-                        error: null,
-                        dataNow: dataNow,
-                        dataLastWeek: dataLastWeek,
-                        dataLastMonth: dataLastMonth,
-                        dataLastYear: dataLastYear
-                    })
-                }
-            }
-        });
+    }
 });
 
 //api call to get the values for the "Best locations by" charts
@@ -292,20 +280,21 @@ router.post("/api/update/widget-best/", function (req, res, next) {
         bestLocations = {};
         // get the list of buildings
         buildings = Location.getFilteredFloorsId(req.session.locations, locations, "BUILDING");
-        buildings.forEach(function (location){
+        buildings.forEach(function (location) {
             // for each building, get the data from ACS
-            API.clientlocation.clientcount.GET(
+            endpoints.clientlocation.clientcount.GET(
                 currentApi,
+                devAccount,
                 location,
                 startTime.toISOString(),
                 endTime.toISOString(),
                 function (err, data) {
-                    if (err) res.json({error: err});
+                    if (err) res.json({ error: err });
                     else {
                         var storeFrontClients, name;
                         // calculate the storefront conversion
                         if (data['uniqueClients'] == 0) storeFrontClients = 0;
-                        else storeFrontClients = ((data['engagedClients']/data['uniqueClients'])*100).toFixed(0);
+                        else storeFrontClients = ((data['engagedClients'] / data['uniqueClients']) * 100).toFixed(0);
                         // get the location name
                         name = Location.getLocationName(req.session.locations, this.location);
                         // add each locations to the "bestLocations" dictionary
@@ -331,9 +320,9 @@ router.post("/api/update/widget-best/", function (req, res, next) {
                             })
                         }
                     }
-                }.bind({location: location}));
+                }.bind({ location: location }));
 
         });
-    } else res.json({error: "missing parameters"});
+    } else res.json({ error: "missing parameters" });
 });
 module.exports = router;

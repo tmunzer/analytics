@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
-var API = require(appRoot + "/bin/aerohive/api/main");
+var devAccount = require("./../config").aerohive;
+var endpoints = require(appRoot + "/bin/aerohive/api/main");
 /*================================================================
  ROUTES
  ================================================================*/
@@ -30,7 +31,7 @@ router.get('/', function (req, res, next) {
 router.post('/api/init/', function (req, res, next) {
     var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
 
-    API.configuration.location.getLocations(currentApi, function (err, locations) {
+    endpoints.configuration.location.getLocations(currentApi, devAccount, function (err, locations) {
         if (err) res.send(err);
         else {
             req.session.locations = locations;
@@ -72,8 +73,9 @@ router.post('/api/clienttimeseries/', function (req, res, next) {
 
         locations.forEach(function (location) {
             // retrieve the data from the ACS for every selected location
-            API.clientlocation.clienttimeseries.GET(
+            endpoints.clientlocation.clienttimeseries.GET(
                 currentApi,
+                devAccount, 
                 location,
                 startTime.toISOString(),
                 endTime.toISOString(),

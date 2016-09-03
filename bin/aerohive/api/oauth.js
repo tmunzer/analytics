@@ -1,16 +1,23 @@
 var https = require('https');
 
-
-module.exports.getPermanentToken = function(authCode, redirectUrl, secret, clientId, callback){
+/**
+ * HTTP GET Request
+ * @param {String} authCode - Code sent by ACS during OAuth process
+ * @param {Object} devAccount - information about the Aerohive developper account to user
+ * @param {String} devAccount.clientID - Aerohive Developper Account ClientID
+ * @param {String} devAccount.clientSecret - Aerohive Developper Account secret
+ * @param {String} devAccount.redirectURL - Aerohive Developper Account redirectURL
+ *  */
+module.exports.getPermanentToken = function(authCode, devAccount, callback){
     var options = {
         host: 'cloud.aerohive.com',
         port: 443,
-        path: '/services/acct/thirdparty/accesstoken?authCode='+authCode+'&redirectUri='+redirectUrl,
+        path: '/services/acct/thirdparty/accesstoken?authCode='+authCode+'&redirectUri='+devAccount.redirectURL,
         method: 'POST',
         headers: {
-            'X-AH-API-CLIENT-SECRET' : secret,
-            'X-AH-API-CLIENT-ID':clientId,
-            'X-AH-API-CLIENT-REDIRECT-URI': redirectUrl
+            'X-AH-API-CLIENT-SECRET' : devAccount.clientSecret,
+            'X-AH-API-CLIENT-ID': devAccount.clientID,
+            'X-AH-API-CLIENT-REDIRECT-URI': devAccount.redirectURL
         }
     };
 

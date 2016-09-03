@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
-var API = require(appRoot + "/bin/aerohive/api/main");
+var devAccount = require("./../config").aerohive;
+var endpoints = require(appRoot + "/bin/aerohive/api/main");
 var Device = require(appRoot + "/bin/aerohive/models/device");
 var Location = require(appRoot + "/bin/aerohive/models/location");
 
@@ -83,97 +84,83 @@ router.post('/api/location/polar/', function (req, res, next) {
         // It is needed because of the use of "Event Emitter" instead of the callback method
         var reqId = new Date().getTime();
 
-        locations.forEach(function(location){
+        locations.forEach(function (location) {
             // for each location get the number of clients for each location
             // once done, will go to the Event "compare location polar location" below
-            API.clientlocation.clientcount.GETwithEE(
+            endpoints.clientlocation.clientcount.GET(
                 currentApi,
+                devAccount,
                 location,
                 startTime.toISOString(),
                 endTime.toISOString(),
-                "compare location polar location",
-                reqId
+                function (err, data) {
+                    if (err) res.json({ error: err });
+                    else {
+                        // get the name of the location based on the locationID
+                        var name = Location.getLocationName(req.session.locations, location);
+                        var result = {
+                            locationId: location,
+                            name: name,
+                            uniqueClients: data['uniqueClients'],
+                            engagedClients: data['engagedClients'],
+                            passersbyClients: data['passersbyClients'],
+                            associatedClients: data['associatedClients'],
+                            unassociatedClients: data['unassociatedClients'],
+                            newClients: data['newClients'],
+                            returningClients: data['returningClients']
+                        };
+                        // store the result
+                        locResult.push(result);
+                        locDone++;
+                    }
+                    // got to the event "compare location polar finished"
+                    end();
+                }
             );
         });
         // get the number of clients for the NG account. This will be used to get the average number of clients
         // once done, will go to the Event "compare location polar average" below
-        API.clientlocation.clientcount.GETwithEE(
+        endpoints.clientlocation.clientcount.GET(
             currentApi,
+            devAccount,
             req.session.locations.id,
             startTime.toISOString(),
             endTime.toISOString(),
-            "compare location polar average",
-            reqId
+            function (err, data) {
+                // if there is an error: send the error message to the web browser
+                if (err) res.json({ error: err });
+                else {
+                    // for each number, divided it by the number of locations to get the average
+                    dataAverage = {
+                        uniqueClients: parseInt((data['uniqueClients'] / numLoc).toFixed(0)),
+                        engagedClients: parseInt((data['engagedClients'] / numLoc).toFixed(0)),
+                        passersbyClients: parseInt((data['passersbyClients'] / numLoc).toFixed(0)),
+                        associatedClients: parseInt((data['associatedClients'] / numLoc).toFixed(0)),
+                        unassociatedClients: parseInt((data['unassociatedClients'] / numLoc).toFixed(0)),
+                        newClients: parseInt((data['newClients'] / numLoc).toFixed(0)),
+                        returningClients: parseInt((data['returningClients'] / numLoc).toFixed(0))
+
+                    };
+                    averageDone = true;
+                }
+                // got to the event "compare location poloar finished"
+                end();
+            }
         );
 
-        // here is the list of events
-        eventEmitter
-            // "compare location polar location" is called after each API call to get the number of clients from a specific location
-            .on("compare location polar location", function (eventId, locId, err, data) {
-            // validate that this request is sent from this same function call
-            if (eventId == reqId) {
-                // if there is an error, send the error message to the web browser
-                if (err) res.json({error: err});
-                else {
-                    // get the name of the location based on the locationID
-                    var name = Location.getLocationName(req.session.locations, locId);
-                    var result = {
-                        locationId: locId,
-                        name: name,
-                        uniqueClients: data['uniqueClients'],
-                        engagedClients: data['engagedClients'],
-                        passersbyClients: data['passersbyClients'],
-                        associatedClients: data['associatedClients'],
-                        unassociatedClients: data['unassociatedClients'],
-                        newClients: data['newClients'],
-                        returningClients: data['returningClients']
-                    };
-                    // store the result
-                    locResult.push(result);
-                    locDone++;
-                }
-                // got to the event "compare location polar finished"
-                eventEmitter.emit("compare location polar finished", eventId);
-            }
-        })
-            // "compare loaction polar average" is called after the API call to get the number of clients for the whole NG account
-            .on("compare location polar average", function (eventId, locId, err, data) {
-                if (eventId == reqId) {
-                    // if there is an error: send the error message to the web browser
-                    if (err) res.json({error: err});
-                    else {
-                        // for each number, divided it by the number of locations to get the average
-                        dataAverage = {
-                            uniqueClients: parseInt((data['uniqueClients'] / numLoc).toFixed(0)),
-                            engagedClients: parseInt((data['engagedClients'] / numLoc).toFixed(0)),
-                            passersbyClients: parseInt((data['passersbyClients'] / numLoc).toFixed(0)),
-                            associatedClients: parseInt((data['associatedClients'] / numLoc).toFixed(0)),
-                            unassociatedClients: parseInt((data['unassociatedClients'] / numLoc).toFixed(0)),
-                            newClients: parseInt((data['newClients'] / numLoc).toFixed(0)),
-                            returningClients: parseInt((data['returningClients'] / numLoc).toFixed(0))
 
-                        };
-                        averageDone = true;
-                    }
-                    // got to the event "compare location poloar finished"
-                    eventEmitter.emit("compare location polar finished", eventId);
-                }
-            })
-            // "compare location polar finished
-            .on("compare location polar finished", function (eventId) {
-                if (eventId == reqId) {
-                    // check if all locations are done, and if the average is done
-                    if (locDone == locations.length && averageDone) {
-                        // send back the response to the web browser
-                        res.json({
-                            error: null,
-                            dataLocation: locResult,
-                            dataAverage: dataAverage,
-                            reqId: polarReq
-                        })
-                    }
-                }
-            });
+        function end() {
+            // check if all locations are done, and if the average is done
+            if (locDone == locations.length && averageDone) {
+                // send back the response to the web browser
+                res.json({
+                    error: null,
+                    dataLocation: locResult,
+                    dataAverage: dataAverage,
+                    reqId: polarReq
+                })
+            }
+        }
     }
 });
 
@@ -215,31 +202,24 @@ router.post('/api/location/timeline/', function (req, res, next) {
         locDone = 0;
 
 
-        locations.forEach(function(location){
+        locations.forEach(function (location) {
             // for each location get the number of clients for each location
             // once done, will go to the Event "compare location timeline" below
-            API.clientlocation.clienttimeseries.GETwithEE(
+            endpoints.clientlocation.clienttimeseries.GET(
                 currentApi,
+                devAccount,
                 location,
                 startTime.toISOString(),
                 endTime.toISOString(),
                 timeUnit,
-                "compare location timeline",
-                reqId);
-        });
-
-        // here is the list of events
-        eventEmitter
-            // "compare location timeline" is called after each ACS API call
-            .on("compare location timeline", function (eventId, locId, err, data) {
-                if (eventId == reqId) {
+                function (err, data) {
                     // if there is an error, send the error message to the web browser
-                    if (err) res.json({error: err});
+                    if (err) res.json({ error: err });
                     else {
                         var storeFrontClients, name;
                         // get the name of the location based on the locationID
-                        name = Location.getLocationName(req.session.locations, locId);
-                        data["times"].forEach(function (currentData){
+                        name = Location.getLocationName(req.session.locations, location);
+                        data["times"].forEach(function (currentData) {
                             // for each "time" entry, calculate the storefront conversion
                             if (currentData['uniqueClients'] == 0) storeFrontClients = 0;
                             else storeFrontClients = ((currentData['engagedClients'] / currentData['uniqueClients']) * 100).toFixed(0);
@@ -247,8 +227,8 @@ router.post('/api/location/timeline/', function (req, res, next) {
                             currentData['storefrontClients'] = parseInt(storeFrontClients);
                         });
                         // create an array with all the time values (used for the xAxis on the charts)
-                        if (timeserie.length == 0){
-                            data['times'].forEach(function(entry){
+                        if (timeserie.length == 0) {
+                            data['times'].forEach(function (entry) {
                                 timeserie.push(entry['time']);
                             })
                         }
@@ -261,23 +241,21 @@ router.post('/api/location/timeline/', function (req, res, next) {
                         locDone++;
                     }
                     // call the "compare location timeline finished" event
-                    eventEmitter.emit("compare location timeline finished", eventId);
+                    end();
+                });
+            function end() {
+                // if all the locations are done, send back the response to the web browser
+                if (locDone == locations.length) {
+                    res.json({
+                        error: null,
+                        timeserie: timeserie,
+                        dataLocation: dataLocation,
+                        reqId: timelineReq
+                    })
                 }
-            })
-            .on("compare location timeline finished", function (eventId) {
-                if (eventId == reqId) {
-                    // if all the locations are done, send back the response to the web browser
-                    if (locDone == locations.length) {
-                        res.json({
-                            error: null,
-                            timeserie: timeserie,
-                            dataLocation: dataLocation,
-                            reqId: timelineReq
-                        })
-                    }
-                }
-            });
-    } else res.json({error: "missing parameters"});
+            }
+        });
+    } else res.json({ error: "missing parameters" });
 });
 
 /*================================================================
@@ -442,18 +420,19 @@ router.post("/api/period/polar/", function (req, res, next) {
         // this will be used to validate that all the requests are done
         var reqTotal = locations.length * reqPeriods.length;
 
-        locations.forEach(function(location){
+        locations.forEach(function (location) {
             // loop over all the locations selected
-            reqPeriods.forEach(function(currentPeriod){
+            reqPeriods.forEach(function (currentPeriod) {
                 // loop over all the period defined above (number of periods is depending on the time range)
-                API.clientlocation.clientcount.GET(
+                endpoints.clientlocation.clientcount.GET(
                     currentApi,
+                    devAccount,
                     location,
                     currentPeriod['start'].toISOString(),
                     currentPeriod['end'].toISOString(),
                     function (err, result) {
                         // if there is an error, send the error message to the web browser
-                        if (err) res.json({error: err});
+                        if (err) res.json({ error: err });
                         else {
                             // add the values from this location to the value for this period of time
                             // the result is, for each period of time, the number of clients over all the selected locations
@@ -477,7 +456,7 @@ router.post("/api/period/polar/", function (req, res, next) {
                                     "returningClients": 0
                                 };
                                 // calculate the average over all the periods
-                                reqPeriods.forEach(function(resultPeriod){
+                                reqPeriods.forEach(function (resultPeriod) {
                                     dataAverage['uniqueClients'] += resultPeriod['uniqueClients'];
                                     dataAverage['engagedClients'] += resultPeriod['engagedClients'];
                                     dataAverage['passersbyClients'] += resultPeriod['passersbyClients'];
@@ -502,12 +481,12 @@ router.post("/api/period/polar/", function (req, res, next) {
                                 })
                             }
                         }
-                    }.bind({currentPeriod: currentPeriod}));
+                    }.bind({ currentPeriod: currentPeriod }));
             });
         });
-        }
+    }
     else
-        res.json({error: "missing parameters"});
+        res.json({ error: "missing parameters" });
 });
 
 // route to get the "Over Time" charts
@@ -554,19 +533,19 @@ router.post('/api/period/timeline/', function (req, res, next) {
         // The number of entries and the values of each of them depends on the time range
         // if the time range is less than one day
         if (range <= oneDay) {
-            reqPeriods = [{period: 'Today', start: startTime, end: endTime, times: null}];
+            reqPeriods = [{ period: 'Today', start: startTime, end: endTime, times: null }];
             for (i = 1; i <= 7; i++) {
                 var startDay = new Date(startTime);
                 startDay.setDate(startDay.getDate() - i);
                 var endDay = new Date(endTime);
                 endDay.setDate(endDay.getDate() - i);
-                reqPeriods.unshift({period: 'Day -' + i, start: startDay, end: endDay, times: null})
+                reqPeriods.unshift({ period: 'Day -' + i, start: startDay, end: endDay, times: null })
             }
         }
         // define the array of periods to compare.
         // same as above, but range difference is 1 week
         else if (range <= oneWeek) {
-            reqPeriods = [{period: 'This Week', start: startTime, end: endTime, times: null}];
+            reqPeriods = [{ period: 'This Week', start: startTime, end: endTime, times: null }];
             for (i = 1; i <= 5; i++) {
                 var startWeek = new Date(startTime);
                 startWeek.setDate(startWeek.getDate() - i * 7);
@@ -580,25 +559,25 @@ router.post('/api/period/timeline/', function (req, res, next) {
         // define the array of periods to compare.
         // but range difference is 1 month
         else if (range <= oneMonth) {
-            reqPeriods = [{period: 'This Month', start: startTime, end: endTime, times: null}];
+            reqPeriods = [{ period: 'This Month', start: startTime, end: endTime, times: null }];
             for (i = 1; i <= 6; i++) {
                 var startMonth = new Date(startTime);
                 startMonth.setMonth(startMonth.getMonth() - i);
                 var endMonth = new Date(endTime);
                 endMonth.setMonth(endMonth.getMonth() - i);
-                reqPeriods.unshift({period: 'Month -' + i, start: startMonth, end: endMonth, times: null})
+                reqPeriods.unshift({ period: 'Month -' + i, start: startMonth, end: endMonth, times: null })
             }
         }
         // define the array of periods to compare.
         // same as above, but range difference is 1 year
         else {
-            reqPeriods = [{period: 'This Year', start: startTime, end: endTime, times: null}];
+            reqPeriods = [{ period: 'This Year', start: startTime, end: endTime, times: null }];
             for (i = 1; i <= 2; i++) {
                 var startYear = new Date(startTime);
                 startYear.setFullYear(startYear.getFullYear() - i);
                 var endYear = new Date(endTime);
                 endYear.setFullYear(endYear.getFullYear() - i);
-                reqPeriods.unshift({period: 'Month -' + i, start: startYear, end: endYear, times: null})
+                reqPeriods.unshift({ period: 'Month -' + i, start: startYear, end: endYear, times: null })
             }
         }
 
@@ -607,19 +586,20 @@ router.post('/api/period/timeline/', function (req, res, next) {
         // this will be used to validate that all the requests are done
         var reqTotal = locations.length * reqPeriods.length;
 
-        locations.forEach(function(location){
+        locations.forEach(function (location) {
             // loop over all the selected locations
-            reqPeriods.forEach(function(currentPeriod){
+            reqPeriods.forEach(function (currentPeriod) {
                 // loop over all the defined periods
-                API.clientlocation.clienttimeseries.GET(
+                endpoints.clientlocation.clienttimeseries.GET(
                     currentApi,
+                    devAccount,
                     location,
                     currentPeriod['start'].toISOString(),
                     currentPeriod['end'].toISOString(),
                     timeUnit,
                     function (err, data) {
                         // if there is an error, send the error message to the web browser
-                        if (err) res.json({error: err});
+                        if (err) res.json({ error: err });
                         else {
                             // if it is the first location done for this period of time, set the values
                             if (this.currentPeriod['times'] == null) this.currentPeriod["times"] = data['times'];
@@ -639,8 +619,8 @@ router.post('/api/period/timeline/', function (req, res, next) {
                             // if all the periods and all the locations are done
                             if (reqDone == reqTotal) {
                                 var storeFrontClients;
-                                reqPeriods.forEach(function (currentPeriod){
-                                    currentPeriod['times'].forEach(function (currentData){
+                                reqPeriods.forEach(function (currentPeriod) {
+                                    currentPeriod['times'].forEach(function (currentData) {
                                         // generate the "timeserie" array for the xAxis
                                         timeserie.push(currentData['time']);
                                         // calculate and add the storefront conversion to the entry
@@ -658,9 +638,9 @@ router.post('/api/period/timeline/', function (req, res, next) {
                                 })
                             }
                         }
-                    }.bind({currentPeriod: currentPeriod}));
+                    }.bind({ currentPeriod: currentPeriod }));
             });
         });
-    } else res.json({error: "missing parameters"});
+    } else res.json({ error: "missing parameters" });
 });
 module.exports = router;

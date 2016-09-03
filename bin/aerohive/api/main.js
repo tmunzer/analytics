@@ -2,43 +2,94 @@
 
 module.exports.configuration = {
     location: {
-        getLocationsFromNode: require(appRoot + "/bin/aerohive/api/configuration/location/location").getLocationsFromNode,
-        getLocations: require(appRoot + "/bin/aerohive/api/configuration/location/location").getLocations
+        /**
+ * Exposes the Location Folder Hierarchy that a customer uses to associate non-geographic location information with an Access Point/Device.
+ * @param {Object} xapi - API credentials
+ * @param {String} xapi.vpcUrl - ACS server to request
+ * @param {String} xapi.ownerId - ACS ownerId
+ * @param {String} xapi.accessToken - ACS accessToken
+ * @param {Object} devAccount - information about the Aerohive developper account to user
+ * @param {String} devAccount.clientID - Aerohive Developper Account ClientID
+ * @param {String} devAccount.clientSecret - Aerohive Developper Account secret
+ * @param {String} devAccount.redirectURL - Aerohive Developper Account redirectURL
+ *  */
+        getLocations: require("./configuration/location/location").GET
+    },
+    locationNode: {
+        /**
+ * Allows one to retrieve a Location Folder node anywhere within the hierarchy.
+ * @param {Object} xapi - API credentials
+ * @param {String} xapi.vpcUrl - ACS server to request
+ * @param {String} xapi.ownerId - ACS ownerId
+ * @param {String} xapi.accessToken - ACS accessToken
+ * @param {String} folderId - The id of the desired Location folder
+ * @param {Object} devAccount - information about the Aerohive developper account to user
+ * @param {String} devAccount.clientID - Aerohive Developper Account ClientID
+ * @param {String} devAccount.clientSecret - Aerohive Developper Account secret
+ * @param {String} devAccount.redirectURL - Aerohive Developper Account redirectURL
+ *  */
+        getLocation: require("./configuration/location/locationNode").GET
     }
 };
 
 module.exports.monitor = {
     device: {
-        deviceList: require(appRoot + "/bin/aerohive/api/monitor/device").deviceList
+        getDevices: require("./monitor/device").GET
     },
     client: {
-        clientsList: require(appRoot + "/bin/aerohive/api/monitor/client").clientsList,
-        clientDetails: require(appRoot + "/bin/aerohive/api/monitor/client").clientDetails
+        getClients: require("./monitor/client").clientsList,
+        clientDetails: require("./monitor/client").clientDetails
     }
 };
 
 module.exports.clientlocation = {
     clienttimeseries: {
-        GET: require(appRoot + "/bin/aerohive/api/clientlocation/clienttimeseries").GET,
-        GETwithEE: require(appRoot + "/bin/aerohive/api/clientlocation/clienttimeseries").GETwithEE
-
+        /**
+ * Returns a list of distinct clients during the specified time period broken down by the specified time unit.
+ * @param {Object} xapi - API credentials
+ * @param {String} xapi.vpcUrl - ACS server to request
+ * @param {String} xapi.ownerId - ACS ownerId
+ * @param {String} xapi.accessToken - ACS accessToken
+ * @param {String} location - The location that you'd like to check against.
+ * @param {String} startTime - The start time of the query (ISO-8601 format).
+ * @param {String} endTime - The end time of the query (ISO-8601 format)
+ * @param {String} timeUnit - The time unit by which you want to roll up the returned items.
+ * @param {Object} devAccount - information about the Aerohive developper account to user
+ * @param {String} devAccount.clientID - Aerohive Developper Account ClientID
+ * @param {String} devAccount.clientSecret - Aerohive Developper Account secret
+ * @param {String} devAccount.redirectURL - Aerohive Developper Account redirectURL
+ *  */
+        GET: require("./clientlocation/clienttimeseries").GET,
     },
     clientcount: {
-        GET: require(appRoot + "/bin/aerohive/api/clientlocation/clientcount").GET,
-        GETwithEE: require(appRoot + "/bin/aerohive/api/clientlocation/clientcount").GETwithEE
+        /**
+ * Returns a count of the number of clients seen during the specified time period with a timeUnit of OneHour.
+ * @param {Object} xapi - API credentials
+ * @param {String} xapi.vpcUrl - ACS server to request
+ * @param {String} xapi.ownerId - ACS ownerId
+ * @param {String} xapi.accessToken - ACS accessToken
+ * @param {String} location - The location that you'd like to check against.
+ * @param {String} startTime - The start time of the query (ISO-8601 format).
+ * @param {String} endTime - The end time of the query (ISO-8601 format) 
+ * @param {Object} devAccount - information about the Aerohive developper account to user
+ * @param {String} devAccount.clientID - Aerohive Developper Account ClientID
+ * @param {String} devAccount.clientSecret - Aerohive Developper Account secret
+ * @param {String} devAccount.redirectURL - Aerohive Developper Account redirectURL
+ *  */
+        GET: require("./clientlocation/clientcount").GET,
     }
 };
 
 module.exports.identity = {
     userGroups: {
-        getUserGroups: require(appRoot + "/bin/aerohive/api/identity/userGroups").getUserGroups
+        getUserGroups: require("./identity/userGroups").getUserGroups
     },
     credentials: {
-        getCredentials: require(appRoot + "/bin/aerohive/api/identity/credentials").getCredentials,
-        createCredential: require(appRoot + "/bin/aerohive/api/identity/credentials").createCredential,
-        deleteCredential: require(appRoot + "/bin/aerohive/api/identity/credentials").deleteCredential,
-        deliverCredential: require(appRoot + "/bin/aerohive/api/identity/credentials").deliverCredential,
-        renewCredential: require(appRoot + "/bin/aerohive/api/identity/credentials").renewCredential,
-        updateCredential: require(appRoot + "/bin/aerohive/api/identity/credentials").updateCredential
+        getCredentials: require("./identity/credentials").getCredentials,
+        createCredential: require("./identity/credentials").createCredential,
+        deleteCredential: require("./identity/credentials").deleteCredential,
+        deliverCredential: require("./identity/credentials").deliverCredential,
+        renewCredential: require("./identity/credentials").renewCredential,
+        updateCredential: require("./identity/credentials").updateCredential
     }
 };

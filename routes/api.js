@@ -1,9 +1,11 @@
 var express = require('express');
 var router = express.Router();
-var API = require(appRoot + "/bin/aerohive/api/main");
+
+var devAccount = require("./../config").aerohive;
+var endpoints = require(appRoot + "/bin/aerohive/api/main");
+
 var Device = require(appRoot + "/bin/aerohive/models/device");
 var Location = require(appRoot + "/bin/aerohive/models/location");
-
 /*================================================================
  API
  ================================================================*/
@@ -14,7 +16,7 @@ var Location = require(appRoot + "/bin/aerohive/models/location");
 router.post('/configuration/apLocationFolders/', function(req, res, next) {
     var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
 
-    API.configuration.location.getLocations(currentApi, function(err, locations){
+    endpoints.configuration.location.getLocations(currentApi, devAccount, function(err, locations){
         if (err) res.json({error: err});
         else if (locations == null) res.json(
             {warning: {
@@ -33,7 +35,7 @@ router.post('/configuration/apLocationFolders/', function(req, res, next) {
 router.post('/common/init/', function (req, res, next) {
     var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
 
-    API.configuration.location.getLocations(currentApi, function (err, locations) {
+    endpoints.configuration.location.getLocations(currentApi, devAccount, function (err, locations) {
         if (err) res.json({error: err});
         else if (! locations) res.json(
             {warning: {
@@ -41,7 +43,7 @@ router.post('/common/init/', function (req, res, next) {
                 message:"To be able to get the Presence Analytics Information, you have to configure the Locations on your " +
                 "<a href='cloud.aerohive.com' target='_blank'>HiveManager NG account</a>"
             }});
-        else API.monitor.device.deviceList(currentApi, function (err, devices) {
+        else endpoints.monitor.device.getDevices(currentApi, devAccount, function (err, devices) {
                 if (err) res.json({error: err});
                 else if (!devices) res.json(
                     {
@@ -100,7 +102,7 @@ router.post('/common/timeline/', function (req, res, next) {
 
         // For each location, send the API call
         locations.forEach(function (location){
-            API.clientlocation.clienttimeseries.GET(currentApi, location, startTime.toISOString(), endTime.toISOString(), timeUnit, function (err, result) {
+            endpoints.clientlocation.clienttimeseries.GET(currentApi, devAccount, location, startTime.toISOString(), endTime.toISOString(), timeUnit, function (err, result) {
                 if (err) res.json({error: err});
                 else {
                     // will addition the number of "unique client" from each location to get an overall number of unique clients

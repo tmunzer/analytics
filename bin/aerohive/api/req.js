@@ -1,8 +1,18 @@
 var https = require('https');
-var ApiConf = require(appRoot + "/bin/aerohive/config");
 
-
-module.exports.GET = function (xapi, path, callback) {
+/**
+ * HTTP GET Request
+ * @param {Object} xapi - API credentials
+ * @param {String} xapi.vpcUrl - ACS server to request
+ * @param {String} xapi.ownerId - ACS ownerId
+ * @param {String} xapi.accessToken - ACS accessToken
+ * @param {String} path - path to request the ACS endpoint
+ * @param {Object} devAccount - information about the Aerohive developper account to user
+ * @param {String} devAccount.clientID - Aerohive Developper Account ClientID
+ * @param {String} devAccount.clientSecret - Aerohive Developper Account secret
+ * @param {String} devAccount.redirectURL - Aerohive Developper Account redirectURL
+ *  */
+module.exports.GET = function (xapi, path, devAccount, callback) {
     var rejectUnauthorized = true;
     if (xapi.hasOwnProperty('rejectUnauthorized')) rejectUnauthorized = xapi.rejectUnauthorized;
 
@@ -13,16 +23,28 @@ module.exports.GET = function (xapi, path, callback) {
         path: path,
         method: "GET",
         headers: {
-            'X-AH-API-CLIENT-SECRET': ApiConf.secret,
-            'X-AH-API-CLIENT-ID': ApiConf.clientId,
-            'X-AH-API-CLIENT-REDIRECT-URI': ApiConf.redirectUrl,
+            'X-AH-API-CLIENT-SECRET': devAccount.clientSecret,
+            'X-AH-API-CLIENT-ID': devAccount.clientId,
+            'X-AH-API-CLIENT-REDIRECT-URI': devAccount.redirectUrl,
             'Authorization': "Bearer " + xapi.accessToken
         }
     };
     httpRequest(options, callback);
 };
-
-module.exports.POST = function (xapi, path, data, callback) {
+/**
+ * HTTP POST Request
+ * @param {Object} xapi - API credentials
+ * @param {String} xapi.vpcUrl - ACS server to request
+ * @param {String} xapi.ownerId - ACS ownerId
+ * @param {String} xapi.accessToken - ACS accessToken
+ * @param {String} path - path to request the ACS endpoint
+ * @param {Object} data - data to include to the POST Request
+ * @param {Object} devAccount - information about the Aerohive developper account to user
+ * @param {String} devAccount.clientID - Aerohive Developper Account ClientID
+ * @param {String} devAccount.clientSecret - Aerohive Developper Account secret
+ * @param {String} devAccount.redirectURL - Aerohive Developper Account redirectURL
+ *  */
+module.exports.POST = function (xapi, path, data, devAccount, callback) {
     var rejectUnauthorized = true;
     if (xapi.hasOwnProperty('rejectUnauthorized')) rejectUnauthorized = xapi.rejectUnauthorized;
     var options = {
@@ -32,9 +54,9 @@ module.exports.POST = function (xapi, path, data, callback) {
         path: path,
         method: "POST",
         headers: {
-            'X-AH-API-CLIENT-SECRET': ApiConf.secret,
-            'X-AH-API-CLIENT-ID': ApiConf.clientId,
-            'X-AH-API-CLIENT-REDIRECT-URI': ApiConf.redirectUrl,
+            'X-AH-API-CLIENT-SECRET': devAccount.clientSecret,
+            'X-AH-API-CLIENT-ID': devAccount.clientId,
+            'X-AH-API-CLIENT-REDIRECT-URI': devAccount.redirectUrl,
             'Authorization': "Bearer " + xapi.accessToken,
             'Content-Type': 'application/json'
         }
@@ -42,7 +64,23 @@ module.exports.POST = function (xapi, path, data, callback) {
     var body = JSON.stringify(data);
     httpRequest(options, callback, body);
 };
-module.exports.PUT = function (xapi, path, callback) {
+
+/**
+ * HTTP PUT Request
+ * @param {Object} xapi - API credentials
+ * @param {String} xapi.vpcUrl - ACS server to request
+ * @param {String} xapi.ownerId - ACS ownerId
+ * @param {String} xapi.accessToken - ACS accessToken
+ * @param {String} path - path to request the ACS endpoint
+ * @param {Object} devAccount - information about the Aerohive developper account to user
+ * @param {String} devAccount.clientID - Aerohive Developper Account ClientID
+ * @param {String} devAccount.clientSecret - Aerohive Developper Account secret
+ * @param {String} devAccount.redirectURL - Aerohive Developper Account redirectURL
+ *  */
+module.exports.PUT = function (xapi, path, devAccount, callback) {
+    console.log(xapi);
+    console.log("==");
+    console.log(devAccount);
     var rejectUnauthorized = true;
     if (xapi.hasOwnProperty('rejectUnauthorized')) rejectUnauthorized = xapi.rejectUnauthorized;
     var options = {
@@ -52,16 +90,29 @@ module.exports.PUT = function (xapi, path, callback) {
         path: path,
         method: "PUT",
         headers: {
-            'X-AH-API-CLIENT-SECRET': ApiConf.secret,
-            'X-AH-API-CLIENT-ID': ApiConf.clientId,
-            'X-AH-API-CLIENT-REDIRECT-URI': ApiConf.redirectUrl,
+            'X-AH-API-CLIENT-SECRET': devAccount.clientSecret,
+            'X-AH-API-CLIENT-ID': devAccount.clientId,
+            'X-AH-API-CLIENT-REDIRECT-URI': devAccount.redirectUrl,
             'Authorization': "Bearer " + xapi.accessToken,
             'Content-Type': 'application/json'
         }
     };
     httpRequest(options, callback);
 };
-module.exports.DELETE = function (xapi, path, callback) {
+
+/**
+ * HTTP DELETE Request
+ * @param {Object} xapi - API credentials
+ * @param {String} xapi.vpcUrl - ACS server to request
+ * @param {String} xapi.ownerId - ACS ownerId
+ * @param {String} xapi.accessToken - ACS accessToken
+ * @param {String} path - path to request the ACS endpoint
+ * @param {Object} devAccount - information about the Aerohive developper account to user
+ * @param {String} devAccount.clientID - Aerohive Developper Account ClientID
+ * @param {String} devAccount.clientSecret - Aerohive Developper Account secret
+ * @param {String} devAccount.redirectURL - Aerohive Developper Account redirectURL
+ *  */
+module.exports.DELETE = function (xapi, path, devAccount, callback) {
     var rejectUnauthorized = true;
     if (xapi.hasOwnProperty('rejectUnauthorized')) rejectUnauthorized = xapi.rejectUnauthorized;
     var options = {
@@ -71,9 +122,9 @@ module.exports.DELETE = function (xapi, path, callback) {
         path: path,
         method: "DELETE",
         headers: {
-            'X-AH-API-CLIENT-SECRET': ApiConf.secret,
-            'X-AH-API-CLIENT-ID': ApiConf.clientId,
-            'X-AH-API-CLIENT-REDIRECT-URI': ApiConf.redirectUrl,
+            'X-AH-API-CLIENT-SECRET': devAccount.clientSecret,
+            'X-AH-API-CLIENT-ID': devAccount.clientId,
+            'X-AH-API-CLIENT-REDIRECT-URI': devAccount.redirectUrl,
             'Authorization': "Bearer " + xapi.accessToken
         }
     };
