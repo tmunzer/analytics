@@ -1,0 +1,191 @@
+extends compare
+
+block include
+    script(language="JavaScript" type="text/javascript" src='/js/highcharts-more.js')
+    script(language="JavaScript" type="text/javascript" src='/js/compare/period/periodPolarAndBars.js')
+    script(language="JavaScript" type="text/javascript" src='/js/compare/period/periodLine.js')
+    script(language="JavaScript" type="text/javascript" src='/js/compare/period/update.js')
+    script(language="JavaScript" type="text/javascript" src='/js/compare/period/init.js')
+
+block content
+    -var waiting = "Requesting data from Aerohive Cloud Service..."
+    article.grid_100ps
+         nav
+            div.sub-tab
+                ul.sub-dashboard
+                    li.ui-tab(id="tab-global" class="cur")            
+                        a(href="javascript:void(0)" onclick="changeTab('global')")  
+                            div Global
+                    li.ui-tab(id="tab-overTime" )
+                        a(href="javascript:void(0)" onclick="changeTab('overTime')")  
+                            div Over Time
+    
+    div.ui-tab-panel(id="global")
+        article.grid_100ps
+            div.inside
+                h3 Locations statistics
+                div.clearfix(id="polarEmpty")
+                    div(style="text-align: center; line-height: 250px;")= waiting
+                div.entity-loading-widget(id="polarLoading" style="display:none;")
+                div(id="polarData" style="display:none;")
+                    div(style="position: relative;display: inline-flex;")
+                        div(id="polarChart")
+
+        // Compare
+        article.grid_100ps
+            div.inside
+                h3 Progress compared to other periods
+                div.clearfix(id="tableCompareEmpty")
+                    div(style="text-align: center; line-height: 250px;")= waiting
+                div.entity-loading-widget(id="tableCompareLoading" style="display:none;")
+                div(id="tableCompareData" style="display:none;")
+                    div(style="position: relative;display: inline-flex;")
+                        div(id="tableCompare") 
+                
+        article.grid_100p.grid.grid_fl
+            div.inside
+                h3 StoreFront Conversion
+                div.grid_50p.grid_fl
+                    h3 Percentage
+                    div(id="visitorsVsEngagedBarEmpty")
+                        div(style="text-align: center; line-height: 250px;")= waiting
+                    div.entity-loading-widget(id="visitorsVsEngagedBarLoading" style="display:none;")
+                    div(id="visitorsVsEngagedBarData" style="display:none")
+                        div.grid_8(style="position: relative;display: inline-flex;")
+                            div.grid_8(style="height: 250px;" id="visitorsVsEngagedBarChart")
+                        // UNIQUE CLIENTS PER LOCATION (Count)
+                div.grid_50p.grid_fl
+                    h3 Clients count
+                    div(id="visitorsVsEngagedCountBarEmpty")
+                        div(style="text-align: center; line-height: 250px;")= waiting
+                    div.entity-loading-widget(id="visitorsVsEngagedCountBarLoading" style="display:none;")
+                    div(id="visitorsVsEngagedCountBarData" style="display:none")
+                        div.grid_8(style="position: relative;display: inline-flex;")
+                            div.grid_8(style="height: 250px;" id="visitorsVsEngagedCountBarChart")
+
+        // NEW/RETURNING CLIENTS PER LOCATION
+        article.grid_100p.grid.grid_fl
+            div.inside
+                h3 Loyalty
+                div.grid_50p.grid_fl
+                    h3 Percentage
+                    div.clearfix(id="loyaltyBarEmpty")
+                        div(style="text-align: center; line-height: 250px;")= waiting
+                    div.entity-loading-widget(id="loyaltyBarLoading" style="display:none;")
+                    div.chart-wrapper(id="loyaltyBarData" style="display:none")
+                        div.grid_8(style="position: relative;display: inline-flex;")
+                            div.grid_8(style="height: 250px;" id="loyaltyBarChart")
+                // NEW/RETURNING CLIENTS PER LOCATION
+                div.grid_50p.grid_fl
+                    h3 Clients count
+                    div.clearfix(id="loyaltyCountBarEmpty")
+                        div(style="text-align: center; line-height: 250px;")= waiting
+                    div.entity-loading-widget(id="loyaltyCountBarLoading" style="display:none;")
+                    div(id="loyaltyCountBarData" style="display:none")
+                        div.grid_8(style="position: relative;display: inline-flex;")
+                            div.grid_8(style="height: 250px;" id="loyaltyCountBarChart")
+
+
+        // ASSOCIATED/UNASSOCIATED CLIENTS PER LOCATION (%)
+        article.grid_100p.grid.grid_fl
+            div.inside
+                h3 Wi-Fi Connections
+                div.grid_50p.grid_fl
+                    h3 Percentage
+                    div.clearfix(id="wifiBarEmpty")
+                        div(style="text-align: center; line-height: 250px;")= waiting
+                    div.entity-loading-widget(id="wifiBarLoading" style="display:none;")
+                    div(id="wifiBarData" style="display:none")
+                        div.grid_8(style="position: relative;display: inline-flex;")
+                            div.grid_8(style="height: 250px;" id="wifiBarChart")
+                        // ASSOCIATED/UNASSOCIATED CLIENTS PER LOCATION (Count)
+                div.grid_50p.grid_fl
+                    h3 Clients count
+                    div.clearfix(id="wifiCountBarEmpty")
+                        div(style="text-align: center; line-height: 250px;")= waiting
+                    div.entity-loading-widget(id="wifiCountBarLoading" style="display:none;")
+                    div(id="wifiCountBarData" style="display:none")
+                        div.grid_8(style="position: relative;display: inline-flex;")
+                            div.grid_8(style="height: 250px;" id="wifiCountBarChart")
+
+
+    // ************ OVER TIME ************
+    div.ui-tab-panel(id="overTime" style="display: none; width: 100%;")
+        // STORE FRONT CONVERSION OVER TIME
+        article.grid_100ps
+            div.inside
+                h3 StoreFront conversion over time
+                div.clearfix(id="storefrontEmpty")
+                    div(style="text-align: center; line-height: 250px;")= waiting
+                div.entity-loading-widget(id="storefrontLoading" style="display:none;")
+                div(id="storefrontData" style="display:none;")
+                    div(style="position: relative;display: inline-flex;")
+                        div(id="storefrontData")
+
+            
+            
+        // ENGAGED CLIENTS CONVERSION OVER TIME
+        article.grid_100ps
+            div.inside
+                h3 Number of Engaged Clients over time
+                div.clearfix(id="engagedEmpty")
+                    div(style="text-align: center; line-height: 250px;")= waiting
+                div.entity-loading-widget(id="engagedLoading" style="display:none;")
+                div(id="engagedData" style="display:none;")
+                    div(style="position: relative;display: inline-flex;")
+                        div(id="engagedData")
+            
+        // PASSERS BY CLIENTS CONVERSION OVER TIME
+        article.grid_100ps
+            div.inside
+                h3 Number of Passers By over time
+                div.clearfix(id="passersByEmpty")
+                    div(style="text-align: center; line-height: 250px;")= waiting
+                div.entity-loading-widget(id="passersByLoading" style="display:none;")
+                div(id="passersByData" style="display:none;")
+                    div(style="position: relative;display: inline-flex;")
+                        div(id="passersByData")
+           
+        // Number of Unique Clients over time
+        article.grid_100ps
+            div.inside
+                h3 Number of Unique Devices over time
+                div.clearfix(id="uniqueEmpty")
+                    div(style="text-align: center; line-height: 250px;")= waiting
+                div.entity-loading-widget(id="uniqueLoading" style="display:none;")
+                div(id="uniqueData" style="display:none;")
+                    div(style="position: relative;display: inline-flex;")
+                        div(id="uniqueData")
+            
+        // ASSOCIATED CLIENTS CONVERSION OVER TIME
+        article.grid_100ps
+            div.inside
+                h3 Number of Associated Clients over time
+                div.clearfix(id="associatedEmpty")
+                    div(style="text-align: center; line-height: 250px;")= waiting
+                div.entity-loading-widget(id="associatedLoading" style="display:none;")
+                div(id="associatedData" style="display:none;")
+                    div(style="position: relative;display: inline-flex;")
+                        div(id="associatedData")
+            
+        // UNASSOCIATED CLIENTS CONVERSION OVER TIME
+        article.grid_100ps
+            div.inside
+                h3 Number of Unassociated Clients over time
+                div.clearfix(id="unassociatedEmpty")
+                    div(style="text-align: center; line-height: 250px;")= waiting
+                div.entity-loading-widget(id="unassociatedLoading" style="display:none;")
+                div(id="unassociatedData" style="display:none;")
+                    div(style="position: relative;display: inline-flex;")
+                        div(id="unassociatedData")
+          
+
+
+block scriptBelow
+    script.
+        function changeTab(tab) {
+            $(".ui-tab").removeClass("cur");
+            $(".ui-tab-panel").hide();
+            $("#tab-" + tab).addClass("cur");
+            $("#" + tab).show();
+        }

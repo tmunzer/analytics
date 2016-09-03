@@ -9,15 +9,25 @@ router.get('/reg', function (req, res) {
         Error.render(req.query.error, "conf", req, res);
     } else if (req.query.hasOwnProperty("authCode")) {
         var authCode = req.query.authCode;
-        OAuth.getPermanentToken(authCode, ApiConf.redirectUrl, ApiConf.secret, ApiConf.clientId, function(data){
+        OAuth.getPermanentToken(authCode, ApiConf.redirectUrl, ApiConf.secret, ApiConf.clientId, function (data) {
             if (data.hasOwnProperty("error")) Error.render(data.error, "conf", req, res);
             else if (data.hasOwnProperty("data")) {
+                req.session.xapi = {
+                    owners: [],
+                    ownerIndex: 0,
+                    rejectUnauthorized: true,
+                    current: function(){
+                        return this.owners[this.ownerIndex];
+                    }
+                };
                 for (var owner in data.data) {
-                    req.session.ownerID = data.data[owner].ownerId;
-                    req.session.vpcUrl = data.data[owner].vpcUrl.replace("https://", "");
-                    req.session.accessToken = data.data[owner].accessToken;
+                    req.session.xapi.owners.push({
+                        vhmId: data.data[owner].vhmId,
+                        ownerId: data.data[owner].ownerId,
+                        vpcUrl: data.data[owner].vpcUrl.replace("https://", ""),
+                        accessToken: data.data[owner].accessToken
+                    })
                 }
-                console.log(req.session);
                 res.redirect('/dashboard/');
             }
         });

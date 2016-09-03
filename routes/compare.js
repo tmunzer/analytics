@@ -13,27 +13,29 @@ var Location = require(appRoot + "/bin/aerohive/models/location");
  ==========================================*/
 // Per location comparison
 router.get('/location/', function (req, res, next) {
-    if (req.session.vpcUrl && req.session.ownerID && req.session.accessToken) {
+    if (req.session.xapi) {
+        var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
         res.render('compare_location', {
             title: 'Analytics',
             current_page: 'compare',
             compare_page: 'location',
-            server: req.session.vpcUrl,
-            ownerId: req.session.ownerID,
-            accessToken: req.session.accessToken
+            server: currentApi.vpcUrl,
+            ownerId: currentApi.ownerId,
+            accessToken: currentApi.accessToken
         });
     } else res.redirect("/");
 });
 // Per period comparison
 router.get('/period/', function (req, res, next) {
-    if (req.session.vpcUrl && req.session.ownerID && req.session.accessToken) {
+    if (req.session.xapi) {
+        var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
         res.render('compare_period', {
             title: 'Analytics',
             current_page: 'compare',
             compare_page: 'period',
-            server: req.session.vpcUrl,
-            ownerId: req.session.ownerID,
-            accessToken: req.session.accessToken
+            server: currentApi.vpcUrl,
+            ownerId: currentApi.ownerId,
+            accessToken: currentApi.accessToken
         });
     } else res.redirect("/");
 });
@@ -41,6 +43,8 @@ router.get('/period/', function (req, res, next) {
  API - PER LOCATION COMPARISON
  ================================================================*/
 router.post('/api/location/polar/', function (req, res, next) {
+    var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
+
     var startTime, endTime, locations, locDone, averageDone, numLoc, polarReq;
     var locResult = [];
     var dataAverage = [];
@@ -82,10 +86,8 @@ router.post('/api/location/polar/', function (req, res, next) {
         locations.forEach(function(location){
             // for each location get the number of clients for each location
             // once done, will go to the Event "compare location polar location" below
-            API.clientlocation.clientcount.withEE(
-                req.session.vpcUrl,
-                req.session.accessToken,
-                req.session.ownerID,
+            API.clientlocation.clientcount.GETwithEE(
+                currentApi,
                 location,
                 startTime.toISOString(),
                 endTime.toISOString(),
@@ -95,10 +97,8 @@ router.post('/api/location/polar/', function (req, res, next) {
         });
         // get the number of clients for the NG account. This will be used to get the average number of clients
         // once done, will go to the Event "compare location polar average" below
-        API.clientlocation.clientcount.withEE(
-            req.session.vpcUrl,
-            req.session.accessToken,
-            req.session.ownerID,
+        API.clientlocation.clientcount.GETwithEE(
+            currentApi,
             req.session.locations.id,
             startTime.toISOString(),
             endTime.toISOString(),
@@ -179,6 +179,8 @@ router.post('/api/location/polar/', function (req, res, next) {
 
 // route to get the "Over Time" charts
 router.post('/api/location/timeline/', function (req, res, next) {
+    var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
+
     var startTime, endTime, timeUnit, location, locations, locDone, timelineReq;
     var dataLocation = [];
     var timeserie = [];
@@ -216,10 +218,8 @@ router.post('/api/location/timeline/', function (req, res, next) {
         locations.forEach(function(location){
             // for each location get the number of clients for each location
             // once done, will go to the Event "compare location timeline" below
-            API.clientlocation.clienttimeseries.withEE(
-                req.session.vpcUrl,
-                req.session.accessToken,
-                req.session.ownerID,
+            API.clientlocation.clienttimeseries.GETwithEE(
+                currentApi,
                 location,
                 startTime.toISOString(),
                 endTime.toISOString(),
@@ -285,6 +285,8 @@ router.post('/api/location/timeline/', function (req, res, next) {
  ================================================================*/
 // route to get the "Global" charts
 router.post("/api/period/polar/", function (req, res, next) {
+    var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
+
     var oneHour, oneDay, oneWeek, oneMonth, range, reqPeriods, i;
     var startTime, endTime, locations, ajaxReqId;
 
@@ -444,10 +446,8 @@ router.post("/api/period/polar/", function (req, res, next) {
             // loop over all the locations selected
             reqPeriods.forEach(function(currentPeriod){
                 // loop over all the period defined above (number of periods is depending on the time range)
-                API.clientlocation.clientcount(
-                    req.session.vpcUrl,
-                    req.session.accessToken,
-                    req.session.ownerID,
+                API.clientlocation.clientcount.GET(
+                    currentApi,
                     location,
                     currentPeriod['start'].toISOString(),
                     currentPeriod['end'].toISOString(),
@@ -512,6 +512,8 @@ router.post("/api/period/polar/", function (req, res, next) {
 
 // route to get the "Over Time" charts
 router.post('/api/period/timeline/', function (req, res, next) {
+    var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
+
     var oneHour, oneDay, oneWeek, oneMonth, range, reqPeriods, i;
     var startTime, endTime, timeUnit, locations, ajaxReqId;
     var timeserie = [];
@@ -609,10 +611,8 @@ router.post('/api/period/timeline/', function (req, res, next) {
             // loop over all the selected locations
             reqPeriods.forEach(function(currentPeriod){
                 // loop over all the defined periods
-                API.clientlocation.clienttimeseries(
-                    req.session.vpcUrl,
-                    req.session.accessToken,
-                    req.session.ownerID,
+                API.clientlocation.clienttimeseries.GET(
+                    currentApi,
                     location,
                     currentPeriod['start'].toISOString(),
                     currentPeriod['end'].toISOString(),

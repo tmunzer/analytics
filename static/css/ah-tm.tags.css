@@ -1,0 +1,95 @@
+body {
+    background-color: #F5F5F5;
+}
+
+#main {
+    padding-top: 80px;
+    margin: 0 2%;
+}
+
+.clearfix {
+    margin-top: 10px;
+}
+/*============================================== /
+/ ================== NAV ==================== /
+/ ============================================== */
+nav {
+    margin: 10px 0;
+    background-color: #2C3E50;
+    text-align: center;
+    height: 50px;
+}
+
+nav button {
+    height: 50px;
+    margin: 0;
+}
+
+
+/*============================================== /
+/ ================== ASIDE ==================== /
+/ ============================================== */
+aside {
+    float: left;
+    min-width: 250px;
+    margin-right: 10px;
+}
+/*============================================== /
+/ ================== SECTION ==================== /
+/ ============================================== */
+section {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.right {
+    margin-left: 10px;
+}
+.left {
+    margin-right: 10px;
+}
+/*============================================== /
+/ ================== ARTCILE ==================== /
+/ ============================================== */
+article > .inside{
+    margin: 10px 0;
+    padding: 5px;
+    background: white;
+    box-shadow: 0 0 50px 1px rgba(150, 150, 150, 0.5);
+    display: inline-block;
+    width: 100%;
+}
+
+
+article .title {
+    background-color: #3694D1;
+    padding: 10px;
+    text-align: left;
+    font-size: 20px;
+    font-weight: lighter;
+    text-transform: uppercase;
+    color: white;
+}
+
+
+
+
+li {
+    list-style: none;
+}
+
+.main-container {
+    display: flex;
+}
+
+h3, .h3 {
+    background-color: #3694D1;
+    padding: 10px;
+    text-align: left;
+    font-size: 12;
+    font-weight: lighter;
+    text-transform: uppercase;
+    color: white;
+    margin: 1px 0;
+}

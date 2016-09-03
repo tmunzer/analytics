@@ -1,0 +1,190 @@
+-var dashboard = "nav-item"
+-var compare = "nav-item"
+-var details = "nav-item"
+case current_page
+    when "dashboard"
+        - var dashboard = "nav-item cur"
+    when "compare"
+        - var compare = "nav-item cur"
+    when "details"
+        - var details = "nav-item cur"
+
+
+doctype html5
+html
+    head
+        title= title
+        script(language="JavaScript" type="text/javascript" src='/bower_components/jquery/dist/jquery.min.js')
+        script(language="JavaScript" type="text/javascript" src='/js/highstock.js')
+        link(rel='stylesheet' href='/css/font-awesome.min.css')
+        script(language="JavaScript" type="text/javascript" src="/bower_components/bootstrap/dist/js/bootstrap.min.js")
+        link(rel='stylesheet' href='/bower_components/bootstrap/dist/css/bootstrap.min.css')
+        link(rel='stylesheet' href='/css/ah-tm.dashboard.css')
+        link(rel='stylesheet' href='/css/ah-tm.input.css')
+        link(rel='stylesheet' href='/css/ah-tm.dropdown.css')
+        link(rel='stylesheet' href='/css/ah-tm.sizes.css')
+        link(rel='stylesheet' href='/css/ah-tm.tags.css')
+        link(rel='stylesheet' href='/css/ah-tm.table.css')
+        link(rel='stylesheet' href='/css/ah-tm.cards.css')
+        link(rel='stylesheet' href='/css/ah-tm.checkbox.css')
+        link(rel='stylesheet' href='/css/ah-tm.header.css')
+        link(rel='stylesheet' href='/css/ah-tm.analytics.css')
+        script(language="JavaScript" type="text/javascript" src='/js/common/locations.js')
+        script(language="JavaScript" type="text/javascript" src='/js/common/timeline.js')
+        script(language="JavaScript" type="text/javascript" src='/js/common/error.js')
+        script(language="JavaScript" type="text/javascript" src='/js/common/charts.js')
+        block include
+
+    body
+        div.modal.fade.bs-example-modal-lg(id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" style="height: 200px;")
+            div.modal-header
+                h4.modal-title(id="modalLabel" style="text-transform: capitalize") Modal title
+            div.modal-body(id="modalBody")
+            div.modal-footer(id="modalFooter" style="position: absolute; bottom: 0px; width: 100%;")
+        div.modal.fade.bs-example-modal-lg(id="modalAD" tabindex="-1" role="dialog" aria-labelledby="modalLabelAD" style="height: 200px;background-color: white;width: 500px;margin: auto")
+            div.modal-header
+                h4.modal-title(id="modalLabelAD" style="text-transform: capitalize") Account details
+            div.modal-body(id="modalBodyAD")
+                table
+                    tbody
+                        tr
+                            th(style="padding: 5px 10px;") HMNG Server:
+                            td(style="padding: 5px 10px;")= server
+                        tr
+                            th(style="padding: 5px 10px;") Owner ID:
+                            td(style="padding: 5px 10px;")= ownerId
+                        tr
+                            th(style="padding: 5px 10px;") Access Token:
+                            td(style="padding: 5px 10px;")= accessToken
+            div.modal-footer(id="modalFooterAD" style="position: absolute; bottom: 0px; width: 100%;")
+                a(href="javascript:void(0)" class="btn btn-primary" onclick="$('#modalAD').modal('hide')") Close
+        header
+            div.head-inner
+                h1.logo
+                    img(src="/images/logo_nav.png" alt="Aerohive")
+                div.head-button
+                    ul.head-nav
+                        li(class = dashboard)
+                            a(href="/dashboard/")
+                                i.fa.fa-home.fa-lg
+                                span Dashboard
+                        li(class = compare)
+                            a(href="/compare/location/")
+                                i.fa.fa-exchange.fa-lg
+                                span Compare
+                        li(class = details)
+                            a(href="/details/")
+                                i.fa.fa-clock-o.fa-lg
+                                span Details
+
+                div.head-button.hdrOptions
+                    ul.user-list
+                        li.user-list-item-first(onclick="$('#modalAD').modal()") Account Details
+                        li
+                            a(href="/logout/") Logout
+            
+        div.clearfix(id="main")
+            nav
+                div.head-bottom
+                    div.sub-tabs
+                        block sub-tabs
+            div.main-container
+                aside
+                    article.grid
+                        div.inside
+                            block tree
+                                div.title Filter By
+                                div.ui-filter-categ
+                                    h3.ui-filter-categ-tle Location
+                                    div.ui-filter-dtl-area
+                                        div.ui-filter-dtl
+                                            ul.entity-loading(id="location-tree")
+                section
+                    block dashboard-cards
+                    article.grid_100p
+                        div.inside
+                            div.entity-timeline-loading
+                                div.entity-timeline-column.entity-timeline-choose(style="width: 100%;")
+                                    div.entity-timeline-column
+                                        div.entity-timeline-show-label Show
+                                    div.entity-timeline-column
+                                        div.dropdown.dropdown-100
+                                            button.dropdown-100(id="timeline-button" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
+                                                span.init-text(id="span-range") Day
+                                                span.caret
+                                            ul.dropdown-menu(aria-labelledby="timeline-button" id="myLoc")
+                                                li(onclick="timelineRange(0, \'Day\')")
+                                                    span Day
+                                                li(onclick="timelineRange(1, \'Week\')")
+                                                    span Week
+                                                li(onclick="timelineRange(2, \'Month\')")
+                                                    span Month
+                                                li(onclick="timelineRange(3, \'Year\')")
+                                                    span Year
+                                    div.entity-timeline-column
+                                        div.entity-timeline-show-range Select Range
+                                    div.entity-timeline-column
+                                        div.entity-timeline-show-tab.entity-radioset-list
+                                            ul(id="timeline-range")
+                                                li.timeline-range(onclick="changeRange('Day', 1)" id="timeline-1") 1H
+                                                li.timeline-range.entity-radioset-cur(onclick="changeRange('Day', 2)" id="timeline-2") 2H
+                                                li.timeline-range(onclick="changeRange('Day', 8)" id="timeline-8") 8H
+                                                li.timeline-range(onclick="changeRange('Day', 0)" id="timeline-0") Last 24H
+                                div.clearfix(style="height:200px; min-height: 100px;")
+                                    div.entity-timeline-bar-time(id="timeline" )
+
+                            div.entity-timeline-show-time='Showing data from '
+                                span(id="span-from-date")
+                                span(style="font-weight: normal;")=' to '
+                                span(id="span-to-date")
+                        div.entity-page-body-top-border
+                            div.entity-page-body-top-border-arrow
+                    block content
+        block scriptAbove
+        script.
+            var locations = {};
+            var locationAnalytics = [];
+            var range = 0;
+            var filterFolder = null;
+
+            function timelineRange(id, name) {
+                $("#span-range").html(name);
+                var htmlSrting;
+                switch (name) {
+                    case "Day":
+                        range = 0;
+                        htmlSrting =
+                                '<li onclick="changeRange(\'Day\', 1)" id="timeline-1" class="timeline-range">1H</li>' +
+                                '<li onclick="changeRange(\'Day\', 2)" id="timeline-2" class="timeline-range entity-radioset-cur">2H</li>' +
+                                '<li onclick="changeRange(\'Day\', 8)" id="timeline-8" class="timeline-range">8H</li>' +
+                                '<li onclick="changeRange(\'Day\', 0)" id="timeline-0" class="timeline-range">Last 24H</li>';
+                        break;
+                    case "Week":
+                        range = 1;
+                        htmlSrting =
+                                '<li onclick="changeRange(\'Week\', 1)" id="timeline-1" class="timeline-range entity-radioset-cur">1D</li>' +
+                                '<li onclick="changeRange(\'Week\', 2)" id="timeline-2" class="timeline-range">2D</li>' +
+                                '<li onclick="changeRange(\'Week\', 0)" id="timeline-0" class="timeline-range">Last 7D</li>';
+                        break;
+                    case "Month":
+                        range = 2;
+                        htmlSrting =
+                                '<li onclick="changeRange(\'Month\', 1)" id="timeline-1" class="timeline-range">1D</li>' +
+                                '<li onclick="changeRange(\'Month\', 7)" id="timeline-2" class="timeline-range entity-radioset-cur">7D</li>' +
+                                '<li onclick="changeRange(\'Month\', 14)" id="timeline-14" class="timeline-range">14D</li>' +
+                                '<li onclick="changeRange(\'Month\', 0)" id="timeline-0" class="timeline-range">Last 1M</li>';
+                        break;
+                    case "Year":
+                        range = 3;
+                        htmlSrting =
+                                '<li onclick="changeRange(\'Year\', 1)" id="timeline-1" class="timeline-range entity-radioset-cur">1M</li>' +
+                                '<li onclick="changeRange(\'Year\', 2)" id="timeline-2" class="timeline-range">2M</li>' +
+                                '<li onclick="changeRange(\'Year\', 8)" id="timeline-8" class="timeline-range">6M</li>' +
+                                '<li onclick="changeRange(\'Year\', 0)" id="timeline-0" class="timeline-range">Last 12M</li>';
+                        break;
+                }
+                $("#timeline-range").html(htmlSrting);
+                updateTimeline();
+            }
+            init();
+        block scriptBelow

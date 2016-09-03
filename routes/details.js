@@ -8,14 +8,16 @@ var API = require(appRoot + "/bin/aerohive/api/main");
 /*================================================================
  DETAILS
  ================================================================*/
-router.get('/', function(req, res, next){
-    if (req.session.vpcUrl && req.session.ownerID && req.session.accessToken){
+router.get('/', function (req, res, next) {
+    var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
+
+    if (req.session.xapi){
         res.render('details', {
             title: 'Analytics',
             current_page: 'details',
-            server: req.session.vpcUrl,
-            ownerId: req.session.ownerID,
-            accessToken: req.session.accessToken
+            server: currentApi.vpcUrl,
+            ownerId: currentApi.ownerID,
+            accessToken: currentApi.accessToken
         });
     } else res.redirect("/");
 });
@@ -26,7 +28,9 @@ router.get('/', function(req, res, next){
  ================================================================*/
 // api call called to get the list of locations
 router.post('/api/init/', function (req, res, next) {
-    API.configuration.location(req.session.vpcUrl, req.session.accessToken, req.session.ownerID, function (err, locations) {
+    var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
+
+    API.configuration.location.getLocations(currentApi, function (err, locations) {
         if (err) res.send(err);
         else {
             req.session.locations = locations;
@@ -38,7 +42,9 @@ router.post('/api/init/', function (req, res, next) {
     });
 });
 // api call to get the list of clients over the time (heatmap display on the browser)
-router.post('/api/clienttimeseries/', function(req, res, next) {
+router.post('/api/clienttimeseries/', function (req, res, next) {
+    var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
+
     var startTime, endTime, timeUnit, locDone, locations, series, timeseries;
     series = [];
     timeseries = [];
@@ -66,10 +72,8 @@ router.post('/api/clienttimeseries/', function(req, res, next) {
 
         locations.forEach(function (location) {
             // retrieve the data from the ACS for every selected location
-            API.clientlocation.clienttimeseries(
-                req.session.vpcUrl,
-                req.session.accessToken,
-                req.session.ownerID,
+            API.clientlocation.clienttimeseries.GET(
+                currentApi,
                 location,
                 startTime.toISOString(),
                 endTime.toISOString(),

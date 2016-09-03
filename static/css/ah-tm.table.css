@@ -1,0 +1,75 @@
+tr {
+    font-size: 11px;
+}
+
+.fn-left {
+    float: left;
+}
+
+.fn-right {
+    float: right;
+}
+
+.pagination > li {
+    cursor: pointer;
+}
+
+.pagination > li > a, .pagination > li > span,
+.pagination > li > a:hover, .pagination > li > span:hover{
+    padding: 1px 10px;
+    color: #28B463;
+    border: none;
+    border-left: 1px solid #ccc;
+    border-radius: 0 !important;
+}
+
+.pagination > li > .count,
+.pagination > li > .count:hover{
+    color: #777;
+    background-color: #fff;
+}
+
+
+a.ui-page-item-cur, a.ui-page-size-cur {
+    font-weight: bold;
+    color: black;
+    text-decoration: none!important;
+}
+.ui-page-size {
+    height: 14px;
+    line-height: 14px;
+    padding-right: 10px;
+    border-right: 1px solid #ccc;
+    font-weight: normal;
+    color: #28B463;
+    float: left;
+    cursor: pointer;
+    margin: 1px 7px 0 7px;
+    zoom: 1;
+}
+.ui-page-size:hover {
+    z-index: 2;
+    color: #23527c;
+    background-color: #eee;
+    border-color: #ddd;
+}
+
+.pagination > li.cur,
+.pagination > li.cur:hover,
+.pagination > li.cur > a,
+.pagination > li.cur:hover > a {
+    color: black;
+    background-color: white;
+    font-weight: bold;
+    cursor: default;
+}
+
+.pagination > li.disable,
+.pagination > li.disable:hover,
+.pagination > li.disable > a,
+.pagination > li.disable:hover > a{
+    color: black;
+    background-color: white;
+    font-weight: bold;
+    cursor: default;
+}

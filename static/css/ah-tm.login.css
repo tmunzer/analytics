@@ -1,0 +1,41 @@
+html,body {
+    height:100%;
+
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#cccccc+0,eeeeee+100 */
+    background-color: #F5F5F5;
+}
+
+.ah-logo {
+    margin-left: 21px;
+    margin-top: 19px;
+    width: 204px;
+}
+
+
+.page-footer {
+    font-size: 14px;
+    font-weight: 400;
+    color: #909090;
+    position: fixed;
+    bottom: 10px;
+    right: 21px;
+}
+
+.page-footer span {
+    display: inline-block;
+    height: 20px;
+    border-left: 1px solid #6f6f6f;
+    margin-left: 2px;
+}
+
+
+.LoginPage .wrong-password {
+    position: absolute;
+    left: 110px;
+    top: 132px;
+    color: #f16667;
+    font-size: 15px;
+    width: 320px;
+}
+
+

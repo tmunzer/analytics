@@ -12,7 +12,9 @@ var Location = require(appRoot + "/bin/aerohive/models/location");
  RETRIEVE AND SEND BACK THE LIST OF LOCATIONS
  =================================================*/
 router.post('/configuration/apLocationFolders/', function(req, res, next) {
-    API.configuration.location(req.session.vpcUrl, req.session.accessToken, req.session.ownerID, function(err, locations){
+    var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
+
+    API.configuration.location.getLocations(currentApi, function(err, locations){
         if (err) res.json({error: err});
         else if (locations == null) res.json(
             {warning: {
@@ -29,7 +31,9 @@ router.post('/configuration/apLocationFolders/', function(req, res, next) {
     NUMBER OF DEVICES, ...)
  =================================================*/
 router.post('/common/init/', function (req, res, next) {
-    API.configuration.location(req.session.vpcUrl, req.session.accessToken, req.session.ownerID, function (err, locations) {
+    var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
+
+    API.configuration.location.getLocations(currentApi, function (err, locations) {
         if (err) res.json({error: err});
         else if (! locations) res.json(
             {warning: {
@@ -37,7 +41,7 @@ router.post('/common/init/', function (req, res, next) {
                 message:"To be able to get the Presence Analytics Information, you have to configure the Locations on your " +
                 "<a href='cloud.aerohive.com' target='_blank'>HiveManager NG account</a>"
             }});
-        else API.monitor.device(req.session.vpcUrl, req.session.accessToken, req.session.ownerID, function (err, devices) {
+        else API.monitor.device.deviceList(currentApi, function (err, devices) {
                 if (err) res.json({error: err});
                 else if (!devices) res.json(
                     {
@@ -64,6 +68,8 @@ router.post('/common/init/', function (req, res, next) {
  API CALLED TO DISPLAY THE TIMELINE
  =================================================*/
 router.post('/common/timeline/', function (req, res, next) {
+    var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
+
     var startTime, endTime, timeUnit, locations, locDone, timelineReq;
     var timeline = [];
 
@@ -94,7 +100,7 @@ router.post('/common/timeline/', function (req, res, next) {
 
         // For each location, send the API call
         locations.forEach(function (location){
-            API.clientlocation.clienttimeseries(req.session.vpcUrl, req.session.accessToken, req.session.ownerID, location, startTime.toISOString(), endTime.toISOString(), timeUnit, function (err, result) {
+            API.clientlocation.clienttimeseries.GET(currentApi, location, startTime.toISOString(), endTime.toISOString(), timeUnit, function (err, result) {
                 if (err) res.json({error: err});
                 else {
                     // will addition the number of "unique client" from each location to get an overall number of unique clients
