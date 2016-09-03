@@ -11,7 +11,7 @@ var ApiConf = require(appRoot + "/bin/aerohive/config");
  ================================================================*/router.get('/', function(req, res, next) {
   var errorcode;
   if (req.query.hasOwnProperty('errorcode')) errorcode = req.query["errorcode"];
-  res.render('init', { title: 'Analytics' , errorcode: errorcode, client_id: ApiConf.clientId, redirect_uri: ApiConf.redirectUrl });
+  res.render('login', { title: 'Analytics' , errorcode: errorcode, client_id: ApiConf.clientId, redirect_uri: ApiConf.redirectUrl });
 });
 router.post('/', function (req, res, next) {
   var ownerIdRegexp = new RegExp("^[0-9]*$");
@@ -24,9 +24,21 @@ router.post('/', function (req, res, next) {
   } else if (!(req.body.hasOwnProperty("accessToken") && accessTokenRegexp.test(req.body["accessToken"].trim()))) {
     res.redirect("/?errorcode=3");
   } else {
-    req.session.vpcUrl = req.body["vpcUrl"];
-    req.session.ownerID = req.body["ownerID"];
-    req.session.accessToken = req.body["accessToken"].trim();
+      req.session.xapi = {
+          owners: [],
+          ownerIndex: 0,
+          rejectUnauthorized: true,
+          current: function(){
+              return this.owners[this.ownerIndex];
+          }
+      };
+      req.session.xapi.owners.push({
+          vhmId: "N/A",
+          ownerId: req.body["ownerID"],
+          vpcUrl: req.body["vpcUrl"],
+          accessToken: req.body["accessToken"].trim()
+      });
+      console.log(req.session.xapi.current());
     res.redirect('/dashboard/');
   }
 });

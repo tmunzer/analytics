@@ -82,10 +82,8 @@ router.post('/api/location/polar/', function (req, res, next) {
         locations.forEach(function(location){
             // for each location get the number of clients for each location
             // once done, will go to the Event "compare location polar location" below
-            API.clientlocation.clientcount.withEE(
-                req.session.vpcUrl,
-                req.session.accessToken,
-                req.session.ownerID,
+            API.clientlocation.clientcount.GETwithEE(
+                req.session.xapi.current(),
                 location,
                 startTime.toISOString(),
                 endTime.toISOString(),
@@ -95,10 +93,8 @@ router.post('/api/location/polar/', function (req, res, next) {
         });
         // get the number of clients for the NG account. This will be used to get the average number of clients
         // once done, will go to the Event "compare location polar average" below
-        API.clientlocation.clientcount.withEE(
-            req.session.vpcUrl,
-            req.session.accessToken,
-            req.session.ownerID,
+        API.clientlocation.clientcount.GETwithEE(
+            req.session.xapi.current(),
             req.session.locations.id,
             startTime.toISOString(),
             endTime.toISOString(),
@@ -216,10 +212,8 @@ router.post('/api/location/timeline/', function (req, res, next) {
         locations.forEach(function(location){
             // for each location get the number of clients for each location
             // once done, will go to the Event "compare location timeline" below
-            API.clientlocation.clienttimeseries.withEE(
-                req.session.vpcUrl,
-                req.session.accessToken,
-                req.session.ownerID,
+            API.clientlocation.clienttimeseries.GETwithEE(
+                req.session.xapi.current(),
                 location,
                 startTime.toISOString(),
                 endTime.toISOString(),
@@ -444,10 +438,8 @@ router.post("/api/period/polar/", function (req, res, next) {
             // loop over all the locations selected
             reqPeriods.forEach(function(currentPeriod){
                 // loop over all the period defined above (number of periods is depending on the time range)
-                API.clientlocation.clientcount(
-                    req.session.vpcUrl,
-                    req.session.accessToken,
-                    req.session.ownerID,
+                API.clientlocation.clientcount.GET(
+                    req.session.xapi.current(),
                     location,
                     currentPeriod['start'].toISOString(),
                     currentPeriod['end'].toISOString(),
@@ -609,10 +601,8 @@ router.post('/api/period/timeline/', function (req, res, next) {
             // loop over all the selected locations
             reqPeriods.forEach(function(currentPeriod){
                 // loop over all the defined periods
-                API.clientlocation.clienttimeseries(
-                    req.session.vpcUrl,
-                    req.session.accessToken,
-                    req.session.ownerID,
+                API.clientlocation.clienttimeseries.GET(
+                    req.session.xapi.current(),
                     location,
                     currentPeriod['start'].toISOString(),
                     currentPeriod['end'].toISOString(),

@@ -367,7 +367,7 @@ function displayBarChart(containerId, title, xAxisData, data, percentage) {
     container.highcharts({
         chart: {
             type: 'column',
-            height: 250
+            width: 250
         },
         title: {
             text: ''

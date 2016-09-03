@@ -26,7 +26,7 @@ router.get('/', function(req, res, next){
  ================================================================*/
 // api call called to get the list of locations
 router.post('/api/init/', function (req, res, next) {
-    API.configuration.location(req.session.vpcUrl, req.session.accessToken, req.session.ownerID, function (err, locations) {
+    API.configuration.location.getLocations(req.session.xapi.current(), function (err, locations) {
         if (err) res.send(err);
         else {
             req.session.locations = locations;
@@ -66,10 +66,8 @@ router.post('/api/clienttimeseries/', function(req, res, next) {
 
         locations.forEach(function (location) {
             // retrieve the data from the ACS for every selected location
-            API.clientlocation.clienttimeseries(
-                req.session.vpcUrl,
-                req.session.accessToken,
-                req.session.ownerID,
+            API.clientlocation.clienttimeseries.GET(
+                req.session.xapi.current(),
                 location,
                 startTime.toISOString(),
                 endTime.toISOString(),

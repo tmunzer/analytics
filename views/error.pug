@@ -1,0 +1,26 @@
+doctype html
+html
+    head
+        title= title
+        script(language="JavaScript" type="text/javascript" src='/js/jquery-2.1.1.min.js')
+        script(language="JavaScript" type="text/javascript" src='/js/bootstrap.min.js')
+        link(rel='stylesheet' href='/css/ah-styles.min.css')
+        link(rel='stylesheet' href='/css/bootstrap.min.css')
+        link(rel='stylesheet' href='/css/ah-tm.init.css')
+    body
+        div(style="border-top: 2px solid rgb(255, 195, 15);" class="user-home-wrap")
+        div.clearfix(id='main')
+            div.pt-r
+                div(id="container")
+                    div.grid_20.LoginPage
+                        img(src="/images/login_page_logo.png" alt="Aerohive" class="ah-logo")
+                        div.ah-growing-hives
+                        div.page-footer
+                            span(style="border: none;") © 2016 Aerohive Networks. All Rights Reserved.
+                                div.login-box.grid_15
+                            div.login-box-login
+                                h1= "Something went wrong when loading " + current_page + " page..."
+                                h2= error.status
+                                pre= error.message
+                                pre #{error.stack}
+

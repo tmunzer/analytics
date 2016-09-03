@@ -1,0 +1,223 @@
+extends compare
+
+block include
+    script(language="JavaScript" type="text/javascript" src='/js/highcharts-more.js')
+    script(language="JavaScript" type="text/javascript" src='/js/compare/period/periodPolarAndBars.js')
+    script(language="JavaScript" type="text/javascript" src='/js/compare/period/periodLine.js')
+    script(language="JavaScript" type="text/javascript" src='/js/compare/period/update.js')
+    script(language="JavaScript" type="text/javascript" src='/js/compare/period/init.js')
+
+block content
+    -var waiting = "Requesting data from Aerohive Cloud Service..."
+    div.dashboard-container.dojoDndSource.dojoDndTarget.dojoDndContainer(id="dashboard-widgets")
+        div.ui-tab-container
+            div.line.clearfix
+                div.ui-tab.clearfix.ui-tab-first.ui-tab-active(id="tab-global" style="width: 150px;")
+                    div.arrow-left
+                    div.lower-tab
+                        a(href="javascript:void(0)" onclick="changeTab('global')") Global
+                div.ui-tab.clearfix.ui-tab-inactive(id="tab-overTime" style="width: 150px;")
+                    div.arrow-left
+                    div.lower-tab
+                        a(href="javascript:void(0)" onclick="changeTab('overTime')") Over Time
+            div.ui-tab-panel-wrap
+                div.ui-tab-panel(id="global")
+                    // POLAR CHART
+                    div.dojoDndItem.column.grid_16.dashboard-item(style="margin-right: 33px;height: 400px!important;")
+                        div.dashboard-widget.dojoDndHandle
+                            div.widget-loading.topApplicationGroup
+                                div.widget-content
+                                    div.widget-label.clearfix
+                                        span.widget-block
+                                        span.widget-label-title Locations statistics
+                                    div.clearfix(id="polarEmpty")
+                                        div(style="text-align: center; line-height: 250px;")= waiting
+                                    div.entity-loading-widget(id="polarLoading" style="display:none;")
+                                    div(id="polarData" style="display:none;")
+                                        div.column.grid_16(style="position: relative;display: inline-flex;")
+                                            div.grid_16(style="height: 250px;" id="polarChart")
+
+                    // Compare
+                    div.dojoDndItem.column.grid_16.dashboard-item(style="margin-right: 33px;height: 300px!important;")
+                        div.dashboard-widget.dojoDndHandle.grid_16(style="float:left;margin-right:10px;")
+                            div.widget-loading.topApplicationGroup(style="height: 300px;")
+                                div.widget-content
+                                    div.widget-label.clearfix
+                                        span.widget-block
+                                        span.widget-label-title Progress compared to other periods
+                                    div.clearfix(id="tableCompareEmpty")
+                                        div(style="text-align: center; line-height: 250px;")= waiting
+                                    div.entity-loading-widget(id="tableCompareLoading" style="display:none;")
+                                    div(id="tableCompareData" )
+                                        div.column.grid_16(style="position: relative;display: inline-flex;")
+                                            div.column.grid_16(style="height: 250px;" id="tableCompare")
+                    // UNIQUE CLIENTS PER LOCATION (%)
+                    div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
+                        div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
+                            div.widget-loading.topApplicationGroup(style="height: 300px;")
+                                div.widget-content
+                                    div.widget-label.clearfix
+                                        span.widget-block
+                                        span.widget-label-title StoreFront Conversion (%)
+                                    div.clearfix(id="visitorsVsEngagedBarEmpty")
+                                        div(style="text-align: center; line-height: 250px;")= waiting
+                                    div.entity-loading-widget(id="visitorsVsEngagedBarLoading" style="display:none;")
+                                    div(id="visitorsVsEngagedBarData" style="display:none")
+                                        div.column.grid_8(style="position: relative;display: inline-flex;")
+                                            div.grid_8(style="height: 250px;" id="visitorsVsEngagedBarChart")
+                    // UNIQUE CLIENTS PER LOCATION (Count)
+                    div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
+                        div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
+                            div.widget-loading.topApplicationGroup(style="height: 300px;")
+                                div.widget-content
+                                    div.widget-label
+                                        span.widget-block
+                                        span.widget-label-title StoreFront Conversion (Clients count)
+                                    div.clearfix(id="visitorsVsEngagedCountBarEmpty")
+                                        div(style="text-align: center; line-height: 250px;")= waiting
+                                    div.entity-loading-widget(id="visitorsVsEngagedCountBarLoading" style="display:none;")
+                                    div(id="visitorsVsEngagedCountBarData" style="display:none")
+                                        div.column.grid_8(style="position: relative;display: inline-flex;")
+                                            div.grid_8(style="height: 250px;" id="visitorsVsEngagedCountBarChart")
+                    // NEW/RETURNING CLIENTS PER LOCATION
+                    div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
+                        div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
+                            div.widget-loading.topApplicationGroup(style="height: 300px;")
+                                div.widget-content
+                                    div.widget-label
+                                        span.widget-block
+                                        span.widget-label-title Loyalty (%)
+                                    div.clearfix(id="loyaltyBarEmpty")
+                                        div(style="text-align: center; line-height: 250px;")= waiting
+                                    div.entity-loading-widget(id="loyaltyBarLoading" style="display:none;")
+                                    div(id="loyaltyBarData" style="display:none")
+                                        div.column.grid_8(style="position: relative;display: inline-flex;")
+                                            div.grid_8(style="height: 250px;" id="loyaltyBarChart")
+                    // NEW/RETURNING CLIENTS PER LOCATION
+                    div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
+                        div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
+                            div.widget-loading.topApplicationGroup(style="height: 300px;")
+                                div.widget-content
+                                    div.widget-label
+                                        span.widget-block
+                                        span.widget-label-title Loyalty (Clients count)
+                                    div.clearfix(id="loyaltyCountBarEmpty")
+                                        div(style="text-align: center; line-height: 250px;")= waiting
+                                    div.entity-loading-widget(id="loyaltyCountBarLoading" style="display:none;")
+                                    div(id="loyaltyCountBarData" style="display:none")
+                                        div.column.grid_8(style="position: relative;display: inline-flex;")
+                                            div.grid_8(style="height: 250px;" id="loyaltyCountBarChart")
+                    // ASSOCIATED/UNASSOCIATED CLIENTS PER LOCATION (%)
+                    div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
+                        div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
+                            div.widget-loading.topApplicationGroup(style="height: 300px;")
+                                div.widget-content
+                                    div.widget-label
+                                        span.widget-block
+                                        span.widget-label-title Wi-Fi Connections (%)
+                                    div.clearfix(id="wifiBarEmpty")
+                                        div(style="text-align: center; line-height: 250px;")= waiting
+                                    div.entity-loading-widget(id="wifiBarLoading" style="display:none;")
+                                    div(id="wifiBarData" style="display:none")
+                                        div.column.grid_8(style="position: relative;display: inline-flex;")
+                                            div.grid_8(style="height: 250px;" id="wifiBarChart")
+                    // ASSOCIATED/UNASSOCIATED CLIENTS PER LOCATION (Count)
+                    div.dojoDndItem.column.grid_8.dashboard-item(style="margin-right: 33px;height: 300px!important;")
+                        div.dashboard-widget.dojoDndHandle.grid_8(style="float:left;margin-right:10px;")
+                            div.widget-loading.topApplicationGroup(style="height: 300px;")
+                                div.widget-content
+                                    div.widget-label
+                                        span.widget-block
+                                        span.widget-label-title Wi-Fi Connections (Clients count)
+                                    div.clearfix(id="wifiCountBarEmpty")
+                                        div(style="text-align: center; line-height: 250px;")= waiting
+                                    div.entity-loading-widget(id="wifiCountBarLoading" style="display:none;")
+                                    div(id="wifiCountBarData" style="display:none")
+                                        div.column.grid_8(style="position: relative;display: inline-flex;")
+                                            div.grid_8(style="height: 250px;" id="wifiCountBarChart")
+
+
+                // ************ OVER TIME ************
+                div.ui-tab-panel(id="overTime" style="display: none;")
+                    // STORE FRONT CONVERSION OVER TIME
+                    div.dojoDndItem.column.grid_16.dashboard-item(style="margin-right: 33px;height: 400px!important;")
+                        div.dashboard-widget.dojoDndHandle
+                            div.widget-loading.topApplicationGroup
+                                div.widget-content
+                                    div.widget-label.clearfix
+                                        span.widget-block
+                                        span.widget-label-title StoreFront conversion over time
+                                    div.clearfix(id="storefrontEmpty")
+                                        div(style="text-align: center; line-height: 250px;")= waiting
+                                    div.entity-loading-widget(id="storefrontLoading" style="display:none;")
+                                    div(id="storefrontData" style="display:none;")
+                    // ENGAGED CLIENTS CONVERSION OVER TIME
+                    div.dojoDndItem.column.grid_16.dashboard-item(style="margin-right: 33px;height: 400px!important;")
+                        div.dashboard-widget.dojoDndHandle
+                            div.widget-loading.topApplicationGroup
+                                div.widget-content
+                                    div.widget-label.clearfix
+                                        span.widget-block
+                                        span.widget-label-title Number of Engaged Clients over time
+                                    div.clearfix(id="engagedEmpty")
+                                        div(style="text-align: center; line-height: 250px;")= waiting
+                                    div.entity-loading-widget(id="engagedLoading" style="display:none;")
+                                    div(id="engagedData" style="display:none;")
+                    // PASSERS BY CLIENTS CONVERSION OVER TIME
+                    div.dojoDndItem.column.grid_16.dashboard-item(style="margin-right: 33px;height: 400px!important;")
+                        div.dashboard-widget.dojoDndHandle
+                            div.widget-loading.topApplicationGroup
+                                div.widget-content
+                                    div.widget-label.clearfix
+                                        span.widget-block
+                                        span.widget-label-title Number of Passers By over time
+                                    div.clearfix(id="passersByEmpty")
+                                        div(style="text-align: center; line-height: 250px;")= waiting
+                                    div.entity-loading-widget(id="passersByLoading" style="display:none;")
+                                    div(id="passersByData" style="display:none;")
+                    // UNIQUE CLIENTS CONVERSION OVER TIME
+                    div.dojoDndItem.column.grid_16.dashboard-item(style="margin-right: 33px;height: 400px!important;")
+                        div.dashboard-widget.dojoDndHandle
+                            div.widget-loading.topApplicationGroup
+                                div.widget-content
+                                    div.widget-label.clearfix
+                                        span.widget-block
+                                        span.widget-label-title Number of Unique Clients over time
+                                    div.clearfix(id="uniqueEmpty")
+                                        div(style="text-align: center; line-height: 250px;")= waiting
+                                    div.entity-loading-widget(id="uniqueLoading" style="display:none;")
+                                    div(id="uniqueData" style="display:none;")
+                    // ASSOCIATED CLIENTS CONVERSION OVER TIME
+                    div.dojoDndItem.column.grid_16.dashboard-item(style="margin-right: 33px;height: 400px!important;")
+                        div.dashboard-widget.dojoDndHandle
+                            div.widget-loading.topApplicationGroup
+                                div.widget-content
+                                    div.widget-label.clearfix
+                                        span.widget-block
+                                        span.widget-label-title Number of Associated Clients over time
+                                    div.clearfix(id="associatedEmpty")
+                                        div(style="text-align: center; line-height: 250px;")= waiting
+                                    div.entity-loading-widget(id="associatedLoading" style="display:none;")
+                                    div(id="associatedData" style="display:none;")
+                    // UNASSOCIATED CLIENTS CONVERSION OVER TIME
+                    div.dojoDndItem.column.grid_16.dashboard-item(style="margin-right: 33px;height: 400px!important;")
+                        div.dashboard-widget.dojoDndHandle
+                            div.widget-loading.topApplicationGroup
+                                div.widget-content
+                                    div.widget-label.clearfix
+                                        span.widget-block
+                                        span.widget-label-title Number of Unassociated Clients over time
+                                    div.clearfix(id="unassociatedEmpty")
+                                        div(style="text-align: center; line-height: 250px;")= waiting
+                                    div.entity-loading-widget(id="unassociatedLoading" style="display:none;")
+                                    div(id="unassociatedData" style="display:none;")
+
+
+block scriptBelow
+    script.
+        function changeTab(tab) {
+            $(".ui-tab").removeClass("ui-tab-active").addClass("ui-tab-inactive");
+            $(".ui-tab-panel").hide()
+            $("#tab-" + tab).addClass("ui-tab-active").removeClass("ui-tab-inactive");
+            $("#" + tab).show();
+        }

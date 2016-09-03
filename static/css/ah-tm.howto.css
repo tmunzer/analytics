@@ -23,6 +23,15 @@
     width: 204px;
 }
 
+.howto-page .ah-growing-hives {
+    z-index: 0;
+    height: 842px;
+    width: 317px;
+    margin-right: 21px;
+    float: right;
+    background: url(/images/growing-hives.png) scroll right top no-repeat;
+    display: block;
+}
 
 .howto-page .page-footer span {
     display: inline-block;

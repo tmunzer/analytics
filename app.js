@@ -10,7 +10,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var routes = require('./routes/init');
+var login = require('./routes/login');
 var oauth = require('./routes/oauth');
 var dashboard = require('./routes/dashboard');
 var details = require('./routes/details');
@@ -51,21 +51,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'static')));
 
-app.use('/', routes);
+app.use('/', login);
 app.use('/oauth/', oauth);
 app.use('/dashboard/', dashboard);
 app.use('/details/', details);
 app.use('/api/', api);
 app.use('/compare/', compare);
 
-app.get('/fail', function (req, res, next) {
-  setTimeout(function () {
-    var nu = null;
-    nu.access();
-
-    res.send('Hello World');
-  }, 1000);
-});
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');

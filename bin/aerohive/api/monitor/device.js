@@ -1,25 +1,17 @@
-var apiRequest = require(appRoot + "/bin/aerohive/api/req").apiRequest;
-var Device = require(appRoot + "/bin/aerohive/models/device.js");
+var api = require(appRoot + "/bin/aerohive/api/req");
 
 
-module.exports = function (vpcUrl, accessToken, ownerId, callback) {
+module.exports.deviceList = function (xapi, callback) {
 
-    var path = '/xapi/v1/monitor/devices?ownerId=' + ownerId;
+    var path = '/xapi/v1/monitor/devices?ownerId=' + xapi.ownerId;
 
     // send the API request
-    apiRequest(vpcUrl, accessToken, path, function (err, result) {
+    api.GET(xapi, path, function (err, result) {
         if (err){
             callback(err, result);
         }
         else if (result){
-            var devicesFromAPI = result;
-            var deviceList = [];
-
-            // for each device.js from the API response
-            for (var i = 0; i < devicesFromAPI.length; i++) {
-                deviceList.push(new Device(devicesFromAPI[i]));
-            }
-            callback(null, deviceList);
+            callback(null, result);
         } else {
             callback(null, []);
         }

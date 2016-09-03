@@ -1,0 +1,78 @@
+doctype html
+html
+    head
+        title= title
+        script(language="JavaScript" type="text/javascript" src='/js/jquery-2.1.1.min.js')
+        script(language="JavaScript" type="text/javascript" src='/js/bootstrap.min.js')
+        link(rel='stylesheet' href='/css/ah-styles.min.css')
+        link(rel='stylesheet' href='/css/bootstrap.min.css')
+        link(rel='stylesheet' href='/css/ah-tm.init.css')
+        link(rel='stylesheet' href='/css/ah-tm.howto.css')
+    body
+        div(style="border-top: 2px solid rgb(255, 195, 15);" class="user-home-wrap")
+        div.clearfix(id='main')
+            div.pt-r
+                div(id="container")
+                    //div.grid_20.LoginPage
+                    div.howto-page(style="background-color: #2C3E50;")
+                        img(src="/images/Aerohive_Logo_150_white.png" alt="Aerohive" class="ah-logo")
+
+                        div.howto-box(style="width: 80%; border-radius: 30px 10px")
+                            div
+                                h1(style="text-align: center; margin-top: 10px;") Quick Start Guide
+                                span.
+                                    This Quick Start Guide will help you to find the needed information to get access
+                                    to the Presence Analytics dashboard.
+                                h4
+                                    span= '1. Log in to your '
+                                    a(href="http://cloud.aerohive.com" targer="_blank") HiveManager NG
+                                    span= ' account'
+                                h4
+                                    span 2. Get your Datacenter address
+                                span.
+                                    Look at the address bar from your web browser.
+                                    The URL will indicate you on which datacenter your HiveManager NG account is deployed.
+                                div(style="width:100%")
+                                    img(src="/images/howto/howto_2.png" style="width: 400px")
+                                br
+                                span Currenty, the possible choices are:
+                                ul(style="list-style: inside none disc; padding-left: 30px;")
+                                    li cloud-va.aerohive.com
+                                    li cloud-ie.aerohive.com
+                                h4
+                                    span 3. Get your Owner ID
+                                span On your HiveManager NG interface, click on the
+                                b=' "User" '
+                                span icon on the top right of the interface, then click on
+                                b=' "About" '
+                                img(src="/images/howto/howto_3.png" style="width: 400px;")
+                                span On the popup, you will find the
+                                b=' OwnerID '
+                                span under the name
+                                b=' VHM-ID :'
+                                img(src="/images/howto/howto_3.1.png" style="width: 400px;")
+                                h4
+                                    span 4. Generate an
+                                    b=' Access Token '
+                                    span for this Web APP
+                                span On your HiveManager NG interface, click on the
+                                b=' "Configuration" '
+                                span icon on the top right, then click on
+                                b=' API Token Management '
+                                span and to finish click on the
+                                b=' + '
+                                img(src="/images/howto/howto_4.png" style="width: 800px;")
+                                span On the popup window, enter the
+                                b=' Client ID '
+                                b(style="color: rgb(54, 148, 209)")=' f4d129a2 '
+                                span to generate a new
+                                b=' AccessToken '
+                                h4
+                                    span 5. Once you have all the information, go back to the
+                                    a(href='/')=' Login Page '
+                                    span and have fun!
+                                span.error.
+                                    Be sure to have already configured some location on your HiveManager NG account before using this Web APP!
+
+                        div.page-footer
+                            span(style="border: none;") © 2016 Aerohive Networks. All Rights Reserved.

@@ -13,13 +13,15 @@ var Location = require(appRoot + "/bin/aerohive/models/location");
  DASHBOARD
  ================================================================*/
 router.get('/', function (req, res, next) {
-    if (req.session.vpcUrl && req.session.ownerID && req.session.accessToken) {
+    if (req.session.xapi) {
+        console.log(req.session.xapi);
+        console.log(req.session.xapi.current());
         res.render('dashboard', {
             title: 'Analytics',
             current_page: 'dashboard',
-            server: req.session.vpcUrl,
-            ownerId: req.session.ownerID,
-            accessToken: req.session.accessToken
+            server: req.session.xapi.current().vpcUrl,
+            ownerId: req.session.xapi.current().ownerId,
+            accessToken: req.session.xapi.current().accessToken
         })
     } else res.redirect("/");
 });
@@ -32,7 +34,7 @@ router.post('/api/update/cards/', function (req, res, next) {
     var locations = [];
     if (req.body.hasOwnProperty('locations')) locations = JSON.parse(req.body['locations']);
 
-    API.monitor.device(req.session.vpcUrl, req.session.accessToken, req.session.ownerID, function (err, devices) {
+    API.monitor.device.deviceList(req.session.xapi.current(), function (err, devices) {
         if (err) res.send(err);
         else {
             // get the list of locationID based on the selection made by the user
@@ -111,10 +113,8 @@ router.post('/api/update/widgets/', function (req, res, next) {
 
             // get the values for the time range defined by the user
             // once done, call the Event "dashboard widget now"
-            API.clientlocation.clientcountWithEE(
-                req.session.vpcUrl,
-                req.session.accessToken,
-                req.session.ownerID,
+            API.clientlocation.clientcount.GETwithEE(
+                req.session.xapi.current(),
                 location,
                 startTime.toISOString(),
                 endTime.toISOString(),
@@ -128,10 +128,8 @@ router.post('/api/update/widgets/', function (req, res, next) {
                 startLastWeek.setDate(startLastWeek.getDate() - 7);
                 endLastWeek = new Date(endTime);
                 endLastWeek.setDate(endLastWeek.getDate() - 7);
-                API.clientlocation.clientcountWithEE(
-                    req.session.vpcUrl,
-                    req.session.accessToken,
-                    req.session.ownerID,
+                API.clientlocation.clientcount.GETwithEE(
+                    req.session.xapi.current(),
                     location,
                     startLastWeek.toISOString(),
                     endLastWeek.toISOString(),
@@ -147,10 +145,8 @@ router.post('/api/update/widgets/', function (req, res, next) {
                 startLastMonth.setMonth(startLastMonth.getMonth() - 1);
                 endLastMonth = new Date(endTime);
                 endLastMonth.setMonth(endLastMonth.getMonth() - 1);
-                API.clientlocation.clientcountWithEE(
-                    req.session.vpcUrl,
-                    req.session.accessToken,
-                    req.session.ownerID,
+                API.clientlocation.clientcount.GETwithEE(
+                    req.session.xapi.current(),
                     location,
                     startLastMonth.toISOString(),
                     endLastMonth.toISOString(),
@@ -165,10 +161,8 @@ router.post('/api/update/widgets/', function (req, res, next) {
             startLastYear.setFullYear(startLastYear.getFullYear() - 1);
             endLastYear = new Date(endTime);
             endLastYear.setFullYear(endLastYear.getFullYear() - 1);
-            API.clientlocation.clientcountWithEE(
-                req.session.vpcUrl,
-                req.session.accessToken,
-                req.session.ownerID,
+            API.clientlocation.clientcount.GETwithEE(
+                req.session.xapi.current(),
                 location,
                 startLastYear.toISOString(),
                 endLastYear.toISOString(),
@@ -295,10 +289,8 @@ router.post("/api/update/widget-best/", function (req, res, next) {
         buildings = Location.getFilteredFloorsId(req.session.locations, locations, "BUILDING");
         buildings.forEach(function (location){
             // for each building, get the data from ACS
-            API.clientlocation.clientcount(
-                req.session.vpcUrl,
-                req.session.accessToken,
-                req.session.ownerID,
+            API.clientlocation.clientcount.GET(
+                req.session.xapi.current(),
                 location,
                 startTime.toISOString(),
                 endTime.toISOString(),
