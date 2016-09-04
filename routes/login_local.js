@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 var passport = require('passport');
 
-var apiToken = require('./../config').aerohive;
 /* GET home page. */
 router.get('/login/', function (req, res, next) {
     if (req.session.hasOwnProperty("passport")) res.redirect('/dashboard/');
