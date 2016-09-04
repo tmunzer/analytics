@@ -15,20 +15,6 @@ router.post('/login',
         successRedirect: '/dashboard/',
         failureRedirect: '/login/',
         failureFlash: true
-    }, function (req, res) {
-        req.session.xapi = {
-            owners: [],
-            ownerIndex: 0,
-            rejectUnauthorized: true,
-        };
-        req.session.xapi.owners.push({
-            vhmId: "N/A",
-            ownerId: apiToken.ownerId,
-            vpcUrl: apiToken.vpcUrl,
-            accessToken: apiToken.accessToken
-        });
-        console.log(res.session);
-        res.json();
     })
 );
 /* Handle Logout */
