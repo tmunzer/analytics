@@ -27,6 +27,7 @@ router.post('/login',
             vpcUrl: apiToken.vpcUrl,
             accessToken: apiToken.accessToken
         });
+        console.log(res.session);
         res.json();
     })
 );
