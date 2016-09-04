@@ -51,7 +51,7 @@ if (loginMethod) {
       if (err) throw err;
       else console.log("Connected to Database container!");
     });
-    mongoose.connect('mongodb://10.0.20.11/tac');
+    mongoose.connect('mongodb://tac-mongo/tac');
     //===============PASSPORR=================
     var passport = require('passport');
     app.use(passport.initialize());
