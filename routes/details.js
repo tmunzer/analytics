@@ -19,7 +19,7 @@ router.get('/', function (req, res, next) {
             ownerId: currentApi.ownerID,
             accessToken: currentApi.accessToken
         });
-    } else res.redirect("/");
+    } else res.redirect("/login/");
 });
 
 
