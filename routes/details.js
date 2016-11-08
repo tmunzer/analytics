@@ -49,7 +49,7 @@ router.post('/api/clienttimeseries/', function (req, res, next) {
     series = [];
     timeseries = [];
     locDone = 0;
-    if (req.body.hasOwnProperty('startTime') && req.body.hasOwnProperty('endTime')) {
+    if (req.body.startTime && req.body.endTime) {
         // retrieve the start time and end time from the POST method
         startTime = new Date(req.body['startTime']);
         endTime = new Date(req.body['endTime']);
@@ -65,7 +65,7 @@ router.post('/api/clienttimeseries/', function (req, res, next) {
 
         // if the "locations" parameter exists, and is not null, will filter the request based on the locations selected by the user
         // otherwise takes the "root" folder
-        if (req.body.hasOwnProperty("locations")) {
+        if (req.body.locations) {
             locations = JSON.parse(req.body['locations']);
             if (locations.length == 0) locations = [req.session.locations.id];
         } else locations = [req.session.locations.id];
@@ -86,7 +86,7 @@ router.post('/api/clienttimeseries/', function (req, res, next) {
                         series = result['times'];
                         for (var i in series) {
                             //add the values for this location to the values for all locations
-                            if (timeseries.hasOwnProperty(i)) {
+                            if (timeseries[i]) {
                                 timeseries[i]["uniqueClients"] += series[i]['uniqueClients'];
                                 timeseries[i]["engagedClients"] += series[i]['engagedClients'];
                                 timeseries[i]["passersbyClients"] += series[i]['passersbyClients'];

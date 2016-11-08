@@ -34,7 +34,7 @@ router.post('/api/update/cards/', function (req, res, next) {
     var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
 
     var locations = [];
-    if (req.body.hasOwnProperty('locations')) locations = JSON.parse(req.body['locations']);
+    if (req.body.locations) locations = JSON.parse(req.body.locations);
 
     endpoints.monitor.device.getDevices(currentApi, devAccount, function (err, devices) {
         if (err) res.send(err);
@@ -92,14 +92,14 @@ router.post('/api/update/widgets/', function (req, res, next) {
         "newClients": 0,
         "returningClients": 0
     };
-    if (req.body.hasOwnProperty('startTime') && req.body.hasOwnProperty('endTime')) {
+    if (req.body.startTime && req.body.endTime) {
         // retrieve the start time and end time from the POST method
         startTime = new Date(req.body['startTime']);
         endTime = new Date(req.body['endTime']);
 
         // if the "locations" parameter exists, and is not null, will filter the request based on the locations selected by the user
         // otherwise takes the "root" folder
-        if (req.body.hasOwnProperty("locations")) {
+        if (req.body.locations) {
             locations = JSON.parse(req.body['locations']);
             if (locations.length == 0) locations = [req.session.locations.id];
         } else locations = [req.session.locations.id];
@@ -264,14 +264,14 @@ router.post("/api/update/widget-best/", function (req, res, next) {
     var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
 
     var startTime, endTime, locDone, bestLocations, locations, buildings;
-    if (req.body.hasOwnProperty('startTime') && req.body.hasOwnProperty('endTime')) {
+    if (req.body.startTime && req.body.endTime) {
         // retrieve the start time and end time from the POST method
         startTime = new Date(req.body['startTime']);
         endTime = new Date(req.body['endTime']);
 
         // if the "locations" parameter exists, and is not null, will filter the request based on the locations selected by the user
         // otherwise takes the "root" folder
-        if (req.body.hasOwnProperty("locations")) {
+        if (req.body.locations) {
             locations = JSON.parse(req.body['locations']);
             if (locations.length == 0) locations = [req.session.locations.id];
         } else locations = [req.session.locations.id];

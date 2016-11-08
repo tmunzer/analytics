@@ -67,7 +67,7 @@ function displayBestLocation(param, title, percentage){
     sortable.sort(function(a, b) {return b[1] - a[1]});
 
     for (var i = 0; i < 5; i++){
-        if (sortable.hasOwnProperty(i)){
+        if (sortable[i]){
         xAxisData.push(sortable[i][0]);
         data.push(parseInt(sortable[i][1]));
         } else {

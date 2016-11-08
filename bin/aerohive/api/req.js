@@ -14,7 +14,7 @@ var https = require('https');
  *  */
 module.exports.GET = function (xapi, path, devAccount, callback) {
     var rejectUnauthorized = true;
-    if (xapi.hasOwnProperty('rejectUnauthorized')) rejectUnauthorized = xapi.rejectUnauthorized;
+    if (xapi.ejectUnauthorized) rejectUnauthorized = xapi.rejectUnauthorized;
 
     var options = {
         rejectUnauthorized: rejectUnauthorized,
@@ -46,7 +46,7 @@ module.exports.GET = function (xapi, path, devAccount, callback) {
  *  */
 module.exports.POST = function (xapi, path, data, devAccount, callback) {
     var rejectUnauthorized = true;
-    if (xapi.hasOwnProperty('rejectUnauthorized')) rejectUnauthorized = xapi.rejectUnauthorized;
+    if (xapi.rejectUnauthorized) rejectUnauthorized = xapi.rejectUnauthorized;
     var options = {
         rejectUnauthorized: rejectUnauthorized,
         host: xapi.vpcUrl,
@@ -82,7 +82,7 @@ module.exports.PUT = function (xapi, path, devAccount, callback) {
     console.log("==");
     console.log(devAccount);
     var rejectUnauthorized = true;
-    if (xapi.hasOwnProperty('rejectUnauthorized')) rejectUnauthorized = xapi.rejectUnauthorized;
+    if (xapi.rejectUnauthorized) rejectUnauthorized = xapi.rejectUnauthorized;
     var options = {
         rejectUnauthorized: rejectUnauthorized,
         host: xapi.vpcUrl,
@@ -114,7 +114,7 @@ module.exports.PUT = function (xapi, path, devAccount, callback) {
  *  */
 module.exports.DELETE = function (xapi, path, devAccount, callback) {
     var rejectUnauthorized = true;
-    if (xapi.hasOwnProperty('rejectUnauthorized')) rejectUnauthorized = xapi.rejectUnauthorized;
+    if (xapi.rejectUnauthorized) rejectUnauthorized = xapi.rejectUnauthorized;
     var options = {
         rejectUnauthorized: rejectUnauthorized,
         host: xapi.vpcUrl,
@@ -161,11 +161,11 @@ function httpRequest(options, callback, body){
                 default:
                     var error = {};
                     console.error(result);
-                    if (result.error.hasOwnProperty('status')) error.status = result.error.status;
+                    if (result.error.status) error.status = result.error.status;
                     else error.status = result.result.status;
-                    if (result.error.hasOwnProperty('message')) error.message = result.error.message;
+                    if (result.error.message) error.message = result.error.message;
                     else error.message = result.error;
-                    if (result.error.hasOwnProperty('code')) error.code = result.error.code;
+                    if (result.error.code) error.code = result.error.code;
                     else error.code = "";
                     callback(error, result.data);
                     break;

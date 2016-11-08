@@ -75,7 +75,7 @@ router.post('/common/timeline/', function (req, res, next) {
     var startTime, endTime, timeUnit, locations, locDone, timelineReq;
     var timeline = [];
 
-    if (req.body.hasOwnProperty('startTime') && req.body.hasOwnProperty('endTime')) {
+    if (req.body.startTime && req.body.endTime) {
         // retrieve the start time and end time from the POST method
         startTime = new Date(req.body['startTime']);
         endTime = new Date(req.body['endTime']);
@@ -93,7 +93,7 @@ router.post('/common/timeline/', function (req, res, next) {
 
         // if the "locations" parameter exists, and is not null, will filter the request based on the locations selected by the user
         // otherwise takes the "root" folder
-        if (req.body.hasOwnProperty("locations")) {
+        if (req.body.locations) {
             locations = JSON.parse(req.body['locations']);
             if (locations.length == 0) locations = [req.session.locations.id];
         } else locations = [req.session.locations.id];
@@ -107,7 +107,7 @@ router.post('/common/timeline/', function (req, res, next) {
                 else {
                     // will addition the number of "unique client" from each location to get an overall number of unique clients
                     for (var i in result['times']) {
-                        if (timeline.hasOwnProperty(i)) {
+                        if (timeline[i]) {
                             timeline[i]["uniqueClients"] += result['times'][i]['uniqueClients'];
                         } else timeline[i] = {time: result['times'][i]['time'], uniqueClients: result['times'][i]['uniqueClients']};
                     }

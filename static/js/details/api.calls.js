@@ -56,9 +56,9 @@ function updateHeatmap() {
 
         var heatmapTemp = {};
         for (var x = 0; x < 24; x++) {
-            if (!heatmapTemp.hasOwnProperty(x)) heatmapTemp[x] = {};
+            if (!heatmapTemp[x]) heatmapTemp[x] = {};
             for (var y = 0; y < 7; y++) {
-                if (!heatmapTemp[x].hasOwnProperty(y)) heatmapTemp[x][y] = {};
+                if (!heatmapTemp[x][y]) heatmapTemp[x][y] = {};
                 heatmapTemp[x][y]['numEntries'] = 0;
                 heatmapTemp[x][y]['uniqueClients'] = 0;
                 heatmapTemp[x][y]['engagedClients'] = 0;

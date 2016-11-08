@@ -4,7 +4,7 @@ var passport = require('passport');
 
 /* GET home page. */
 router.get('/login/', function (req, res, next) {
-    if (req.session.hasOwnProperty("passport")) res.redirect('/dashboard/');
+    if (req.session.passport) res.redirect('/dashboard/');
     else res.render('login_local', {title: 'Admin Login'});
 
 });
@@ -18,7 +18,7 @@ router.post('/login',
 );
 /* Handle Logout */
 router.get('/logout/', function (req, res) {
-    if (req.session.hasOwnProperty('passport')) console.log("User " + req.session.passport.user.email+ " is now logged out.");
+    if (req.session.passport) console.log("User " + req.session.passport.user.email+ " is now logged out.");
     req.logout();
     req.session.destroy();
     res.redirect('/login/');

@@ -11,18 +11,18 @@ var devAccount = require("./../config").devAccount;
  ================================================================*/
 router.get('/', function (req, res, next) {
   var errorcode;
-  if (req.query.hasOwnProperty('errorcode')) errorcode = req.query["errorcode"];
+  if (req.query.errorcode) errorcode = req.query["errorcode"];
   res.render('login_api', { title: 'Analytics', errorcode: errorcode, client_id: devAccount.clientID, redirect_uri: devAccount.redirectUrl });
 });
 router.post('/', function (req, res, next) {
   var ownerIdRegexp = new RegExp("^[0-9]*$");
   var accessTokenRegexp = new RegExp("^[a-zA-Z0-9]{40}$");
   var apiServers = ["cloud-va.aerohive.com", "cloud-ie.aerohive.com"];
-  if (!(req.body.hasOwnProperty("vpcUrl") && apiServers.indexOf(req.body["vpcUrl"]) >= 0)) {
+  if (!(req.body.vpcUrl && apiServers.indexOf(req.body["vpcUrl"]) >= 0)) {
     res.redirect("/?errorcode=1");
-  } else if (!(req.body.hasOwnProperty("ownerId") && ownerIdRegexp.test(req.body['ownerId']))) {
+  } else if (!(req.body.ownerId && ownerIdRegexp.test(req.body['ownerId']))) {
     res.redirect("/?errorcode=2");
-  } else if (!req.body.hasOwnProperty("accessToken")) {
+  } else if (!req.body.accessToken) {
     res.redirect("/?errorcode=3");
   } else {
     req.session.xapi = {
