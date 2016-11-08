@@ -1,7 +1,7 @@
 var LocalStrategy = require('passport-local').Strategy;
 var User = require("./users");
 
-var appServer = require('./../config').appServer;
+var devAccount = require('./../config').devAccount;
 module.exports = function (passport) {
 
     passport.use('login', new LocalStrategy({
@@ -22,9 +22,9 @@ module.exports = function (passport) {
                     };
                     req.session.xapi.owners.push({
                         vhmId: "N/A",
-                        ownerId: appServer.ownerId,
-                        vpcUrl: appServer.vpcUrl,
-                        accessToken: appServer.accessToken
+                        ownerId: devAccount.ownerId,
+                        vpcUrl: devAccount.vpcUrl,
+                        accessToken: devAccount.accessToken
                     });
                     return done(null, user);
                 }

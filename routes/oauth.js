@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var OAuth = require("../bin/aerohive/api/oauth");
-var ApiConf = require("./../config").appServer;
+var ApiConf = require("./../config").devAccount;
 var Error = require('../routes/error');
 
 router.get('/reg', function (req, res) {
