@@ -38,7 +38,7 @@ module.exports.GET = function (xapi, devAccount, deviceId, callback) {
  * @param {String} devAccount.redirectURL - Aerohive Developper Account redirectURL
  *  */
 module.exports.PUT = function (xapi, devAccount, deviceId, changes, callback) {
-    var path = "/beta/configuration/devices/" + deviceId + "/ssids?ownerId=" + xapi.ownerID;
+    var path = "/beta/configuration/devices/" + deviceId + "/ssids?ownerId=" + xapi.ownerId;
     api.PUT(xapi, path, changes, devAccount, function (err, result) {
         if (err) {
             callback(err, null);

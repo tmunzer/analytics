@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var devAccount = require("./../config").aerohive;
+var devAccount = require("./../config").appServer;
 
 
 /*================================================================
@@ -20,7 +20,7 @@ router.post('/', function (req, res, next) {
   var apiServers = ["cloud-va.aerohive.com", "cloud-ie.aerohive.com"];
   if (!(req.body.hasOwnProperty("vpcUrl") && apiServers.indexOf(req.body["vpcUrl"]) >= 0)) {
     res.redirect("/?errorcode=1");
-  } else if (!(req.body.hasOwnProperty("ownerID") && ownerIdRegexp.test(req.body['ownerID']))) {
+  } else if (!(req.body.hasOwnProperty("ownerId") && ownerIdRegexp.test(req.body['ownerId']))) {
     res.redirect("/?errorcode=2");
   } else if (!req.body.hasOwnProperty("accessToken")) {
     res.redirect("/?errorcode=3");

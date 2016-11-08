@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-var devAccount = require("./../config").aerohive;
+var devAccount = require("./../config").appServer;
 var endpoints = require("../bin/aerohive/api/main");
 /*================================================================
  ROUTES
@@ -16,7 +16,7 @@ router.get('/', function (req, res, next) {
             title: 'Analytics',
             current_page: 'details',
             server: currentApi.vpcUrl,
-            ownerId: currentApi.ownerID,
+            ownerId: currentApi.ownerId,
             accessToken: currentApi.accessToken
         });
     } else res.redirect("/login/");
