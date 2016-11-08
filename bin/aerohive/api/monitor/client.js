@@ -35,15 +35,15 @@ module.exports.clientsList = function (xapi, devAccount, callback) {
  * @param {String} xapi.vpcUrl - ACS server to request
  * @param {String} xapi.ownerId - ACS ownerId
  * @param {String} xapi.accessToken - ACS accessToken
- * @param {String} clientId - The unique number of the client device.
+ * @param {String} clientID - The unique number of the client device.
  * @param {Object} devAccount - information about the Aerohive developper account to user
  * @param {String} devAccount.clientID - Aerohive Developper Account ClientID
  * @param {String} devAccount.clientSecret - Aerohive Developper Account secret
  * @param {String} devAccount.redirectURL - Aerohive Developper Account redirectURL
  *  */
-module.exports.clientDetails = function (xapi, devAccount, clientId, callback) {
+module.exports.clientDetails = function (xapi, devAccount, clientID, callback) {
 
-    var path = '/xapi/v1/monitor/clients/'+clientId+'?ownerId=' + xapi.ownerId;
+    var path = '/xapi/v1/monitor/clients/'+clientID+'?ownerId=' + xapi.ownerId;
 
     // send the API request
     api.GET(xapi, path, devAccount, function (err, result) {

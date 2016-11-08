@@ -12,7 +12,7 @@ var devAccount = require("./../config").aerohive;
 router.get('/', function (req, res, next) {
   var errorcode;
   if (req.query.hasOwnProperty('errorcode')) errorcode = req.query["errorcode"];
-  res.render('login_api', { title: 'Analytics', errorcode: errorcode, client_id: devAccount.clientId, redirect_uri: devAccount.redirectUrl });
+  res.render('login_api', { title: 'Analytics', errorcode: errorcode, client_id: devAccount.clientID, redirect_uri: devAccount.redirectUrl });
 });
 router.post('/', function (req, res, next) {
   var ownerIdRegexp = new RegExp("^[0-9]*$");
@@ -35,7 +35,7 @@ router.post('/', function (req, res, next) {
     };
     req.session.xapi.owners.push({
       vhmId: "N/A",
-      ownerId: req.body["ownerID"],
+      ownerID: req.body["ownerID"],
       vpcUrl: req.body["vpcUrl"],
       accessToken: req.body["accessToken"].trim()
     });

@@ -3,5 +3,5 @@
 module.exports.aerohive = {
     redirectUrl: "https://<server>/oauth/reg",
     clientSecret: "xxxxxxxxxxxxxxxxxxxxxxxxxxx",
-    clientId: "xxxxxxxxx"
+    clientID: "xxxxxxxxx"
 }

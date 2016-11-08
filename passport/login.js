@@ -1,7 +1,7 @@
 var LocalStrategy = require('passport-local').Strategy;
 var User = require("./users");
 
-var apiToken = require('./../config').aerohive;
+var appServer = require('./../config').appServer;
 module.exports = function (passport) {
 
     passport.use('login', new LocalStrategy({
@@ -22,9 +22,9 @@ module.exports = function (passport) {
                     };
                     req.session.xapi.owners.push({
                         vhmId: "N/A",
-                        ownerId: apiToken.ownerId,
-                        vpcUrl: apiToken.vpcUrl,
-                        accessToken: apiToken.accessToken
+                        ownerId: appServer.ownerId,
+                        vpcUrl: appServer.vpcUrl,
+                        accessToken: appServer.accessToken
                     });
                     return done(null, user);
                 }

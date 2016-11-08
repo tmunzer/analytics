@@ -24,7 +24,7 @@ module.exports.GET = function (xapi, path, devAccount, callback) {
         method: "GET",
         headers: {
             'X-AH-API-CLIENT-SECRET': devAccount.clientSecret,
-            'X-AH-API-CLIENT-ID': devAccount.clientId,
+            'X-AH-API-CLIENT-ID': devAccount.clientID,
             'X-AH-API-CLIENT-REDIRECT-URI': devAccount.redirectUrl,
             'Authorization': "Bearer " + xapi.accessToken
         }
@@ -55,7 +55,7 @@ module.exports.POST = function (xapi, path, data, devAccount, callback) {
         method: "POST",
         headers: {
             'X-AH-API-CLIENT-SECRET': devAccount.clientSecret,
-            'X-AH-API-CLIENT-ID': devAccount.clientId,
+            'X-AH-API-CLIENT-ID': devAccount.clientID,
             'X-AH-API-CLIENT-REDIRECT-URI': devAccount.redirectUrl,
             'Authorization': "Bearer " + xapi.accessToken,
             'Content-Type': 'application/json'
@@ -91,7 +91,7 @@ module.exports.PUT = function (xapi, path, devAccount, callback) {
         method: "PUT",
         headers: {
             'X-AH-API-CLIENT-SECRET': devAccount.clientSecret,
-            'X-AH-API-CLIENT-ID': devAccount.clientId,
+            'X-AH-API-CLIENT-ID': devAccount.clientID,
             'X-AH-API-CLIENT-REDIRECT-URI': devAccount.redirectUrl,
             'Authorization': "Bearer " + xapi.accessToken,
             'Content-Type': 'application/json'
@@ -123,7 +123,7 @@ module.exports.DELETE = function (xapi, path, devAccount, callback) {
         method: "DELETE",
         headers: {
             'X-AH-API-CLIENT-SECRET': devAccount.clientSecret,
-            'X-AH-API-CLIENT-ID': devAccount.clientId,
+            'X-AH-API-CLIENT-ID': devAccount.clientID,
             'X-AH-API-CLIENT-REDIRECT-URI': devAccount.redirectUrl,
             'Authorization': "Bearer " + xapi.accessToken
         }

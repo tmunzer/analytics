@@ -1,6 +1,5 @@
 
 var path = require('path');
-global.appRoot = path.resolve(__dirname);
 
 var express = require('express');
 var parseurl = require('parseurl');
@@ -11,7 +10,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var app = express();
-app.use('/bower_components', express.static(appRoot + '/bower_components'));
+app.use('/bower_components', express.static('../bower_components'));
 
 app.use(session({
   secret: 'Aerohive Analytics Ref APP Secret',

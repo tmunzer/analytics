@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var devAccount = require("./../config").aerohive;
-var endpoints = require(appRoot + "/bin/aerohive/api/main");
+var endpoints = require("../bin/aerohive/api/main");
 /*================================================================
  ROUTES
  ================================================================*/
