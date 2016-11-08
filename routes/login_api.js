@@ -35,7 +35,7 @@ router.post('/', function (req, res, next) {
     };
     req.session.xapi.owners.push({
       vhmId: "N/A",
-      ownerID: req.body["ownerID"],
+      ownerId: req.body["ownerId"],
       vpcUrl: req.body["vpcUrl"],
       accessToken: req.body["accessToken"].trim()
     });
