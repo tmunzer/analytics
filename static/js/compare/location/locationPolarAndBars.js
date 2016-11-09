@@ -222,7 +222,6 @@ function updatePolarAndBars() {
                         bestLocations.returning.worst = currentLocation.name;
                     }
                 });
-                console.log(bestLocations);
                 $("#storefrontBest").html(bestLocations.storefront.best);
                 $("#storefrontWorst").html(bestLocations.storefront.worst);
                 $("#passersByBest").html(bestLocations.passersBy.best);

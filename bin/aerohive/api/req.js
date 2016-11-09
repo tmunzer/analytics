@@ -78,9 +78,6 @@ module.exports.POST = function (xapi, path, data, devAccount, callback) {
  * @param {String} devAccount.redirectURL - Aerohive Developper Account redirectURL
  *  */
 module.exports.PUT = function (xapi, path, devAccount, callback) {
-    console.log(xapi);
-    console.log("==");
-    console.log(devAccount);
     var rejectUnauthorized = true;
     if (xapi.rejectUnauthorized) rejectUnauthorized = xapi.rejectUnauthorized;
     var options = {
@@ -136,7 +133,6 @@ function httpRequest(options, callback, body){
     result.request = {};
     result.result = {};
 
-    console.info(options);
     result.request.options = options;
     var req = https.request(options, function (res) {
         result.result.status = res.statusCode;

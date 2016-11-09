@@ -1,6 +1,4 @@
 function displayModal(errorSource, error){
-    console.log(errorSource);
-    console.log(error);
     var title, body, footer;
     switch (errorSource){
         case "API":
