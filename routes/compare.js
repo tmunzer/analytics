@@ -49,7 +49,7 @@ router.post('/api/location/polar/', function (req, res, next) {
     var startTime, endTime, locations, locDone, averageDone, numLoc, polarReq;
     var locResult = [];
     var dataAverage = [];
-    if (req.body.hasOwnProperty('startTime') && req.body.hasOwnProperty('endTime')) {
+    if (req.body.startTime && req.body.endTime) {
         // retrieve the start time and end time from the POST method
         startTime = new Date(req.body['startTime']);
         endTime = new Date(req.body['endTime']);
@@ -59,12 +59,12 @@ router.post('/api/location/polar/', function (req, res, next) {
 
         // if the "locations" parameter exists, and is not null, will filter the request based on the locations selected by the user
         // otherwise takes the "root" folder
-        if (req.body.hasOwnProperty("locations")) {
+        if (req.body.ocations) {
             locations = JSON.parse(req.body['locations']);
             if (locations.length == 0) locations = [req.session.locations.id];
         } else locations = [req.session.locations.id];
         // Only take into account the type of locations defined by the user
-        if (req.body.hasOwnProperty("filterFolder")) {
+        if (req.body.filterFolder) {
             switch (req.body["filterFolder"]) {
                 case "GENERIC":
                     numLoc = req.session.locationsCount['folder'];
@@ -171,7 +171,7 @@ router.post('/api/location/timeline/', function (req, res, next) {
     var startTime, endTime, timeUnit, location, locations, locDone, timelineReq;
     var dataLocation = [];
     var timeserie = [];
-    if (req.body.hasOwnProperty('startTime') && req.body.hasOwnProperty('endTime')) {
+    if (req.body.startTime && req.body.endTime) {
         // retrieve the start time and end time from the POST method
         startTime = new Date(req.body['startTime']);
         endTime = new Date(req.body['endTime']);
@@ -191,7 +191,7 @@ router.post('/api/location/timeline/', function (req, res, next) {
 
         // if the "locations" parameter exists, and is not null, will filter the request based on the locations selected by the user
         // otherwise takes the "root" folder
-        if (req.body.hasOwnProperty("locations")) {
+        if (req.body.locations) {
             locations = JSON.parse(req.body['locations']);
             if (locations.length == 0) locations = [req.session.locations.id];
         } else locations = [req.session.locations.id];
@@ -268,7 +268,7 @@ router.post("/api/period/polar/", function (req, res, next) {
     var oneHour, oneDay, oneWeek, oneMonth, range, reqPeriods, i;
     var startTime, endTime, locations, ajaxReqId;
 
-    if (req.body.hasOwnProperty('startTime') && req.body.hasOwnProperty('endTime')) {
+    if (req.body.startTime && req.body.endTime) {
         // retrieve the start time and end time from the POST method
         startTime = new Date(req.body['startTime']);
         endTime = new Date(req.body['endTime']);
@@ -279,7 +279,7 @@ router.post("/api/period/polar/", function (req, res, next) {
 
         // if the "locations" parameter exists, and is not null, will filter the request based on the locations selected by the user
         // otherwise takes the "root" folder
-        if (req.body.hasOwnProperty("locations")) {
+        if (req.body.locations) {
             locations = JSON.parse(req.body['locations']);
             if (locations.length == 0) locations = [req.session.locations.id];
         } else locations = [req.session.locations.id];
@@ -498,7 +498,7 @@ router.post('/api/period/timeline/', function (req, res, next) {
     var timeserie = [];
 
 
-    if (req.body.hasOwnProperty('startTime') && req.body.hasOwnProperty('endTime')) {
+    if (req.body.startTime && req.body.endTime) {
         // retrieve the start time and end time from the POST method
         startTime = new Date(req.body['startTime']);
         endTime = new Date(req.body['endTime']);
@@ -519,7 +519,7 @@ router.post('/api/period/timeline/', function (req, res, next) {
 
         // if the "locations" parameter exists, and is not null, will filter the request based on the locations selected by the user
         // otherwise takes the "root" folder
-        if (req.body.hasOwnProperty("locations")) {
+        if (req.body.locations) {
             locations = JSON.parse(req.body['locations']);
             if (locations.length == 0) locations = [req.session.locations.id];
         } else locations = [req.session.locations.id];
