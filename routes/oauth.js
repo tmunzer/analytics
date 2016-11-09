@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var OAuth = require("../bin/aerohive/api/oauth");
-var ApiConf = require("./../config").devAccount;
+var devAccount = require("../config").devAccount;
 var Error = require('../routes/error');
 
 router.get('/reg', function (req, res) {
@@ -9,7 +9,7 @@ router.get('/reg', function (req, res) {
         Error.render(req.query.error, "conf", req, res);
     } else if (req.query.authCode) {
         var authCode = req.query.authCode;
-        OAuth.getPermanentToken(authCode, ApiConf.redirectUrl, ApiConf.clientSecret, ApiConf.clientID, function (data) {
+        OAuth.getPermanentToken(authCode, devAccount.redirectUrl, devAccount.clientSecret, devAccount.clientID, function (data) {
             if (data.error) Error.render(data.error, "conf", req, res);
             else if (data.data) {
                 req.session.xapi = {
