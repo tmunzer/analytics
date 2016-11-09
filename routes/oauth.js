@@ -9,6 +9,7 @@ router.get('/reg', function (req, res) {
         Error.render(req.query.error, "conf", req, res);
     } else if (req.query.authCode) {
         var authCode = req.query.authCode;
+        console.log(devAccount);
         OAuth.getPermanentToken(authCode, devAccount.redirectUrl, devAccount.clientSecret, devAccount.clientID, function (data) {
             if (data.error) Error.render(data.error, "conf", req, res);
             else if (data.data) {
