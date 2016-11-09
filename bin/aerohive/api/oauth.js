@@ -6,18 +6,18 @@ var https = require('https');
  * @param {Object} devAccount - information about the Aerohive developper account to user
  * @param {String} devAccount.clientID - Aerohive Developper Account ClientID
  * @param {String} devAccount.clientSecret - Aerohive Developper Account secret
- * @param {String} devAccount.redirectURL - Aerohive Developper Account redirectURL
+ * @param {String} devAccount.redirectUrl - Aerohive Developper Account redirectUrl
  *  */
 module.exports.getPermanentToken = function(authCode, devAccount, callback){
     var options = {
         host: 'cloud.aerohive.com',
         port: 443,
-        path: '/services/acct/thirdparty/accesstoken?authCode='+authCode+'&redirectUri='+devAccount.redirectURL,
+        path: '/services/acct/thirdparty/accesstoken?authCode='+authCode+'&redirectUri='+devAccount.redirectUrl,
         method: 'POST',
         headers: {
             'X-AH-API-CLIENT-SECRET' : devAccount.clientSecret,
             'X-AH-API-CLIENT-ID': devAccount.clientID,
-            'X-AH-API-CLIENT-REDIRECT-URI': devAccount.redirectURL
+            'X-AH-API-CLIENT-REDIRECT-URI': devAccount.redirectUrl
         }
     };
 
