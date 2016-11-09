@@ -38,7 +38,7 @@ router.get('/period/', function (req, res, next) {
             ownerId: currentApi.ownerId,
             accessToken: currentApi.accessToken
         });
-    } else res.redirect("/login/");
+    } else res.redirect("/");
 });
 /*================================================================
  API - PER LOCATION COMPARISON
