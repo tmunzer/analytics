@@ -14,5 +14,8 @@
     "angular-messages": "~1.5.5",
     "jquery": "^2.2.3",
     "bootstrap": "^3.3.6"
+  },
+  "resolutions": {
+    "angular": "1.6.1"
   }
 }

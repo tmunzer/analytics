@@ -21,36 +21,40 @@ html
 
         link(rel='stylesheet' href='/css/ah-tm.login.css')
 
-    body(ng-app="login")
-        div(style="border-top: 2px solid rgb(255, 195, 15);" class="user-home-wrap" ng-controller="LoginCtrl")
-        img(src="/images/login_page_logo.png" alt="Aerohive" class="ah-logo")
-        div.page-footer
-            span(style="border: none;") © 2016 Aerohive Networks. All Rights Reserved.
+    body
+        div.container(ng-app="login" ng-controller="LoginCtrl")
+            div.logo
+                img(src="/images/Aerohive_Logo_150_white.png" alt="Aerohive" class="ah-logo")
+            div.page-footer
+                span(style="border: none;") © 2016 Aerohive Networks. All Rights Reserved.
+
+            
+            div.page-title
+                h1 Welcome to the XYZ Applicaiton
+                h2 Follow the instruction below to get started
+            div.page-login(layout="column" layout-align="center center" layout-gt-sm="row" layout-align-gt-sm="center start")
+                
+                div.box(style="width: 450px;")
+                    div.inside(md-whiteframe="5" style="width: 100%")
+                        md-toolbar
+                            div.md-toolbar-tools
+                                h2(translate="OAUTH.TITLE")
+                        md-content(layout="column")
+                            form(id="OAuth" action="https://cloud.aerohive.com/thirdpartylogin" method="get")
+                                input(type="hidden" name="client_id" value= client_id)
+                                input(type="hidden" name="redirect_uri" value= redirect_uri)
+                                div(style="margin: 30px;text-align: left;")
+                                    span(translate="OAUTH.TEXT1")
+                                div(style="margin: 30px;text-align: left;")
+                                    span(translate="OAUTH.TEXT2")
+                                    span=" "
+                                    a.link(href="https://en.wikipedia.org/wiki/OAuth" target="_blank" translate="OAUTH.WIKI")
+                                    span .
+                                div(style="width: 100%; text-align: center;")
+                                    md-button.md-raised.md-primary(type="submit" translate="OAUTH.OAUTH_BUTTON" aria-label="connect OAuth")
 
 
-        div(layout="column" layout-align="center center" layout-gt-sm="row" layout-align-gt-sm="center start")
-
-            div(style="width: 450px; margin-top: 58px;"  layout-margin)
-                div.inside(md-whiteframe="5" style="width: 100%")
-                    md-toolbar
-                        div.md-toolbar-tools
-                            h2(translate="OAUTH.TITLE")
-                    md-content(layout="column")
-                        form(id="OAuth" action="https://cloud.aerohive.com/thirdpartylogin" method="get")
-                            input(type="hidden" name="client_id" value= client_id)
-                            input(type="hidden" name="redirect_uri" value= redirect_uri)
-                            div(style="margin: 30px;text-align: left;")
-                                span(translate="OAUTH.TEXT1")
-                            div(style="margin: 30px;text-align: left;")
-                                span(translate="OAUTH.TEXT2")
-                                span=" "
-                                a.link(href="https://en.wikipedia.org/wiki/OAuth" target="_blank" translate="OAUTH.WIKI")
-                                span .
-                            div(style="width: 100%; text-align: center;")
-                                md-button.md-raised.md-primary(type="submit" translate="OAUTH.OAUTH_BUTTON" aria-label="connect OAuth")
-
-
-            div(style="width: 450px;" layout-margin)
+                div.box(style="width: 450px;")
                     div.inside(md-whiteframe="5" style="width: 100%" )                    
                             md-toolbar
                                 div.md-toolbar-tools
