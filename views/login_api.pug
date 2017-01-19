@@ -24,13 +24,13 @@ html
     body
         div.container(ng-app="login" ng-controller="LoginCtrl")
             div.logo
-                img(src="/images/Aerohive_Logo_150_white.png" alt="Aerohive" class="ah-logo")
+                img(src="/images/login_page_logo.png" alt="Aerohive" class="ah-logo")
             div.page-footer
                 span(style="border: none;") © 2016 Aerohive Networks. All Rights Reserved.
 
             
             div.page-title
-                h1 Welcome to the XYZ Applicaiton
+                h1 Welcome to the #{title} Application
                 h2 Follow the instruction below to get started
             div.page-login(layout="column" layout-align="center center" layout-gt-sm="row" layout-align-gt-sm="center start")
                 
@@ -63,8 +63,8 @@ html
                                 md-input-container
                                     label(for="vpcUrlOl" translate="TOKEN.SERVER")
                                     md-select(id="vpcUrlOl" name="vpcUrl" ng-model="vpcUrl")
-                                        md-option(value="cloud-va.aerohive.com") cloud-va.aerohive.com
-                                        md-option(value="cloud-ie.aerohive.com") cloud-ie.aerohive.com
+                                        each apiServer in apiServers
+                                            md-option(value=apiServer)= apiServer
                                 form(id="ATOl" action="/" method="post")
                                     input(type="hidden" name="vpcUrl" value='{{vpcUrl}}')
                                     md-input-container.md-block.flex-gt-sm

@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var devAccount = require("../config").devAccount;
 
+var apiServers = ["cloud-va.aerohive.com", "cloud-va2.aerohive.com", "cloud-ie.aerohive.com"];
 
 /*================================================================
  ROUTES
@@ -12,12 +13,17 @@ var devAccount = require("../config").devAccount;
 router.get('/', function (req, res, next) {
   var errorcode;
   if (req.query.errorcode) errorcode = req.query["errorcode"];
-  res.render('login_api', { title: 'Analytics', errorcode: errorcode, client_id: devAccount.clientID, redirect_uri: devAccount.redirectUrl });
+  res.render('login_api', { 
+    title: 'Analytics', 
+    errorcode: errorcode, 
+    client_id: devAccount.clientID, 
+    redirect_uri: devAccount.redirectUrl ,
+    apiServers: apiServers
+          });
 });
 router.post('/', function (req, res, next) {
   var ownerIdRegexp = new RegExp("^[0-9]*$");
   var accessTokenRegexp = new RegExp("^[a-zA-Z0-9]{40}$");
-  var apiServers = ["cloud-va.aerohive.com", "cloud-ie.aerohive.com"];
   if (!(req.body.vpcUrl && apiServers.indexOf(req.body["vpcUrl"]) >= 0)) {
     res.redirect("/?errorcode=1");
   } else if (!(req.body.ownerId && ownerIdRegexp.test(req.body['ownerId']))) {

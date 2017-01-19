@@ -2,12 +2,12 @@ html,body {
     min-height:100%;
     height: auto;
     
-    background-image: url("/images/background.jpg");
+    /*background-image: url("/images/background.jpg");*/
     background-color: #F5F5F5;
     z-index: -1;
 }
 .container::before {
-    background-color: black;
+    /*background-color: black;*/
     opacity: 0.6;
     position: absolute;
     width: 100%;
@@ -36,7 +36,8 @@ html,body {
 .page-title h1,
 .page-title h2,
 .page-footer span {
-    color: white;
+    /*color: white;*/
+    color: rgba(0,0,0,0.54);
 }
 
 .page-login {

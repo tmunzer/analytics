@@ -13,7 +13,8 @@
     "angular-material": "^1.1.0",
     "angular-messages": "~1.5.5",
     "jquery": "^2.2.3",
-    "bootstrap": "^3.3.6"
+    "bootstrap": "^3.3.6",
+    "highcharts-ng": "^1.0.0"
   },
   "resolutions": {
     "angular": "1.6.1"
