@@ -1,3 +1,7 @@
+body {
+    margin: 0;
+}
+
 .howto-box {
     padding: 14px 10px 16px;
     position: relative;

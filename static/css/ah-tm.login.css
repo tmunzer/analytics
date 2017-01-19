@@ -1,60 +1,24 @@
 html,body {
-    min-height:100%;
-    height: auto;
-    
-    /*background-image: url("/images/background.jpg");*/
-    background-color: #F5F5F5;
-    z-index: -1;
-}
-.container::before {
-    /*background-color: black;*/
-    opacity: 0.6;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    content: " ";
-    z-index: -2;
-}
-.container {
-   border-top: 2px solid rgb(255, 195, 15);
+    height:100%;
 
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#cccccc+0,eeeeee+100 */
+    background-color: #F5F5F5;
 }
-@media screen and (max-width: 960px) {
-    div.logo {
-        text-align: center;
-    }
-}
+
 .ah-logo {
-    margin: 20px 50px 0 50px;
+    margin-left: 21px;
+    margin-top: 19px;
     width: 204px;
 }
 
-.page-title {
-    width: 100%;
-    text-align: center;
-}
-.page-title h1,
-.page-title h2,
-.page-footer span {
-    /*color: white;*/
-    color: rgba(0,0,0,0.54);
-}
 
-.page-login {
-    padding-bottom: 50px;
-    width: 100%;
-}
-div.box {
-    margin: 20px;
-}
 .page-footer {
     font-size: 14px;
     font-weight: 400;
     color: #909090;
-    position: absolute;
-    bottom: 20px;
-    width: 100%;
-    text-align: center;
+    position: fixed;
+    bottom: 10px;
+    right: 21px;
 }
 
 .page-footer span {

@@ -1,79 +1,47 @@
 body {
-    background-color: #F5F5F5;
+    background-color: #FFF;
 }
 
-#main {
-    padding-top: 80px;
-    margin: 0 2%;
+md-sidenav {
+    min-width: 250px;
+    max-width: 250px;
 }
 
 .clearfix {
     margin-top: 10px;
 }
-/*============================================== /
-/ ================== NAV ==================== /
-/ ============================================== */
-nav {
-    margin: 10px 0;
-    background-color: #2C3E50;
-    text-align: center;
-    height: 50px;
+
+* {
+    outline: none;
 }
 
-nav button {
-    height: 50px;
-    margin: 0;
+md-icon,
+.card {
+    transition: all .2s ease-in-out;
 }
 
-
-/*============================================== /
-/ ================== ASIDE ==================== /
-/ ============================================== */
-aside {
-    float: left;
-    min-width: 250px;
-    margin-right: 10px;
-}
-/*============================================== /
-/ ================== SECTION ==================== /
-/ ============================================== */
-section {
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
+a.link, a.link:visited {
+    color: rgb(102, 187, 106);
+    text-decoration: none;
+    font-weight: 500;
 }
 
-.right {
-    margin-left: 10px;
-}
-.left {
-    margin-right: 10px;
-}
 /*============================================== /
 / ================== ARTCILE ==================== /
 / ============================================== */
-article > .inside{
-    margin: 10px 0;
-    /*padding: 5px;*/
-    background: white;
-    box-shadow: 0 0 50px 1px rgba(150, 150, 150, 0.5);
-    display: inline-block;
-    width: 100%;
+article {
+    margin: 15px;
 }
 
-
 article .title {
-    background-color: #3694D1;
+    background-color: rgb(30, 136, 229);
     padding: 10px;
     text-align: left;
     font-size: 20px;
-    font-weight: lighter;
+    font-weight: 200;
     text-transform: uppercase;
     color: white;
 }
-
-
-
 
 li {
     list-style: none;
@@ -84,15 +52,81 @@ li {
 }
 
 h3, .h3 {
-    background-color: #3694D1;
+    background-color: rgb(30, 136, 229);
     padding: 10px;
     text-align: left;
-    font-size: 12;
-    font-weight: lighter;
+    font-size: 12px;
+    font-weight: 400;
     text-transform: uppercase;
     color: white;
-    /*margin: 1px 0;*/
-    margin: 0;
+    margin: 1px 0;
 }
 
+.main-menu .md-button {
+    padding: 5px !important;
+    margin: 0 10px !important;
+    border-radius: 0;
+}
 
+.main-menu .md-button:hover {
+    border-top: 4px solid rgba(158, 158, 158, 0.2);
+}
+
+.main-menu .md-button.cur {
+    border-top: 4px solid rgb(76, 175, 80);
+}
+
+.header {
+    height: 70px;
+    width: 100%;
+}
+
+.header.fixed {
+    position: fixed;
+    top: 0;
+    z-index: 75;
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#1e88ef+0,1e88ef+25,0060c7+100 */
+    background: #1e88ef; /* Old browsers */
+    background: -moz-linear-gradient(45deg, #1e88ef 0%, #1e88ef 25%, #0060c7 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(45deg, #1e88ef 0%, #1e88ef 25%, #0060c7 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(45deg, #1e88ef 0%, #1e88ef 25%, #0060c7 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1e88ef', endColorstr='#0060c7', GradientType=1); /* IE6-9 fallback on horizontal gradient */
+
+}
+
+.header .md-button:hover {
+    border: none;
+    background-color: transparent;
+}
+
+@media (min-width: 1280px) {
+    md-sidenav {
+        margin-top: -145px;
+    }
+}
+
+md-sidenav {
+    padding-top: 70px;
+}
+
+input.search-tool {
+    color: white;
+}
+
+md-icon.search-tool {
+    padding-top: 20px;
+}
+
+md-input-container.search-tool {
+    width: 100%;
+    padding-top: 20px;
+}
+
+.intl-tel-input {
+    display: table-cell;
+}
+
+.createPage .intl-tel-input {
+    display: flex;
+    padding-left: 150px;
+}

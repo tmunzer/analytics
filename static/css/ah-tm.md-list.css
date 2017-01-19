@@ -1,0 +1,17 @@
+md-list {
+    padding: 0;
+}
+
+md-list * {
+    font-size: small;
+    overflow: hidden;
+}
+
+md-list-item .md-list-item-inner>md-checkbox, md-list-item>md-checkbox {
+    margin-top: 6px !important;
+    margin-bottom: 6px !important;
+}
+
+md-list-item, md-list-item .md-list-item-inner {
+    min-height: 24px !important;
+}

@@ -8,6 +8,7 @@
 .card-item {
     float: left;
     margin: 0 20px 15px 20px;
+    width: 250px;
 }
 .card {
     transition: all 0.1s ease-in-out;
@@ -21,11 +22,9 @@
     background-color: #28B463;
 }
 .card {
-    width: 250px;
     padding: 10px 10px 10px 40px;
     border: 1px solid #ccc;
     cursor: pointer;
-    height: 50px;
     overflow: hidden;
 }
 .card-con {
@@ -35,12 +34,16 @@
 .card-con p {
     margin: 0;
 }
-.card-selected .card-con > p {
+.card-selected .card-con .card-title {
     color: #fff;
+}
+.card-selected .card-con .card-des {
+    color: #eee;
 }
 .card-title {
     font-size: 14px;
 }
 .card-des {
     color: #999;
+    font-size: smaller;
 }

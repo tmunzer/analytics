@@ -1,0 +1,106 @@
+doctype html5
+html
+    head
+        title= title
+        meta(name="viewport" content="width=device-width, initial-scale=1")
+
+
+    body(ng-app="analytics").icons-docs(ng-controller="UserCtrl as UserCtrl")
+
+        header.md-page-header(ng-controller="HeaderCtrl")
+            div.header
+            md-toolbar.header.fixed(layout='row')
+
+                h1.logo.md-toolbar-tools
+                    img(src="/images/logo_nav.png" alt="Aerohive")
+                span(flex)
+                md-menu
+                    md-button(aria-label="language" ng-click="UserCtrl.openMenu($mdOpenMenu, $event)" style="min-width: 20px;")
+                        md-tooltip(md-direction="bottom" md-visible="tooltipVisible") {{"button.language" | translate}}
+                        md-icon(class="material-icons" aria-label="language") language
+                    md-menu-content
+                        md-menu-item
+                            md-button(ng-controller="ModalCtrl" ng-click="UserCtrl.translate('en')")
+                                span(style="display: inline-flex; margin-right: 5px;")
+                                    div.iti-flag.gb
+                                span English
+                        md-menu-item
+                            md-button(ng-controller="ModalCtrl" ng-click="UserCtrl.translate('fr')")
+                                span(style="display: inline-flex; margin-right: 5px;")
+                                    div.iti-flag.fr
+                                span Francais
+                md-menu
+                    md-button(aria-label="menu" ng-click="UserCtrl.openMenu($mdOpenMenu, $event)" style="min-width: 20px;")
+                        md-tooltip(md-direction="bottom" md-visible="tooltipVisible") {{"button.menu" | translate}}
+                        md-icon(class="material-icons" aria-label="menu") more_vert
+                    md-menu-content
+                        md-menu-item
+                            md-button(ng-controller="ModalCtrl" ng-click="open('about')")
+                                md-icon.material-icons(md-menu-align-target) info
+                                span(translate="layout.accountDetails")
+                        md-menu-item
+                            md-button(href="/logout/")
+                                md-icon(md-menu-align-target) exit_to_app
+                                span(translate="layout.logout")
+
+
+            md-toolbar.md-menu-toolbar(layout="row")
+
+                md-toolbar-filler(layout layout-align="center center" style="width:250px; background-color: white" hide-xs hide-sm hide-md)
+                md-menu-bar.main-menu
+                    md-button(href="#!/dashboard/" ng-class="{cur: nav.isActive('dashboard')}")
+                        md-icon.material-icons.md-24 dashboard
+                        div(translate="layout.dashboard")
+
+                    md-button(href="#!/compare/" ng-class="{cur: nav.isActive('compare')}")
+                        md-icon.material-icons.md-24 compare
+                        div(translate="layout.compare")
+
+                    md-button(href="#!/details" ng-class="{cur: nav.isActive('details')}")
+                        md-icon.material-icons.md-24 details
+                        div(translate="layout.details")
+
+            
+        div(id="main")
+            md-button.md-fab.md-warn.md-mini(aria-label="menu" style="position: fixed; bottom: 20px; left: 20px" ng-show="UserCtrl.showFab()" hide-gt-md ng-click='UserCtrl.sideNav("left")')
+                md-icon.material-icons.md-12 menu
+            ng-view
+
+
+        script(src="/bower_components/angular/angular.js")
+
+        script(src="/i18n/web-app/en.js")        
+
+        link(rel="stylesheet" href="/bower_components/angular-material/angular-material.min.css")
+        link(rel="stylesheet" href="/bower_components/angular-material-data-table/dist/md-data-table.min.css")
+        link(rel="stylesheet" href="/bower_components/material-design-icons/iconfont/material-icons.css")
+        link(rel='stylesheet' href='/css/ah-tm.dashboard.css')
+        link(rel='stylesheet' href='/css/ah-tm.tags.css')
+        link(rel='stylesheet' href='/css/ah-tm.cards.css')
+        link(rel='stylesheet' href='/css/ah-tm.md-table.css')
+        link(rel='stylesheet' href='/css/ah-tm.md-list.css')
+        
+        script(src="/bower_components/angular-material-data-table/dist/md-data-table.min.js")
+
+
+        script(src="/bower_components/angular-aria/angular-aria.js")
+        script(src="/bower_components/angular-animate/angular-animate.min.js")
+        script(src="/bower_components/angular-material/angular-material.js")
+        script(src="/bower_components/angular-messages/angular-messages.js")
+        script(src="/bower_components/angular-route/angular-route.min.js")
+        script(src="/bower_components/angular-bootstrap/ui-bootstrap.js")
+        script(src="/bower_components/angular-translate/angular-translate.min.js")
+        script(src="/bower_components/angular-sanitize/angular-sanitize.min.js")
+        script(src="/bower_components/highcharts-ng/dist/highcharts-ng.min.js")
+        script(language="JavaScript" type="text/javascript" src='/js/highstock.js')
+        
+
+        script(src="/web-app/web-app.js")
+        script(src="/web-app/routes.js")
+        script(src="/web-app/dashboard/controller.js")
+        script(src="/web-app/dashboard/service.js")
+        script(src="/web-app/compare/controller.js")
+        script(src="/web-app/compare/service.js")
+        script(src="/web-app/details/controller.js")
+        script(src="/web-app/details/service.js")
+        script(src="/web-app/modals/controller.js")

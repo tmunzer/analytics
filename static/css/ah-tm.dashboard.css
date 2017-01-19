@@ -1,6 +1,5 @@
 
 body {
-    font: 12px helvetica,arial,san-serif !important;
     margin: 0;
 }
 
@@ -37,8 +36,6 @@ span.dashboard-span,
 span.dashboard-span > i{
     text-align: center;
     font-size: 12px;
-    color: gray;
-    margin: 5px;
 }
 span.dashboard-span{
     font-weight: bold;
@@ -49,13 +46,13 @@ span.dashboard-span{
 .dashboard-card > ul {
     display: block;
     width:100%;
-    margin: 0px;
-    padding: 0px;
+    margin: 10px 0;
+    padding: 0;
 }
 
 .dashboard-card > ul > li {
     display: inline-block;
-    width: 33%;
+    width: 32%;
     text-align: center;
 }
 
@@ -67,15 +64,22 @@ span.dashboard-span{
     cursor: pointer;
     color: #73D5D8;
 }
+.dashboard-card {
+    width: 45% !important;
+    margin: 0 1.6% !important;
+}
+
 .dashboard-main {
     width: 980px;
 }
 
 .entity-page-body-top-border {
+    margin-top: 15px;
+    margin-bottom: 15px;
     height: 5px;
     border-bottom: 2px solid #7a9fb8;
     position: relative;
-    width: 100%;
+    width: 967px;
 }
 
 .entity-timeline-loading {
@@ -93,7 +97,7 @@ span.widget-label-title {
     margin-bottom: 5px !important;
     background: #f0f0f4 !important;
     height: 35px !important;
-    width: 100% !important;
+    width: 90% !important;
     text-align: left !important;
     padding-top: 10px;
     display: block;
@@ -131,18 +135,7 @@ li.location {
     margin: 0 0 5px 0;
     width: 100% ! important;
 }
-.compare {
-    height: 30px;
-    text-align: left;
-    line-height: 30px !important;
-    padding-left: 5px;
-    font: 12px helvetica,arial,san-serif;
-    vertical-align: middle;
-}
-span.compare {
-    font-weight: bold;
-    text-transform: uppercase;
-}
+
 .widget-number {
     position: relative;
     top: 0;
@@ -181,57 +174,11 @@ span.compare {
 .widget-label:hover .health-progress-bar-help {
     display: block;
 }
-.health-progress-bar-help {
-    right: 3px;
-}
-.health-progress-help-info {
-    width: 250px;
-    left: 250px;
-    top: 30px;
-    z-index: 100;
-    font: 12px helvetica,arial,san-serif;
-    text-transform: none;
-}
-.health-progress-help-info-rect {
-    left: 208px;
-    top: -5px;
-    border-left: 8px solid transparent;
-    border-bottom: 10px solid #f2f7fa;
-    border-right: 8px solid transparent;
-}
 
 .entity-timeline-bar-time {
     margin-top: 0;
 }
 
-.modal,
-.btn {
-    border-radius: 0;
-}
-.btn-primary {
-    color: #fff !important;
-}
-.ui-tab-active .arrow-left{
-    margin-left: -1px !important;
-}
-.ui-tab-active .arrow-left::before {
-    left: 0;
-}
-.ui-tab-active .arrow-left::after {
-    left: -2px;
-}
-
-.user-list li a {
-    color: #fff;
-    margin: 0;
-    display: block;
-    width: 100%;
-    height: 100%;
-}
-.user-list li a:hover {
-    color: #9de7f9;
-    text-decoration-line: inherit;
-}
 
 span.help-tip::before {
     border-left: 8px solid #525252 !important;
@@ -244,22 +191,6 @@ span.help-tip {
     height: 25px !important;
 }
 
-table {
-    width: 100% !important;
-    font-size: 12px !important;
-
-}
-.table tbody tr:hover {
-    background-color: #fff8ea;
-    transition:all 0.2s ease-in-out;
-
-}
-.table tbody tr {
-    transition:all 0.2s ease-in-out;
-}
-table td {
-    cursor: default;
-}
 
 .ui-select-card {
     transition:all 0.1s ease-in-out;
@@ -274,21 +205,8 @@ table tfoot td {
     padding: 0 !important;
 }
 
-ul.pagination {
-    margin: 0 !important;
-}
 
-.progress {
-    border-radius: 0;
-    margin-top: 20px;
-}
 
-.progress-bar {
-    height: 100%;
-    text-align: center;
-    background-color:#62c462;
-
-}
 input.invalid,textarea.invalid,select.invalid {
     color:#b94a48;
     border-color:#ee5f5b
@@ -315,4 +233,23 @@ input.invalid,textarea.invalid,select.invalid {
 }
 .tooltip.customClass .red {
     color: #d04d49;
+}
+
+
+
+table {
+    width: 100% !important;
+    font-size: 12px !important;
+
+}
+.table tbody tr:hover {
+    background-color: #fff8ea;
+    transition:all 0.2s ease-in-out;
+
+}
+.table tbody tr {
+    transition:all 0.2s ease-in-out;
+}
+table td {
+    cursor: default;
 }

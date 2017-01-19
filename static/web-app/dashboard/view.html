@@ -1,0 +1,150 @@
+<div class="main-container">
+    <md-sidenav class="md-sidenav-left" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
+
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2 class="md-toolbar-tools" translate="filter.filterBy"></h2>
+            </div>
+        </md-toolbar>
+        <div>
+            <h3 translate="filter.location"></h3>
+            <md-list>
+                <md-list-item ng-repeat="location in locations">
+                    <md-checkbox data-name={{location.id}} ng-model="userType.selected"
+                                 ng-change="change()" aria-label="Selection location">
+                    </md-checkbox>
+                                <span class="lbl fn-ellipsis"
+                                      title={{locaiton.name}}>{{location.name}}</span>
+                </md-list-item>
+            </md-list>
+           
+            <div ng-show="!locationsLoaded()" style="padding: 0;">
+                <div layout="row" layout-align="space-around">
+                    <md-progress-circular md-mode="indeterminate" class="md-accent"></md-progress-circular>
+                </div>
+            </div>
+        </div>
+
+    </md-sidenav>
+
+    <md-content style="padding-bottom: 5px; width: 100%; background-color: white;" layout="column">
+        <article layout="row">
+            <md-content flex="50" md-whiteframe="2" style="margin: 10px;" class="dashboard-card">
+                <h3>Maps</h3>
+                    <ul>
+                        <li>
+                            <div class="dashboard-card-icon" style="margin-bottom: 10px; margin-top: 10px">
+                                <span style="color: rgb(30, 136, 229);font-weight: bold;">{{maps.folders}}</span>
+                            </div>
+                            <span class="dashboard-span">
+                                <md-icon class="material-icons md-24">map</md-icon>
+                                <span> Folders</span>
+                            </span>
+                        </li>
+                        <li>
+                            <div class="dashboard-card-icon" style="margin-bottom: 10px; margin-top: 10px">                            
+                                <span style="color: rgb(30, 136, 229);font-weight: bold;">{{maps.buildings}}</span>
+                            </div>
+                            <span class="dashboard-span">
+                                <md-icon class="material-icons md-24">business</md-icon>
+                                <span> Buildings</span>
+                            </span>
+                        </li>
+                        <li>
+                            <div class="dashboard-card-icon" style="margin-bottom: 10px; margin-top: 10px">
+                                <span style="color: rgb(30, 136, 229);font-weight: bold;">{{maps.floors}}</span>
+                            </div>
+                            <span class="dashboard-span">
+                                <md-icon class="material-icons md-24">layers</md-icon>
+                                <span> Floors</span>
+                            </span>
+                        </li>
+                    </ul>
+            </md-content>
+            <md-content flex="50" md-whiteframe="2" style="margin: 10px;" class="dashboard-card">
+                <h3>Aerohive Devices</h3>
+                    <ul>
+                        <li>
+                            <div class="dashboard-card-icon" style="margin-bottom: 10px; margin-top: 10px">
+                                <span style="color: rgb(30, 136, 229);font-weight: bold;">{{devices.sensors}}</span>
+                            </div>
+                            <span class="dashboard-span">
+                                <md-icon class="material-icons md-24">track_changes</md-icon>
+                                <span> Sensors Mode</span>
+                            </span>
+                        </li>
+                        <li>
+                            <div class="dashboard-card-icon" style="margin-bottom: 10px; margin-top: 10px">                            
+                                <span style="color: rgb(30, 136, 229);font-weight: bold;">{{devices.connected}}</span>
+                            </div>
+                            <span class="dashboard-span">
+                                <md-icon class="material-icons md-24">link</md-icon>
+                                <span> Connected Devices</span>
+                            </span>
+                        </li>
+                        <li>
+                            <div class="dashboard-card-icon" style="margin-bottom: 10px; margin-top: 10px">
+                                <span style="color: rgb(30, 136, 229);font-weight: bold;">{{devices.devices}}</span>
+                            </div>
+                            <span class="dashboard-span">
+                                <md-icon class="material-icons md-24">network_wifi</md-icon>
+                                <span> Aerohive Devices</span>
+                            </span>
+                        </li>
+                    </ul>
+            </md-content>
+        </article>
+        <article>
+        <div class="inside" style="background-color: rgb(251, 251, 251);">
+            <div class="entity-timeline-loading">
+                <div class="entity-timeline-column entity-timeline-choose" style="width: 100%;">
+                    <div class="entity-timeline-column">
+                        <div class="entity-timeline-show-label"> Show</div>
+                    </div>
+                    <div class="entity-timeline-column">
+                        <div class="dropdown dropdown-100">
+                            <md-button class="dropdown-100" id="timeline-button" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")>
+                                <span class="init-text" id="span-range"> Day</span>
+                                <span class="caret"></span>
+                            </md-button>
+                            <ul class="dropdown-menu" aria-labelledby="timeline-button" id="myLoc">
+                                <li onclick="timelineRange(0, 'Day')">
+                                    <span> Day</span>
+                                </li>
+                                <li onclick="timelineRange(1, 'Week')">
+                                    <span> Week</span>
+                                </li>
+                                <li onclick="timelineRange(2, 'Month')">
+                                    <span> Month</span>
+                                <li onclick="timelineRange(3, 'Year')">
+                                    <span> Year</span>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="entity-timeline-column">
+                        <div class="entity-timeline-show-range"> Select Range</div>
+                    <div class="entity-timeline-column">
+                        <div class="entity-timeline-show-tab entity-radioset-list">
+                            <ul id="timeline-range">
+                                <li class="timeline-range" onclick="changeRange('Day', 1)" id="timeline-1"> 1H</li>
+                                <li class="timeline-range entity-radioset-cur" onclick="changeRange('Day', 2)" id="timeline-2"> 2H</li>
+                                <li class="timeline-range" onclick="changeRange('Day', 8)" id="timeline-8"> 8H</li>
+                                <li class="timeline-range" onclick="changeRange('Day', 0)" id="timeline-0"> Last 24H</li>
+                            </ul>
+                        </div>                    
+                    </div>
+                    </div>
+                </div>
+                <div class="clearfix" style="height:200px; min-height: 100px;" ng-controller="TimelineCtrl">
+                    <div class="entity-timeline-bar-time" id="timeline">
+                </div>
+            </div>
+            <div class="entity-timeline-show-time">
+                <span>Showing data from</span>
+                <span id="span-from-date"></span>
+                <span style="font-weight: normal;"> to </span>
+                <span id="span-to-date"></span>
+        </div>
+        </article>
+    </md-content>
+</div>
