@@ -62,7 +62,7 @@ function updateTimeline() {
                 window.chart = new Highcharts.StockChart({
                     chart: {
                         renderTo: 'timeline',
-                        backgroundColor: 'rgb(251,251,251)',
+                        backgroundColor: 'rgb(250,250,250)',
                         height: 150,
                         spacing: 25,
                         spacingBottom: 25,
