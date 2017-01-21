@@ -86,40 +86,97 @@ analytics.controller("HeaderCtrl", function ($scope, $location) {
 
 });
 
-analytics.controller("TimelineCtrl", function ($scope, TimelineService) {
+analytics.controller("LocationCtrl", function ($scope, $rootScope, LocationService) {
     var request;
-    $scope.date = {
+
+})
+
+analytics.controller("TimelineCtrl", function ($scope, $rootScope, TimelineService) {
+    var request, initialized;
+    $rootScope.date = {
         from: "",
         to: ""
     }
-    $scope.range=0;
+    $scope.period = "day";
+    $scope.range = 1;
+    $scope.durations = {
+        "day": [
+            { name: "1H", range: "1" },
+            { name: "2H", range: "2" },
+            { name: "8H", range: "8" },
+            { name: "24H", range: "0" }
+        ],
+        "week": [
+            { name: '1D', range: "1" },
+            { name: '2D', range: "2" },
+            { name: '7D', range: "7" },
+        ],
+        "month": [
+            { name: "1D", range: "1" },
+            { name: "7D", range: "7" },
+            { name: "14D", range: "14" },
+            { name: "1M", range: "0" }
+        ],
+        "year": [
+            { name: "1M", range: "1" },
+            { name: "2M", range: "2" },
+            { name: "6M", range: "6" },
+            { name: "1Y", range: "0" }
+        ]
+    }
+
     $scope.locationAnalytics;
+
+
+    $scope.safeApply = function (fn) {
+        var phase = this.$root.$$phase;
+        if (phase == '$apply' || phase == '$digest') {
+            if (fn && (typeof (fn) === 'function')) {
+                fn();
+            }
+        } else {
+            this.$apply(fn);
+        }
+    };
+
+    $scope.$watch("period", function () {
+        if (initialized) {            
+            if ($scope.period == "day") $scope.range = 2;
+            else if ($scope.period == "month") $scope.range = 7;
+            else $scope.range = 1;
+            updateTimeline();
+        }
+    })
+
+
+
+
     function updateTimeline() {
         //if ($('#timeline').highcharts()) $('#timeline').highcharts().destroy();
         var endTime = new Date(new Date().toISOString().replace(/:[0-9]{2}:[0-9]{2}\.[0-9]{3}/, ":00:00.000"));
         var startTime = new Date(endTime);
         var selectedRange, step, format;
-    
-        switch ($scope.range) {
-            case 0:
+        console.log($scope.period);
+        switch ($scope.period) {
+            case "day":
                 startTime.setDate(startTime.getDate() - 1);
                 selectedRange = 24;
                 step = 24;
                 format = '{value:%H:%M}';
                 break;
-            case 1:
+            case "week":
                 startTime.setDate(startTime.getDate() - 7);
                 selectedRange = 24;
                 step = 24;
                 format = '{value:%Y-%m-%d}';
                 break;
-            case 2:
+            case "month":
                 startTime.setMonth(startTime.getMonth() - 1);
                 selectedRange = 7;
                 step = 7;
                 format = '{value:%Y-%m-%d}';
                 break;
-            case 3:
+            case "year":
                 startTime.setFullYear(startTime.getFullYear() - 1);
                 selectedRange = 30;
                 step = 30;
@@ -136,34 +193,37 @@ analytics.controller("TimelineCtrl", function ($scope, TimelineService) {
 
         request.then(function (promise) {
             if (promise && promise.error) apiWarning(promise.error);
-            else if (data.reqId == timelineReq) {
+            else { } if (promise.data.reqId == timelineReq) {
+                var data = promise.data.data;
                 var maxChart = 0;
                 var time = [];
                 var chart = [];
-                for (var x in data.data) {
-                    time[x] = new Date(data.data[x]['time']);
-                    chart[x] = data.data[x]['uniqueClients'];
+                for (var x in data) {
+                    time[x] = new Date(data[x]['time']);
+                    chart[x] = data[x]['uniqueClients'];
                     if (chart[x] > maxChart) maxChart = chart[x];
                 }
                 // Create the chart
                 Highcharts.setOptions({
                     global: {
-                        useUTC: true
+                        useUTC: false
                     }
                 });
-                window.chart = new Highcharts.StockChart({
+                $scope.timeline = new Highcharts.StockChart({
                     chart: {
                         renderTo: 'timeline',
-                        backgroundColor: 'rgb(255,255,255)',
+                        backgroundColor: 'rgb(251,251,251)',
                         height: 150,
-                        spacing: 25,
-                        spacingBottom: 25
-                        /*events: {
+                        events: {
                             redraw: function () {
-                                $("#span-from-date").html(displayDate(this.xAxis[1].categories[(this.xAxis[0].getExtremes().min).toFixed(0)]));
-                                $("#span-to-date").html(displayDate(this.xAxis[1].categories[(this.xAxis[0].getExtremes().max).toFixed(0)]));
+                                $scope.safeApply(
+                                    $scope.date = {
+                                        from: this.xAxis[1].categories[(this.xAxis[0].getExtremes().min).toFixed(0)],
+                                        to: this.xAxis[1].categories[(this.xAxis[0].getExtremes().max).toFixed(0)]
+                                    }
+                                )
                             }
-                        }*/
+                        }
                     },
                     rangeSelector: {
                         enabled: false
@@ -178,7 +238,7 @@ analytics.controller("TimelineCtrl", function ($scope, TimelineService) {
                         height: 0,
                         gridLineWidth: 0,
                         labels: {
-                            enabled: false
+                            enabled: true
                         }
                     },
                     xAxis: {
@@ -194,11 +254,11 @@ analytics.controller("TimelineCtrl", function ($scope, TimelineService) {
                         enabled: false
                     },
                     navigator: {
-                        maskFill: 'rgba(255, 255, 255, 0.70)',
+                        maskFill: 'rgba(251, 251, 251, 0.70)',
                         maskInside: false,
                         height: 100,
                         handles: {
-                            backgroundColor: 'white',
+                            backgroundColor: 'rgb(251, 251, 251)',
                             borderColor: 'black'
                         },
                         xAxis: {
@@ -225,41 +285,42 @@ analytics.controller("TimelineCtrl", function ($scope, TimelineService) {
                     }]
                 });
             }
-            chart = $('#timeline').highcharts();
-            max = chart.xAxis[0].getExtremes().max;
-            min = chart.xAxis[0].getExtremes().min;
-            $scope.date.from = chart.xAxis[1].categories[min];
-            $scope.date.to = chart.xAxis[1].categories[max];
-            updateCharts();
+            if ($scope.timeline) {
+                max = $scope.timeline.xAxis[0].getExtremes().max;
+                min = $scope.timeline.xAxis[0].getExtremes().min;
+                $rootScope.date.from = $scope.timeline.xAxis[1].categories[min];
+                $rootScope.date.to = $scope.timeline.xAxis[1].categories[max];
+                updateCharts();
+            }
         });
     }
 
 
+    $scope.isCurrentRange = function (range) {
+        if (range == $scope.range) return 'md-primary';
+        else return "";
+    }
 
-    function changeRange(period, range) {
+    $scope.changeRange = function (period, range) {
+        $scope.range = range;
         var step, chart;
         //set the step depending on the graph range
-        if (period == "Day") step = 12;
-        else if (period == "Week") step = 24;
-        else if (period == "Month") step = 1;
-        else if (period == "Year") step = 30;
-        //change the selected button
-        $(".timeline-range").removeClass("entity-radioset-cur");
-        $("#timeline-" + range).addClass("entity-radioset-cur");
-        //get the chart selector
-        chart = $('#timeline').highcharts();
+        if (period == "day") step = 12;
+        else if (period == "week") step = 24;
+        else if (period == "month") step = 1;
+        else if (period == "year") step = 30;
         // retrieve the max value
-        max = chart.xAxis[0].getExtremes().dataMax;
+        max = $scope.timeline.xAxis[0].getExtremes().dataMax;
         //if 0 (max range) retrive the min value
-        if (range == 0) min = chart.xAxis[0].getExtremes().dataMin;
+        if (range == 0) min = $scope.timeline.xAxis[0].getExtremes().dataMin;
         //or calculate the value depending on the range and the step
         else min = max - (range * step);
-        chart.xAxis[0].setExtremes(min, max);
-        $("#span-from-date").html(displayDate(chart.xAxis[1].categories[min]));
-        $("#span-to-date").html(displayDate(chart.xAxis[1].categories[max]));
+        $scope.timeline.xAxis[0].setExtremes(min, max);
+        $rootScope.date.from = $scope.timeline.xAxis[1].categories[min];
+        $rootScope.date.to = $scope.timeline.xAxis[1].categories[max];
         updateCharts();
-
     }
+
 
     function getHourAndMinutes(date) {
         var hour = addZero(date.getHours());
@@ -277,7 +338,51 @@ analytics.controller("TimelineCtrl", function ($scope, TimelineService) {
     $scope.displayDate = function () {
         return $scope.date.toDateString() + ', ' + addZero(date.getHours()) + ":" + addZero(date.getMinutes());
     }
-    updateTimeline();
+
+
+    function updateCards() {
+        var data = {};
+        if (locationAnalytics.length > 0) data = { locations: JSON.stringify(locationAnalytics) };
+        $.ajax({
+            method: "POST",
+            url: "/dashboard/api/update/cards/",
+            data: data
+        })
+            .done(function (data) {
+                if (data.error) {
+                    displayModal("API", data.error);
+                    $("#maps-folders").html("<i class='fa fa-close'></i>");
+                    $("#maps-buildings").html("<i class='fa fa-close'></i>");
+                    $("#maps-floors").html("<i class='fa fa-close'></i>");
+                    $("#devices-sensors").html("<i class='fa fa-close'></i>");
+                    $("#devices-connected").html("<i class='fa fa-close'></i>");
+                    $("#devices-all").html("<i class='fa fa-close'></i>");
+                } else {
+                    $("#maps-folders").html(data.locationsCount.folder);
+                    $("#maps-buildings").html(data.locationsCount.building);
+                    $("#maps-floors").html(data.locationsCount.floor);
+                    $("#devices-sensors").html(data.devicesCount.sensor);
+                    $("#devices-connected").html(data.devicesCount.connected);
+                    $("#devices-all").html(data.devicesCount.count);
+                }
+            });
+    }
+
+    function updateDashboard() {
+        updateCards();
+        updateTimeline();
+    }
+
+    function updateCharts() {
+        // updateWidgets();
+        // updateBestLocation();
+    }
+
+    function initialize() {
+        updateTimeline();
+        initialized = true;
+    }
+    initialize();
 })
 
 

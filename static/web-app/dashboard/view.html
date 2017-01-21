@@ -8,17 +8,14 @@
         </md-toolbar>
         <div>
             <h3 translate="filter.location"></h3>
-            <md-list>
-                <md-list-item ng-repeat="location in locations">
-                    <md-checkbox data-name={{location.id}} ng-model="userType.selected"
+            <div flex layout="column">
+                    <md-checkbox  ng-repeat="location in locations" ng-model="userType.selected"
                                  ng-change="change()" aria-label="Selection location">
+                                 {{location}}
                     </md-checkbox>
-                                <span class="lbl fn-ellipsis"
-                                      title={{locaiton.name}}>{{location.name}}</span>
-                </md-list-item>
-            </md-list>
+            </div>
            
-            <div ng-show="!locationsLoaded()" style="padding: 0;">
+            <div ng-show="!locations" style="padding: 0;">
                 <div layout="row" layout-align="space-around">
                     <md-progress-circular md-mode="indeterminate" class="md-accent"></md-progress-circular>
                 </div>
@@ -27,9 +24,9 @@
 
     </md-sidenav>
 
-    <md-content style="padding-bottom: 5px; width: 100%; background-color: white;" layout="column">
-        <article layout="row">
-            <md-content flex="50" md-whiteframe="2" style="margin: 10px;" class="dashboard-card">
+    <md-content flex layout="column" >
+        <article layout="column" layout-gt-sm="row">
+            <md-content flex="50" md-whiteframe="2" style="margin: 0 10px 0 0;" class="dashboard-card">
                 <h3>Maps</h3>
                     <ul>
                         <li>
@@ -61,7 +58,7 @@
                         </li>
                     </ul>
             </md-content>
-            <md-content flex="50" md-whiteframe="2" style="margin: 10px;" class="dashboard-card">
+            <md-content flex="50" md-whiteframe="2" style="margin: 0 0 0 10px;" class="dashboard-card">
                 <h3>Aerohive Devices</h3>
                     <ul>
                         <li>
@@ -94,57 +91,34 @@
                     </ul>
             </md-content>
         </article>
-        <article>
-        <div class="inside" style="background-color: rgb(251, 251, 251);">
-            <div class="entity-timeline-loading">
-                <div class="entity-timeline-column entity-timeline-choose" style="width: 100%;">
-                    <div class="entity-timeline-column">
-                        <div class="entity-timeline-show-label"> Show</div>
+
+        <article md-whiteframe="2" ng-controller="TimelineCtrl">
+            <div class="inside">
+                <div class="entity-timeline-loading">
+                    <div class="entity-timeline-column entity-timeline-choose" flex layout="row">
+                        <md-input-container style="width: 150px">
+                            <label>Showing Data for</label>
+                            <md-select ng-model="period">
+                            <md-option value="day">1 Day</md-option>
+                            <md-option value="week">1 Week</md-option>
+                            <md-option value="month">1 Month</md-option>
+                            <md-option value="year">1 Year</md-option>
+                            </md-select>
+                        </md-input-container>
+                        <span style="min-width: 100px;"></span>
+                        <span style="align-self: center">Select Range</span>                        
+                        <md-button ng-repeat="duration in durations[period]" class="md-raised" ng-class="isCurrentRange(duration.range)" style="height: 20px;align-self: center;" ng-click="changeRange(period, duration.range)">{{duration.name}}</md-button>                                            
                     </div>
-                    <div class="entity-timeline-column">
-                        <div class="dropdown dropdown-100">
-                            <md-button class="dropdown-100" id="timeline-button" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")>
-                                <span class="init-text" id="span-range"> Day</span>
-                                <span class="caret"></span>
-                            </md-button>
-                            <ul class="dropdown-menu" aria-labelledby="timeline-button" id="myLoc">
-                                <li onclick="timelineRange(0, 'Day')">
-                                    <span> Day</span>
-                                </li>
-                                <li onclick="timelineRange(1, 'Week')">
-                                    <span> Week</span>
-                                </li>
-                                <li onclick="timelineRange(2, 'Month')">
-                                    <span> Month</span>
-                                <li onclick="timelineRange(3, 'Year')">
-                                    <span> Year</span>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="entity-timeline-column">
-                        <div class="entity-timeline-show-range"> Select Range</div>
-                    <div class="entity-timeline-column">
-                        <div class="entity-timeline-show-tab entity-radioset-list">
-                            <ul id="timeline-range">
-                                <li class="timeline-range" onclick="changeRange('Day', 1)" id="timeline-1"> 1H</li>
-                                <li class="timeline-range entity-radioset-cur" onclick="changeRange('Day', 2)" id="timeline-2"> 2H</li>
-                                <li class="timeline-range" onclick="changeRange('Day', 8)" id="timeline-8"> 8H</li>
-                                <li class="timeline-range" onclick="changeRange('Day', 0)" id="timeline-0"> Last 24H</li>
-                            </ul>
-                        </div>                    
-                    </div>
+                    <div style="height:200px; min-height: 100px;">
+                        <div class="entity-timeline-bar-time" id="timeline">
                     </div>
                 </div>
-                <div class="clearfix" style="height:200px; min-height: 100px;" ng-controller="TimelineCtrl">
-                    <div class="entity-timeline-bar-time" id="timeline">
-                </div>
+                <div class="entity-timeline-show-time">
+                    <span>Showing data from</span>                    
+                    <b>{{date.from | date : 'short'}}</b>
+                    <span style="font-weight: normal;"> to </span>
+                    <b>{{date.to | date : 'short'}}</b>
             </div>
-            <div class="entity-timeline-show-time">
-                <span>Showing data from</span>
-                <span id="span-from-date"></span>
-                <span style="font-weight: normal;"> to </span>
-                <span id="span-to-date"></span>
-        </div>
         </article>
     </md-content>
 </div>

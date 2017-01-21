@@ -56,19 +56,6 @@ span.dashboard-span{
     text-align: center;
 }
 
-.dashboard-card-icon > a {
-    font-size: 20px;
-    font-weight: bold;
-    position: relative;
-    text-decoration: underline;
-    cursor: pointer;
-    color: #73D5D8;
-}
-.dashboard-card {
-    width: 45% !important;
-    margin: 0 1.6% !important;
-}
-
 .dashboard-main {
     width: 980px;
 }
