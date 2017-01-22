@@ -88,12 +88,25 @@ analytics.controller("HeaderCtrl", function ($scope, $location) {
 
 analytics.controller("LocationCtrl", function ($scope, $rootScope, LocationsService) {
 
-    $rootScope.locations = {};
+    $rootScope.locations;
     // rootscope variable to filter requests
     $rootScope.selectedLocations = [];
     // scope variable to know which checkbox is checked
     $scope.checkedLocations = [];
     $scope.locationsLoaded = false;
+    var lastUpdateRequest;
+
+    $rootScope.$watch("selectedLocations", function () {
+        if ($rootScope.locations) {
+            lastUpdateRequest = new Date();
+            var currentUpdateRequest = lastUpdateRequest;
+            setTimeout(function () {
+                if (currentUpdateRequest == lastUpdateRequest) {
+                    updateLocations();
+                }
+            }, 2000)
+        }
+    })
 
     function updateLocations() {
         var request = LocationsService.get();
@@ -126,9 +139,9 @@ analytics.controller("LocationCtrl", function ($scope, $rootScope, LocationsServ
     }
 
     $scope.locationsIcon = function (folder) {
-        if (folder.folderType == "GENERIC") return "map";
-        else if (folder.folderType == "BUILDING") return "business";
-        else if (folder.folderType == "FLOOR") return "layers";
+        if (folder && folder.folderType == "GENERIC") return "map";
+        else if (folder && folder.folderType == "BUILDING") return "business";
+        else if (folder && folder.folderType == "FLOOR") return "layers";
     }
 
     //called when a checkbox is clicked
@@ -145,7 +158,7 @@ analytics.controller("LocationCtrl", function ($scope, $rootScope, LocationsServ
             uncheckParents(item);
             // add the direct childs id to the location filter list if needed
             var currentLocation = searchLocation($rootScope.locations, item.id);
-            currentLocation.folders.forEach(function(child){
+            currentLocation.folders.forEach(function (child) {
                 if ($rootScope.selectedLocations.indexOf(child.id) < 0) $rootScope.selectedLocations.push(child.id);
             })
         }
@@ -167,12 +180,10 @@ analytics.controller("LocationCtrl", function ($scope, $rootScope, LocationsServ
             if (idSelected > -1) $rootScope.selectedLocations.splice(idSelected, 1);
             if (folder.folders) toggleChilds(folder);
         });
-        console.log($scope.checkedLocations);
-        console.log($rootScope.selectedLocations);
     }
 
     $scope.exists = function (item) {
-        return $scope.checkedLocations.indexOf(item.id) > -1;
+        if (item) return $scope.checkedLocations.indexOf(item.id) > -1;
     };
 
     function searchLocation(item, itemId) {
@@ -199,17 +210,6 @@ analytics.controller("LocationCtrl", function ($scope, $rootScope, LocationsServ
         }
     }
 
-    function displaySubTree(locationId) {
-        var clicked = $('#span-' + locationId);
-        if (clicked.hasClass("ui-filter-extextend-location-blue-cur")) {
-            clicked.removeClass("ui-filter-extextend-location-blue-cur");
-            $("li [data-parent-id='" + locationId + "']").show();
-        } else {
-            clicked.addClass("ui-filter-extextend-location-blue-cur");
-            $("li[data-parent-id='" + locationId + "']").hide();
-        }
-    }
-
     updateLocations();
 })
 
@@ -218,9 +218,10 @@ analytics.controller("TimelineCtrl", function ($scope, $rootScope, TimelineServi
     $rootScope.date = {
         from: "",
         to: ""
-    }
+    };
+    $rootScope.timelineLoaded = false;
     $scope.period = "day";
-    $scope.range = 1;
+    $scope.range = 2;
     $scope.durations = {
         "day": [
             { name: "1H", range: "1" },
@@ -261,18 +262,29 @@ analytics.controller("TimelineCtrl", function ($scope, $rootScope, TimelineServi
     };
 
     $scope.$watch("period", function () {
-        if (initialized) {
+        if (initialized && $rootScope.locations) {
             if ($scope.period == "day") $scope.range = 2;
             else if ($scope.period == "month") $scope.range = 7;
             else $scope.range = 1;
             updateTimeline();
         }
     })
-
-
+    $rootScope.$watch("locations", function () {
+        if ($rootScope.locations) {
+            updateTimeline();
+        }
+    })
+    $rootScope.$watch("selectedLocations", function () {
+        if ($rootScope.locations) {
+            updateTimeline();
+        }
+    }, true)
 
 
     function updateTimeline() {
+        $scope.period = "day";
+        $scope.range = 2;
+        $rootScope.timelineLoaded = false;
         //if ($('#timeline').highcharts()) $('#timeline').highcharts().destroy();
         var endTime = new Date(new Date().toISOString().replace(/:[0-9]{2}:[0-9]{2}\.[0-9]{3}/, ":00:00.000"));
         var startTime = new Date(endTime);
@@ -411,8 +423,8 @@ analytics.controller("TimelineCtrl", function ($scope, $rootScope, TimelineServi
                 min = $scope.timeline.xAxis[0].getExtremes().min;
                 $rootScope.date.from = $scope.timeline.xAxis[1].categories[min];
                 $rootScope.date.to = $scope.timeline.xAxis[1].categories[max];
-                updateCharts();
             }
+            $rootScope.timelineLoaded = true;
         });
     }
 
@@ -439,7 +451,6 @@ analytics.controller("TimelineCtrl", function ($scope, $rootScope, TimelineServi
         $scope.timeline.xAxis[0].setExtremes(min, max);
         $rootScope.date.from = $scope.timeline.xAxis[1].categories[min];
         $rootScope.date.to = $scope.timeline.xAxis[1].categories[max];
-        updateCharts();
     }
 
 
@@ -460,24 +471,8 @@ analytics.controller("TimelineCtrl", function ($scope, $rootScope, TimelineServi
         return $scope.date.toDateString() + ', ' + addZero(date.getHours()) + ":" + addZero(date.getMinutes());
     }
 
+    initialized = true;
 
-
-
-    function updateDashboard() {
-        updateCards();
-        updateTimeline();
-    }
-
-    function updateCharts() {
-        // updateWidgets();
-        // updateBestLocation();
-    }
-
-    function initialize() {
-        updateTimeline();
-        initialized = true;
-    }
-    initialize();
 })
 
 

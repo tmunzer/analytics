@@ -97,15 +97,13 @@ h3, .h3 {
 .header .md-button:hover {
     border: none;
 }
-
-@media (min-width: 1280px) {
-    md-sidenav {
-        margin-top: -145px;
-    }
+.highcharts-container {
+    width:100% !important;
+    height:100% !important;
 }
-
 md-sidenav {
-    padding-top: 70px;
+    position: fixed !important;
+    top: 70px !important;
     background-color: rgb(250,250,250);
 }
 

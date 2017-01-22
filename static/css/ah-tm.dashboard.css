@@ -110,8 +110,12 @@ li.location {
     background-position: center center;
     background-repeat: no-repeat;
 }
+.topAppGroupTitle {
+    background-color: #1e88e5;
+    color: white;
+    padding: 5px;
+}
 .widget-section{
-    width: 215px !important;
     height: 60px;
     margin: 10px 0 15px 0;
     background: #eaf1f4;
@@ -127,11 +131,10 @@ li.location {
     position: relative;
     top: 0;
     left: 0;
-    padding-top: 4px;
     background: #cae4ea;
     display: inline-block;
     line-height: 60px;
-    width: 80px;
+    width: 100px;
     text-align: center;
     font-size: 20px;
     color: #1b1464;
@@ -239,4 +242,14 @@ table {
 }
 table td {
     cursor: default;
+}
+
+.main-view {
+     margin-left: 250px;
+}
+
+@media screen and (max-width: 960px) {
+    .main-view {
+        margin-left: 0;
+    }
 }

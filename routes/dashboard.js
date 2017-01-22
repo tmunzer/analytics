@@ -34,7 +34,7 @@ router.post('/api/update/cards/', function (req, res, next) {
     var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
 
     var locations = [];
-    if (req.body.locations) locations = JSON.parse(req.body.locations);
+    if (req.body.locations && req.body.locations.length > 0) locations = JSON.parse(req.body.locations);
 
     endpoints.monitor.device.getDevices(currentApi, devAccount, function (err, devices) {
         if (err) res.send(err);
@@ -99,11 +99,12 @@ router.post('/api/update/widgets/', function (req, res, next) {
 
         // if the "locations" parameter exists, and is not null, will filter the request based on the locations selected by the user
         // otherwise takes the "root" folder
-        if (req.body.locations) {
+        if (req.body.locations && req.body.locations.length > 0) {
             locations = JSON.parse(req.body['locations']);
             if (locations.length == 0) locations = [req.session.locations.id];
         } else locations = [req.session.locations.id];
-
+        if (typeof locations == "number") locations = [locations];
+        
         locNowDone = 0;
         locWeekDone = 0;
         locMonthDone = 0;
@@ -112,7 +113,8 @@ router.post('/api/update/widgets/', function (req, res, next) {
         // this "widgetReqId" is used to identify the calls to ACS API.
         // It is needed because of the use of "Event Emitter" instead of the callback method
         var widgetReqId = new Date().getTime();
-
+        console.log(locations);
+        console.log(typeof locations)
         locations.forEach(function (location) {
 
             // get the values for the time range defined by the user
@@ -271,7 +273,7 @@ router.post("/api/update/widget-best/", function (req, res, next) {
 
         // if the "locations" parameter exists, and is not null, will filter the request based on the locations selected by the user
         // otherwise takes the "root" folder
-        if (req.body.locations) {
+        if (req.body.locations && req.body.locations.length > 0) {
             locations = JSON.parse(req.body['locations']);
             if (locations.length == 0) locations = [req.session.locations.id];
         } else locations = [req.session.locations.id];

@@ -65,7 +65,7 @@ router.post('/api/clienttimeseries/', function (req, res, next) {
 
         // if the "locations" parameter exists, and is not null, will filter the request based on the locations selected by the user
         // otherwise takes the "root" folder
-        if (req.body.locations) {
+        if (req.body.locations && req.body.locations.length > 0) {
             locations = JSON.parse(req.body['locations']);
             if (locations.length == 0) locations = [req.session.locations.id];
         } else locations = [req.session.locations.id];

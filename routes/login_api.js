@@ -46,13 +46,7 @@ router.post('/', function (req, res, next) {
       vpcUrl: req.body["vpcUrl"],
       accessToken: req.body["accessToken"].trim()
     });
-    var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
-    res.render('web-app', {
-      title: 'Analytics',
-      server: currentApi.vpcUrl,
-      ownerId: currentApi.ownerId,
-      accessToken: currentApi.accessToken
-    });
+    res.redirect('/web-app/');
   }
 });;
 

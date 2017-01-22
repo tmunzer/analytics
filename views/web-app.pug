@@ -6,6 +6,27 @@ html
 
 
     body(ng-app="analytics").icons-docs(ng-controller="UserCtrl as UserCtrl")
+        div.modal.fade.bs-example-modal-lg(ng-controller="ModalCtrl")
+                    script(type="text/ng-template" id="modalAboutContent.html")
+                        md-dialog(aria-label="List dialog")
+                            md-toolbar
+                                div.md-toolbar-tools
+                                    h2Account(translate="layout.details")
+                            md-dialog-content
+                                div.md-dialog-content
+                                    table
+                                        tbody
+                                            tr
+                                                th(style="padding: 5px 10px;" translate="layout.hmngServer")
+                                                td(style="padding: 5px 10px;")= server
+                                            tr
+                                                th(style="padding: 5px 10px;" translate="layout.ownerId")
+                                                td(style="padding: 5px 10px;")= ownerId
+                                            tr
+                                                th(style="padding: 5px 10px;" translate="layout.accessToken")
+                                                td(style="padding: 5px 10px;")= accessToken
+                            md-dialog-actions(layout="row")
+                                md-button(ng-click="close()" translate="button.close" aria-label="close")
 
         header.md-page-header(ng-controller="HeaderCtrl")
             div.header
