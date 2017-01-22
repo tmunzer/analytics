@@ -6,6 +6,22 @@ var endpoints = require("../bin/aerohive/api/main");
 
 var Device = require("../bin/aerohive/models/device");
 var Location = require("../bin/aerohive/models/location");
+
+/*================================================================
+ COMMON FUNCTIONS
+ ================================================================*/
+function locationsFromQuery(req) {
+    // if the "locations" parameter exists, and is not null, will filter the request based on the locations selected by the user
+    // otherwise takes the "root" folder
+    if (req.query.locations && req.query.locations.length > 0) {
+        locations = JSON.parse(req.query.locations);
+        if (locations.length == 0) locations = [req.session.locations.id];
+    } else locations = [req.session.locations.id];
+    if (typeof locations == "number") locations = [locations];
+    return locations;
+}
+
+
 /*================================================================
  API
  ================================================================*/
@@ -13,7 +29,7 @@ var Location = require("../bin/aerohive/models/location");
 /*================================================
  RETRIEVE AND SEND BACK THE LIST OF LOCATIONS
  =================================================*/
-router.post('/configuration/apLocationFolders/', function (req, res, next) {
+router.get('/apLocationFolders/', function (req, res, next) {
     var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
 
     endpoints.configuration.location.getLocations(currentApi, devAccount, function (err, locations) {
@@ -33,60 +49,20 @@ router.post('/configuration/apLocationFolders/', function (req, res, next) {
         }
     });
 });
-/*================================================
- RETRIEVE AND SEND BACK THE LIST OF LOCATIONS,
-    DEVICES AND SOME COUNTERS (NUMBER OF LOCATIONS,
-    NUMBER OF DEVICES, ...)
- =================================================*/
-router.post('/common/init/', function (req, res, next) {
-    var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
 
-    endpoints.configuration.location.getLocations(currentApi, devAccount, function (err, locations) {
-        if (err) res.json({ error: err });
-        else if (!locations) res.json(
-            {
-                warning: {
-                    title: "There is no locations on this account...",
-                    message: "To be able to get the Presence Analytics Information, you have to configure the Locations on your " +
-                    "<a href='cloud.aerohive.com' target='_blank'>HiveManager NG account</a>"
-                }
-            });
-        else endpoints.monitor.device.getDevices(currentApi, devAccount, function (err, devices) {
-            if (err) res.json({ error: err });
-            else if (!devices) res.json(
-                {
-                    warning: {
-                        title: "There is no devices on this account...",
-                        message: "To be able to get the Presence Analytics Information, you have to configure the Locations on your HiveManager NG account"
-                    }
-                });
-            else {
-                req.session.locations = locations;
-                req.session.locationsCount = Location.countBuildings(req.session.locations);
-                var devicesCount = Device.countDevices(devices);
-                res.json({
-                    error: null,
-                    locationsCount: req.session.locationsCount,
-                    devicesCount: devicesCount,
-                    locations: locations
-                });
-            }
-        });
-    });
-});
 /*================================================
  API CALLED TO DISPLAY THE TIMELINE
  =================================================*/
-router.post('/common/timeline/', function (req, res, next) {
+router.get('/timeline/', function (req, res, next) {
     var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
 
     var startTime, endTime, timeUnit, locations, locDone, timelineReq;
     var timeline = [];
 
-    if (req.body.startTime && req.body.endTime) {
+    if (req.query.startTime && req.query.endTime) {
         // retrieve the start time and end time from the POST method
-        startTime = new Date(req.body['startTime']);
-        endTime = new Date(req.body['endTime']);
+        startTime = new Date(req.query.startTime);
+        endTime = new Date(req.query.endTime);
         // set the TimeUnit depending on the duration to fit the ACS API constraints
         if (endTime - startTime <= 172800000) {
             timeUnit = "FiveMinutes";
@@ -97,12 +73,12 @@ router.post('/common/timeline/', function (req, res, next) {
         }
         // retrieve the "reqId" parameter from the POST Method.
         // This will be sent back to the web browser to identify the request
-        timelineReq = req.body['reqId'];
+        timelineReq = req.query.reqId;
 
         // if the "locations" parameter exists, and is not null, will filter the request based on the locations selected by the user
         // otherwise takes the "root" folder
-        if (req.body.locations && req.body.locations.length > 0) {
-            locations = JSON.parse(req.body['locations']);
+        if (req.query.locations && req.query.locations.length > 0) {
+            locations = JSON.parse(req.query.locations);
             if (locations.length == 0) locations = [req.session.locations.id];
         } else locations = [req.session.locations.id];
 

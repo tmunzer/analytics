@@ -8,36 +8,31 @@ var Device = require("../bin/aerohive/models/device");
 var Location = require("../bin/aerohive/models/location");
 
 /*================================================================
- ROUTES
+ COMMON FUNCTIONS
  ================================================================*/
-/*================================================================
- DASHBOARD
- ================================================================*/
-router.get('/', function (req, res, next) {
-    if (req.session.xapi) {
-        var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
-        res.render('dashboard', {
-            title: 'Analytics',
-            current_page: 'dashboard',
-            server: currentApi.vpcUrl,
-            ownerId: currentApi.ownerId,
-            accessToken: currentApi.accessToken
-        })
-    } else res.redirect("s/");
-});
+function locationsFromQuery(req) {
+    // if the "locations" parameter exists, and is not null, will filter the request based on the locations selected by the user
+    // otherwise takes the "root" folder
+    if (req.query.locations && req.query.locations.length > 0) {
+        locations = JSON.parse(req.query.locations);
+        if (locations.length == 0) locations = [req.session.locations.id];
+    } else locations = [req.session.locations.id];
+    if (typeof locations == "number") locations = [locations];
+    return locations;
+}
+
 
 /*================================================================
  API
  ================================================================*/
 // route called to get the data for the cards at the top of the dashboard
-router.post('/api/update/cards/', function (req, res, next) {
+router.get('/cards/', function (req, res, next) {
     var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
 
-    var locations = [];
-    if (req.body.locations && req.body.locations.length > 0) locations = JSON.parse(req.body.locations);
+    var locations = locationsFromQuery(req);
 
     endpoints.monitor.device.getDevices(currentApi, devAccount, function (err, devices) {
-        if (err) res.send(err);
+        if (err) res.status(500).send(err);
         else {
             // get the list of locationID based on the selection made by the user
             var floorsFilter = Location.getFilteredFloorsId(req.session.locations, locations);
@@ -45,13 +40,13 @@ router.post('/api/update/cards/', function (req, res, next) {
             var locationsCount = Location.countBuildings(req.session.locations, floorsFilter);
             var devicesCount = Device.countDevices(devices, floorsFilter);
 
-            res.json({ error: null, locationsCount: locationsCount, devicesCount: devicesCount });
+            res.status(200).json({ locationsCount: locationsCount, devicesCount: devicesCount });
         }
     });
 });
 
 // route called to get the values for the charts on the dashboard
-router.post('/api/update/widgets/', function (req, res, next) {
+router.get('/widgets/', function (req, res, next) {
     var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
 
     var startTime, endTime, locations, locNowDone, locWeekDone, locMonthDone, locYearDone,
@@ -92,19 +87,13 @@ router.post('/api/update/widgets/', function (req, res, next) {
         "newClients": 0,
         "returningClients": 0
     };
-    if (req.body.startTime && req.body.endTime) {
+    if (req.query.startTime && req.query.endTime) {
         // retrieve the start time and end time from the POST method
-        startTime = new Date(req.body['startTime']);
-        endTime = new Date(req.body['endTime']);
+        startTime = new Date(req.query['startTime']);
+        endTime = new Date(req.query['endTime']);
 
-        // if the "locations" parameter exists, and is not null, will filter the request based on the locations selected by the user
-        // otherwise takes the "root" folder
-        if (req.body.locations && req.body.locations.length > 0) {
-            locations = JSON.parse(req.body['locations']);
-            if (locations.length == 0) locations = [req.session.locations.id];
-        } else locations = [req.session.locations.id];
-        if (typeof locations == "number") locations = [locations];
-        
+        var locations = locationsFromQuery(req);
+
         locNowDone = 0;
         locWeekDone = 0;
         locMonthDone = 0;
@@ -113,8 +102,6 @@ router.post('/api/update/widgets/', function (req, res, next) {
         // this "widgetReqId" is used to identify the calls to ACS API.
         // It is needed because of the use of "Event Emitter" instead of the callback method
         var widgetReqId = new Date().getTime();
-        console.log(locations);
-        console.log(typeof locations)
         locations.forEach(function (location) {
 
             // get the values for the time range defined by the user
@@ -127,7 +114,7 @@ router.post('/api/update/widgets/', function (req, res, next) {
                 endTime.toISOString(),
                 function (err, data) {
                     // if there is an error, send the error message to the web browser
-                    if (err) res.json({ error: err });
+                    if (err) res.status(500).json({ error: err });
                     else {
                         // otherwise, add the values for the period of time defined by the user to the values for all the locations
                         dataNow['uniqueClients'] += data['uniqueClients'];
@@ -159,7 +146,7 @@ router.post('/api/update/widgets/', function (req, res, next) {
                     endLastWeek.toISOString(),
                     function (err, data) {
                         // if there is an error, send the error message to the web browser
-                        if (err) res.json({ error: err });
+                        if (err) res.status(500).json({ error: err });
                         else {
                             // otherwise, add the values for previous week to the values for all the locations
                             dataLastWeek['uniqueClients'] += data['uniqueClients'];
@@ -193,7 +180,7 @@ router.post('/api/update/widgets/', function (req, res, next) {
                     endLastMonth.toISOString(),
                     function (err, data) {
                         // if there is an error, send the error message to the web browser
-                        if (err) res.json({ error: err });
+                        if (err) res.status(500).json({ error: err });
                         else {
                             // otherwise, add the values for previous month to the values for all the locations
                             dataLastMonth['uniqueClients'] += data['uniqueClients'];
@@ -226,7 +213,7 @@ router.post('/api/update/widgets/', function (req, res, next) {
                 endLastYear.toISOString(),
                 function (err, data) {
                     // if there is an error, send the error message to the web browser
-                    if (err) res.json({ error: err });
+                    if (err) res.status(500).json({ error: err });
                     else {
                         // otherwise, add the values for previous year to the values for all the locations
                         dataLastYear['uniqueClients'] += data['uniqueClients'];
@@ -242,7 +229,7 @@ router.post('/api/update/widgets/', function (req, res, next) {
                     }
                 });
         });
-    } else res.json({ error: "missing parameters" });
+    } else res.status(400).json({ error: "missing parameters" });
 
     function end() {
         if (locNowDone == locations.length
@@ -250,8 +237,7 @@ router.post('/api/update/widgets/', function (req, res, next) {
             && locMonthDone == locations.length
             && locYearDone == locations.length) {
             // if all locations/periods are done, send back the response to the web browser
-            res.json({
-                error: null,
+            res.status(200).json({
                 dataNow: dataNow,
                 dataLastWeek: dataLastWeek,
                 dataLastMonth: dataLastMonth,
@@ -262,24 +248,19 @@ router.post('/api/update/widgets/', function (req, res, next) {
 });
 
 //api call to get the values for the "Best locations by" charts
-router.post("/api/update/widget-best/", function (req, res, next) {
+router.get("/widget-top/", function (req, res, next) {
     var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
 
-    var startTime, endTime, locDone, bestLocations, locations, buildings;
-    if (req.body.startTime && req.body.endTime) {
+    var startTime, endTime, locDone, topLocations, locations, buildings;
+    if (req.query.startTime && req.query.endTime) {
         // retrieve the start time and end time from the POST method
-        startTime = new Date(req.body['startTime']);
-        endTime = new Date(req.body['endTime']);
+        startTime = new Date(req.query.startTime);
+        endTime = new Date(req.query.endTime);
 
-        // if the "locations" parameter exists, and is not null, will filter the request based on the locations selected by the user
-        // otherwise takes the "root" folder
-        if (req.body.locations && req.body.locations.length > 0) {
-            locations = JSON.parse(req.body['locations']);
-            if (locations.length == 0) locations = [req.session.locations.id];
-        } else locations = [req.session.locations.id];
+        var locations = locationsFromQuery(req);
 
         locDone = 0;
-        bestLocations = {};
+        topLocations = {};
         // get the list of buildings
         buildings = Location.getFilteredFloorsId(req.session.locations, locations, "BUILDING");
         buildings.forEach(function (location) {
@@ -291,16 +272,16 @@ router.post("/api/update/widget-best/", function (req, res, next) {
                 startTime.toISOString(),
                 endTime.toISOString(),
                 function (err, data) {
-                    if (err) res.json({ error: err });
+                    if (err) res.status(500).json({ error: err });
                     else {
-                        var storeFrontClients, name;
+                        var storefront, name;
                         // calculate the storefront conversion
-                        if (data['uniqueClients'] == 0) storeFrontClients = 0;
-                        else storeFrontClients = ((data['engagedClients'] / data['uniqueClients']) * 100).toFixed(0);
+                        if (data['uniqueClients'] == 0) storefront = 0;
+                        else storefront = ((data['engagedClients'] / data['uniqueClients']) * 100).toFixed(0);
                         // get the location name
                         name = Location.getLocationName(req.session.locations, this.location);
-                        // add each locations to the "bestLocations" dictionary
-                        bestLocations[this.location] = {
+                        // add each locations to the "topLocations" dictionary
+                        topLocations[this.location] = {
                             name: name,
                             uniqueClients: data['uniqueClients'],
                             engagedClients: data['engagedClients'],
@@ -309,22 +290,16 @@ router.post("/api/update/widget-best/", function (req, res, next) {
                             unassociatedClients: data['unassociatedClients'],
                             newClients: data['newClients'],
                             returningClients: data['returningClients'],
-                            storeFrontClients: storeFrontClients
+                            storefront: parseInt(storefront)
                         };
                         locDone++;
                         // if all the locations are done, will send the response back to the web browser
-                        if (locDone == buildings.length) {
-                            res.json({
-                                error: null,
-                                data: {
-                                    bestLocations: bestLocations
-                                }
-                            })
-                        }
+                        if (locDone == buildings.length) res.status(200).json({ topLocations: topLocations })
+
                     }
                 }.bind({ location: location }));
 
         });
-    } else res.json({ error: "missing parameters" });
+    } else res.status(400).json({ error: "missing parameters" });
 });
 module.exports = router;

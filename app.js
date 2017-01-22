@@ -70,22 +70,22 @@ if (loginMethod) {
   var login = require('./routes/login_api');
 }
 var oauth = require('./routes/oauth');
-var dashboard = require('./routes/dashboard');
 var details = require('./routes/details');
 var api = require('./routes/api');
+var apiDashboard = require('./routes/api.dashboard');
 var compare = require('./routes/compare');
 var webApp = require("./routes/web-app");
 
 app.use('/', login);
 app.use('/oauth/', oauth);
-app.use('/dashboard/', dashboard);
 app.use('/details/', details);
 app.use('/api/', api);
+app.use('/api/dashboard/', apiDashboard);
 app.use('/compare/', compare);
 app.use('/web-app', webApp);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  res.redirect("/dashboard");
+  res.redirect("/web-app/");
 });
 
 // error handlers

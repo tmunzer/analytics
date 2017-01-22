@@ -6,194 +6,70 @@
                 <h2 class="md-toolbar-tools" translate="filter.filterBy"></h2>
             </div>
         </md-toolbar>
-        <div>
-            <h3 translate="filter.location"></h3>
-            <md-list>
-                <md-list-item ng-repeat="location in locations">
-                    <md-checkbox data-name={{location.id}} ng-model="userType.selected"
-                                 ng-change="change()" aria-label="Selection location">
+        <div ng-controller="LocationCtrl" layout="column">
+            <h3>
+            <span translate="filter.location"></span>        
+            </h3>
+            <div ng-show="locationsLoaded" style="background-color: rgb(76,175,80); height: 5px; width: 100%">
+            </div>
+            <md-progress-linear ng-show="!locationsLoaded" md-mode="indeterminate" class="md-accent">
+            </md-progress-linear>
+
+            <script type="text/ng-template" id="locations_renderer.html">                    
+                    <md-checkbox ng-checked="exists(folder)" ng-click="toggle(folder)" aria-label="{{folder.name}}">
+                            <md-icon class="material-icons md-24">{{locationsIcon(folder)}}</md-icon>
+                            <span>{{folder.name}}</span>
+                            <span flex></span>
                     </md-checkbox>
-                                <span class="lbl fn-ellipsis"
-                                      title={{locaiton.name}}>{{location.name}}</span>
-                </md-list-item>
-            </md-list>
-           
-            <div ng-show="!locationsLoaded()" style="padding: 0;">
-                <div layout="row" layout-align="space-around">
-                    <md-progress-circular md-mode="indeterminate" class="md-accent"></md-progress-circular>
-                </div>
+                    <md-list ng-repeat="folder in folder.folders"  ng-include="'locations_renderer.html'" style="margin-left:10px" layout="column">
+                    </md-list>
+            </script>
+
+            <div ng-show="locationsLoaded">
+                <md-checkbox ng-checked="exists(locations)" ng-click="toggle(locations)" aria-label="{{locations.name}}">
+                                <md-icon class="material-icons md-24">{{locationsIcon(locations)}}</md-icon>
+                                <span>{{locations.name}}</span>
+                                <span flex></span>
+                </md-checkbox>
+                <md-list>
+                    <md-list ng-repeat="folder in locations.folders"  ng-include="'locations_renderer.html'" style="margin-left:10px" layout="column">
+                    </md-list>
+                </md-list>
             </div>
         </div>
 
     </md-sidenav>
 
-    <md-content style="padding-bottom: 5px; width: 100%;">
-        <article md-whiteframe="5">
-            <md-content>
-                <md-toolbar layout="row" layout-align="center center">
-                    <div class="md-toolbar-tools">
-                        <h2><span translate="credentials.numberOfAccounts"></span>: {{credentials.length}}</h2>
-                        <span flex></span>
-
-                        <div class="md-toolbar-tools" id='table-search' ng-show="table.show">
-                            <md-input-container md-no-float class="md-block search-tool">
-                                <md-icon class="material-icons search-tool">search</md-icon>
-                                <input ng-model="table.filter" class="search-tool"
-                                       placeholder="{{'button.search' | translate}}">
-                            </md-input-container>
-                            <button class="md-icon-button md-button" type="button"
-                                    ng-click="removeFilter()" aria-label="close">
-                                <md-icon class="material-icons">close</md-icon>
-                                <md-tooltip md-direction="bottom">
-                                    {{"button.close" | translate}}
-                                </md-tooltip>
-                                <div class="md-ripple-container"></div>
-                            </button>
-                        </div>
-                        <div class="md-toolbar-tools" ng-hide="table.show">
-                            <div flex></div>
-                            <button class="md-icon-button md-button" ng-click="table.show = true"
-                                    aria-label="filter_list">
-                                <md-icon class="material-icons">search</md-icon>
-                                <md-tooltip md-direction="bottom">
-                                    {{"button.search" | translate}}
-                                </md-tooltip>
-
-                                <div class="md-ripple-container"></div>
-                            </button>
-                            <md-button class="md-icon-button md-button" ng-click="renewCredentials()"
-                                       ng-disabled="!onlyOneSelected()">
-                                <md-icon class="material-icons">autorenew</md-icon>
-                                <md-tooltip md-direction="bottom">
-                                    {{"button.renewSelectedUser" | translate}}
-                                </md-tooltip>
-                            </md-button>
-                            <md-button class="md-icon-button md-button" ng-click="sendByEmail()"
-                                       ng-disabled="!onlyOneSelected()">
-                                <md-icon class="material-icons">email</md-icon>
-                                <md-tooltip md-direction="bottom">
-                                    {{"button.sendByEmail" | translate}}
-                                </md-tooltip>
-                            </md-button>
-                            <md-button class="md-icon-button md-button" ng-click="sendBySms()"
-                                       ng-disabled="!onlyOneSelected() || hmngType != 'public'">
-                                <md-icon class="material-icons">sms</md-icon>
-                                <md-tooltip md-direction="bottom">
-                                    {{"button.sendBySms" | translate}}
-                                </md-tooltip>
-                            </md-button>
-                            <md-button class="md-icon-button md-button"
-                                       ng-click="deleteCredentials()" ng-disabled="!moreThanOneSelected()">
-                                <md-icon class="material-icons">delete</md-icon>
-                                <md-tooltip md-direction="bottom">
-                                    {{"button.removeSelectedUsers" | translate}}
-                                </md-tooltip>
-                            </md-button>
-                            <md-button class="md-icon-button md-button"
-                                       ng-click="exportSelectedUsers()"
-                                       ng-disabled="!moreThanOneSelected()">
-                                <md-icon class="material-icons">file_upload</md-icon>
-                                <md-tooltip md-direction="bottom">
-                                    {{"button.exportSelectedUsers" | translate}}
-                                </md-tooltip>
-                            </md-button>
-                            <md-button class="md-icon-button md-button" ng-click="refresh()">
-                                <md-icon class="material-icons">refresh</md-icon>
-                                <md-tooltip md-direction="bottom">
-                                    {{"button.refresh" | translate}}
-                                </md-tooltip>
-
-                            </md-button>
-                        </div>
+    <md-content flex layout="column" class="main-view">
+        <article md-whiteframe="2" ng-controller="TimelineCtrl" class="container">
+            <div class="inside">
+                <div class="entity-timeline-loading">
+                    <div class="entity-timeline-column entity-timeline-choose" flex layout="row">
+                        <md-input-container style="width: 150px">
+                            <label>Showing Data for</label>
+                            <md-select ng-model="period">
+                            <md-option value="day">1 Day</md-option>
+                            <md-option value="week">1 Week</md-option>
+                            <md-option value="month">1 Month</md-option>
+                            <md-option value="year">1 Year</md-option>
+                            </md-select>
+                        </md-input-container>
+                        <span style="min-width: 100px;"></span>
+                        <span style="align-self: center">Select Range</span>                        
+                        <md-button ng-repeat="duration in durations[period]" class="md-raised" ng-class="isCurrentRange(duration.range)" style="height: 20px;align-self: center;" ng-click="changeRange(period, duration.range)">{{duration.name}}</md-button>                                            
                     </div>
-                </md-toolbar>
-
-
-                <div ng-show="credentialsLoaded()"
-                     style="background-color: rgb(76,175,80); height: 5px; width: 100%"></div>
-                <md-progress-linear ng-show="!credentialsLoaded()" md-mode="indeterminate"
-                                    class="md-accent"></md-progress-linear>
-
-                <div style="position: relative; min-height: 150px;">
-                    <div ng-show="!credentialsLoaded()"
-                         style="position: absolute;height: 100%;width: 100%;background-color: rgba(250,250,250,0.7);vertical-align: middle;">
+                    <div style="height:180px; min-height: 100px;">
+                        <div class="entity-timeline-bar-time" id="timeline">
                     </div>
-
-
-                    <md-table-container>
-                        <table md-table>
-                            <thead md-head md-order="table.order">
-                            <tr md-row>
-                                <th md-column style="width: 5%">
-                                    <div>
-                                        <md-checkbox ng-change="selectAll()" ng-disabled="credentials.length <= 0"
-                                                     ng-model="selectAllChecked" class="md-accent"
-                                                     aria-label="Select All">
-                                        </md-checkbox>
-                                    </div>
-                                </th>
-                                <th md-column style="width: 20%" md-order-by='userName'>
-                                    {{"credentials.table.username" | translate}}
-                                </th>
-                                <th md-column style="width: 20%" md-order-by='email'>
-                                    {{"credentials.table.email" | translate}}
-                                </th>
-                                <th md-column style="width: 20%" md-order-by='phone'>
-                                    {{'credentials.table.phone' | translate }}
-                                </th>
-                                <th md-column style="width: 10%" md-order-by='groupName'>
-                                    {{"credentials.table.userGroup" | translate}}
-                                </th>
-                                <th md-column style="width: 5%" md-order-by='credentialType'>
-                                    {{"credentials.table.credentialType" | translate}}
-                                </th>
-                                <th md-column style="width: 20%" md-order-by='expireTime'>
-                                    {{"credentials.table.expireTime" | translate}}
-                                </th>
-                            </tr>
-                            </thead>
-                            <tbody md-body>
-                            <tr md-row
-                                ng-repeat="credential in credentials | orderBy: table.order | limitTo: itemsByPage: (currentPage - 1) * itemsByPage"
-                                ng-click="selectOne(credential, true)" ng-class="{'tm-selected': credential.selected}">
-                                <td md-cell>
-                                    <div>
-                                        <md-checkbox ng-model="credential.selected" class="md-accent"
-                                                     ng-change="selectOne(credential, false)"
-                                                     ng-click="$event.stopPropagation();"
-                                                     aria-label="Select Credential">
-                                    </div>
-                                </td>
-                                <td md-cell>
-                                    <div>{{credential.userName}}</div>
-                                </td>
-                                <td md-cell>
-                                    <div>{{credential.email}}</div>
-                                </td>
-                                <td md-cell>
-                                    <div>{{credential.phone}}</div>
-                                </td>
-                                <td md-cell>
-                                    <div>{{credential.groupName}}</div>
-                                </td>
-                                <td md-cell>
-                                    <div>{{credential.credentialType | userType}}</div>
-                                </td>
-                                <td md-cell>
-                                    <div>{{credential.expireTime | date : 'short' }}</div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </md-table-container>
-                    <md-table-pagination md-limit="itemsByPage" md-limit-options="[10, 20, 50, 100 ]"
-                                         md-page="currentPage"
-                                         md-total="{{credentials.length}}"></md-table-pagination>
                 </div>
-                <div class="grid-mark"
-                     ng-style="credentialsLoaded() === true && {'display': 'none'}"></div>
-
-            </md-content>
+                <div class="entity-timeline-show-time" style="text-align: center; margin-bottom: 5px">
+                    <span>Showing data from</span>                    
+                    <b>{{date.from | date : 'short'}}</b>
+                    <span style="font-weight: normal;"> to </span>
+                    <b>{{date.to | date : 'short'}}</b>
+            </div>
         </article>
+
+
     </md-content>
 </div>

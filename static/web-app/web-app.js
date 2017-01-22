@@ -209,8 +209,7 @@ analytics.controller("LocationCtrl", function ($scope, $rootScope, LocationsServ
             if (parentItem) uncheckParents(parentItem);
         }
     }
-
-    updateLocations();
+    if (!$rootScope.locations) updateLocations();
 })
 
 analytics.controller("TimelineCtrl", function ($scope, $rootScope, TimelineService) {
@@ -350,7 +349,7 @@ analytics.controller("TimelineCtrl", function ($scope, $rootScope, TimelineServi
                         events: {
                             redraw: function () {
                                 $scope.safeApply(
-                                    $scope.date = {
+                                    $rootScope.date = {
                                         from: this.xAxis[1].categories[(this.xAxis[0].getExtremes().min).toFixed(0)],
                                         to: this.xAxis[1].categories[(this.xAxis[0].getExtremes().max).toFixed(0)]
                                     }
@@ -482,9 +481,9 @@ angular.module('analytics').factory("TimelineService", function ($http, $q) {
     function get(startTime, endTime, selectedLocations, timelineReq) {
         var canceller = $q.defer();
         var request = $http({
-            url: '/api/common/timeline/',
-            method: "POST",
-            data: {
+            url: '/api/timeline/',
+            method: "GET",
+            params: {
                 startTime: startTime.toISOString(),
                 endTime: endTime.toISOString(),
                 locations: JSON.stringify(selectedLocations),
@@ -528,8 +527,8 @@ angular.module('analytics').factory("LocationsService", function ($http, $q) {
     function get() {
         var canceller = $q.defer();
         var request = $http({
-            url: '/api/configuration/apLocationFolders',
-            method: "POST",
+            url: '/api/apLocationFolders',
+            method: "GET",
             timeout: canceller.promise
         });
         return httpReq(request);

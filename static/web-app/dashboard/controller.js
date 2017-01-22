@@ -1,4 +1,4 @@
-angular.module('Dashboard').controller("DashboardCtrl", function ($scope, $rootScope, CardsService) {
+angular.module('Dashboard').controller("DashboardCtrl", function ($scope, $rootScope, $location, CardsService) {
     $scope.maps = {
         folders: 0,
         buildings: 0,
@@ -11,14 +11,14 @@ angular.module('Dashboard').controller("DashboardCtrl", function ($scope, $rootS
     }
 
     $rootScope.$watch("selectedLocations", function () {
-        if ($rootScope.locations) {
-            updateCards();
-        }
+        if ($location.path() == "/dashboard")
+            if ($rootScope.locations)
+                updateCards();
     })
     $rootScope.$watch("locations", function () {
-        if ($rootScope.locations) {
-            updateCards();
-        }
+        if ($location.path() == "/dashboard")
+            if ($rootScope.locations)
+                updateCards();
     })
 
     function updateCards() {
@@ -28,7 +28,7 @@ angular.module('Dashboard').controller("DashboardCtrl", function ($scope, $rootS
         request.then(function (promise) {
             if (promise && promise.error) {
                 console.log(promise.error);
-                $scope.maps.folder = "X";
+                $scope.maps.folders = "X";
                 $scope.maps.buildings = "X";
                 $scope.maps.floors = "X";
                 $scope.devices.sensors = "X";
@@ -47,16 +47,14 @@ angular.module('Dashboard').controller("DashboardCtrl", function ($scope, $rootS
     }
 });
 
-
-
 angular.module('Dashboard').factory("CardsService", function ($http, $q) {
 
     function update(locations) {
         var canceller = $q.defer();
         var request = $http({
-            method: "POST",
-            url: "/dashboard/api/update/cards/",
-            data: locations,
+            method: "GET",
+            url: "/api/dashboard/cards/",
+            params: locations,
             timeout: canceller.promise
         });
         return httpReq(request);
@@ -88,7 +86,8 @@ angular.module('Dashboard').factory("CardsService", function ($http, $q) {
     }
 });
 
-angular.module('Dashboard').controller("WidgetCtrl", function ($scope, $rootScope, WidgetService) {
+angular.module('Dashboard').controller("WidgetCtrl", function ($scope, $rootScope, $location, $sce, DashboardChartsService) {
+
     $scope.topLocationStarted = false;
     $scope.passersByStarted = false;
     $scope.engagedStarted = false;
@@ -102,55 +101,86 @@ angular.module('Dashboard').controller("WidgetCtrl", function ($scope, $rootScop
     $scope.newClientsLoaded = false;
     $scope.returningClientsLoaded = false;
 
+    $scope.topLocationsChart = "storefront";
+
+    $scope.topLocationsChoices = {
+        'associatedClients': { value: 'associatedClients', title: 'Associated Clients', percentage: false },
+        'engagedClients': { value: 'engagedClients', title: 'Engaged Clients', percentage: false },
+        'newClients': { value: 'newClients', title: 'New Clients', percentage: false },
+        'passersbyClients': { value: 'passersbyClients', title: 'Passersby Clients', percentage: false },
+        'returningClients': { value: 'returningClients', title: 'Returning Clients', percentage: false },
+        'storefront': { value: 'storefront', title: 'Storefront Conversion', percentage: true },
+        'unassociatedClients': { value: 'unassociatedClients', title: 'Unassociated Clients', percentage: false },
+        'uniqueClients': { value: 'uniqueClients', title: 'Unique Clients', percentage: false }
+    }
     var lastUpdateRequest;
+    var topLocations = {};
 
     $rootScope.$watch("date", function (a, b) {
-        console.log($rootScope.date);
-        if ($rootScope.date.from != "" && $rootScope.date.to != "") {
+        if ($location.path() == "/dashboard")
+            if ($rootScope.date.from != "" && $rootScope.date.to != "") {
+                lastUpdateRequest = new Date();
+                var currentUpdateRequest = lastUpdateRequest;
+                setTimeout(function () {
+                    if (currentUpdateRequest == lastUpdateRequest) {
+                        updateWidgets();
+                        updateTopLocation();
+                    }
+                }, 2000)
+            }
+    }, true)
+
+    $rootScope.$watch("timelineLoaded", function (a, b) {
+        if ($location.path() == "/dashboard") {
             lastUpdateRequest = new Date();
             var currentUpdateRequest = lastUpdateRequest;
             setTimeout(function () {
-                if (currentUpdateRequest == lastUpdateRequest) {
-                    updateWidgets();
-                }
-            }, 2000)
+                if (currentUpdateRequest == lastUpdateRequest)
+                    if ($rootScope.timelineLoaded == true) {
+                        updateWidgets();
+                        updateTopLocation();
+                    }
+            }, 500)
         }
-    }, true)
-    $rootScope.$watch("timelineLoaded", function (a, b) {
-        lastUpdateRequest = new Date();
-        var currentUpdateRequest = lastUpdateRequest;
-        setTimeout(function () {
-            if (currentUpdateRequest == lastUpdateRequest)
-                if ($rootScope.timelineLoaded == true) updateWidgets();
-        }, 500)
     });
+
+    $scope.$watch("topLocationsChart", function () {
+        var choice = $scope.topLocationsChart;
+        displayTopLocation($scope.topLocationsChoices[choice].value, $scope.topLocationsChoices[choice].title, $scope.topLocationsChoices[choice].percentage);
+    })
 
     function getStoreFront(engaged, uniqueClient) {
         if (uniqueClient == 0) return 0;
         else return parseInt(((engaged / uniqueClient) * 100).toFixed(0));
     }
-
     function getPercentage(num1, num2) {
         if (num2 == 0) return null;
         else return (((num1 - num2) / num2) * 100).toFixed(0);
     }
-    $scope.getTrendPercentage = function (percentage) {
+    function getTrendPercentage(percentage) {
         if (!percentage) return "N/A";
         if (percentage < 0) return percentage + "%";
         else if (percentage > 0) return "+" + percentage + "%";
         else return "+" + percentage + "%";
     }
-    $scope.getTrendColor = function (percentage) {
-        if (parseInt(percentage) < 0) return "{'color': '#dd2c00'}";
-        else if (percentage > 0) return "{'color': '#5ea962'}";
-        else if (percentage == 0) return "{'color': '#ffffff'}";
-        else return "{'color': '#969696'}";
+    function getTrendColor(percentage) {
+        if (parseInt(percentage) < 0) return "rgb(221,41,0)";
+        else if (percentage > 0) return "#5ea962";
+        else if (percentage == 0) return "#000000";
+        else return "#969696";
     }
-    $scope.getTrendIcon = function (percentage) {
+    function getTrendIcon(percentage) {
         if (percentage < 0) return "trending_down";
         else if (percentage > 0) return "trending_up";
         else if (percentage == 0) return "trending_flat";
         else return "";
+    }
+    $scope.getTrendHtml = function (percentage) {
+        var htmlString = '<span class="num-indicator widget-number" style="color: ' + getTrendColor(percentage) + '">' +
+            '<i class="material-icons" style="vertical-align: middle;">' + getTrendIcon(percentage) + '</i>' +
+            '<span>' + getTrendPercentage(percentage) + '</span>' +
+            '</span>';
+        return $sce.trustAsHtml(htmlString);;
     }
 
     function updateWidgets() {
@@ -171,7 +201,7 @@ angular.module('Dashboard').controller("WidgetCtrl", function ($scope, $rootScop
         // @TODO: Current API limitation
         if (endTime - startTime <= 2678400000) {
 
-            var request = WidgetService.update(startTime, endTime, $rootScope.selectedLocations);
+            var request = DashboardChartsService.widgets(startTime, endTime, $rootScope.selectedLocations);
             request.then(function (promise) {
                 if (promise && promise.error) console.log(promise.error);
                 else {
@@ -213,19 +243,19 @@ angular.module('Dashboard').controller("WidgetCtrl", function ($scope, $rootScop
                         ];
                     }
 
-                    $scope.passersByLoaded = true;
+
                     displayWidgetChart("passersByChart", "Number of PassersBy Clients", xAxisData, dataPassersBy);
                     $scope.passersByWeek = getPercentage(data.dataNow.passersbyClients, data.dataLastWeek.passersbyClients);
                     $scope.passersByMonth = getPercentage(data.dataNow.passersbyClients, data.dataLastMonth.passersbyClients);
                     $scope.passersByYear = getPercentage(data.dataNow.passersbyClients, data.dataLastYear.passersbyClients);
+                    $scope.passersByLoaded = true;
 
-                    $scope.engagedLoaded = true;
                     displayWidgetChart("engagedChart", "Number of Engaged Clients", xAxisData, dataEngaged);
                     $scope.engagedWeek = getPercentage(data.dataNow.engagedClients, data.dataLastWeek.engagedClients);
                     $scope.engagedMonth = getPercentage(data.dataNow.engagedClients, data.dataLastMonth.engagedClients);
                     $scope.engagedYear = getPercentage(data.dataNow.engagedClients, data.dataLastYear.engagedClients);
+                    $scope.engagedLoaded = true;
 
-                    $scope.storeFrontLoaded = true;
                     displayWidgetChart("storeFrontChart", "StoreFront Conversion", xAxisData, dataStoreFront, true);
                     $scope.storeFrontWeek = getPercentage(
                         getStoreFront(data.dataNow.engagedClients, data.dataNow.uniqueClients),
@@ -239,19 +269,19 @@ angular.module('Dashboard').controller("WidgetCtrl", function ($scope, $rootScop
                         getStoreFront(data.dataNow.engagedClients, data.dataNow.uniqueClients),
                         getStoreFront(data.dataLastYear.engagedClients, data.dataLastYear.uniqueClients)
                     );
+                    $scope.storeFrontLoaded = true;
 
-                    $scope.newClientsLoaded = true;
                     displayWidgetChart("newClientsChart", "Number of New Clients", xAxisData, dataNewClients);
                     $scope.newClientsWeek = getPercentage(data.dataNow.newClients, data.dataLastWeek.newClients);
                     $scope.newClientsMonth = getPercentage(data.dataNow.newClients, data.dataLastMonth.newClients);
                     $scope.newClientsYear = getPercentage(data.dataNow.newClients, data.dataLastYear.newClients);
+                    $scope.newClientsLoaded = true;
 
-                    $scope.returningClientsLoaded = true;
                     displayWidgetChart("returningClientsChart", "Number of Returning Clients", xAxisData, dataReturningClients);
                     $scope.returningClientsWeek = getPercentage(data.dataNow.returningClients, data.dataLastWeek.returningClients);
                     $scope.returningClientsMonth = getPercentage(data.dataNow.returningClients, data.dataLastMonth.returningClients);
                     $scope.returningClientsYear = getPercentage(data.dataNow.returningClients, data.dataLastYear.returningClients);
-
+                    $scope.returningClientsLoaded = true;
                 }
             })
         }
@@ -316,15 +346,95 @@ angular.module('Dashboard').controller("WidgetCtrl", function ($scope, $rootScop
             }]
         });
     }
+
+
+    function updateTopLocation() {
+
+        var endTime = $rootScope.date.to;
+        var startTime = $rootScope.date.from;
+        // @TODO: Current API limitation
+        if (endTime - startTime <= 2678400000) {
+
+            $scope.topLocationStarted = true;
+            $scope.topLocationLoaded = false;
+            var request = DashboardChartsService.topLocations(startTime, endTime, $rootScope.selectedLocations);
+            request.then(function (promise) {
+                if (promise && promise.error) console.log(promise.error);
+                else {
+                    topLocations = promise.data.topLocations;
+                    displayTopLocation("storefront", 'Storefront Conversion', true);
+                    $scope.topLocationLoaded = true;
+                }
+            })
+        }
+    }
+
+    function displayTopLocation(param, title, percentage) {
+        /*$("#button-bestLocation").html(title);
+        switch (param) {
+            case 'associatedClients':
+                $("#help-bestLocation").html("Number of clients that were associated with the network over the given time interval.");
+                break;
+            case 'engagedClients':
+                $("#help-bestLocation").html("Number of clients that were engaged over the time interval.");
+                break;
+            case 'passersbyClients':
+                $("#help-bestLocation").html("Number of clients that were determined to be passersby over the time interval.");
+                break;
+            case 'storeFrontClients':
+                $("#help-bestLocation").html("Percentage of clients seen outside that come into your store.");
+                break;
+            case 'unassociatedClients':
+                $("#help-bestLocation").html("The number of clients not associated with the network over the given time interval.");
+                break;
+            case 'uniqueClients':
+                $("#help-bestLocation").html("The number of unique clients over the time interval.");
+                break;
+        }*/
+        var xAxisData = [];
+        var data = [];
+        var sortable = [];
+
+        for (var locNum in topLocations) {
+            sortable.push([topLocations[locNum]['name'], topLocations[locNum][param]]);
+        }
+        sortable.sort(function (a, b) { return b[1] - a[1] });
+
+        for (var i = 0; i < 5; i++) {
+            if (sortable[i]) {
+                xAxisData.push(sortable[i][0]);
+                data.push(parseInt(sortable[i][1]));
+            } else {
+                xAxisData.push("");
+                data.push(0);
+            }
+        }
+        displayWidgetChart("topLocationChart", title, xAxisData, data, percentage);
+
+    }
 });
 
-angular.module("Dashboard").factory("WidgetService", function ($http, $q) {
-    function update(startTime, endTime, locationAnalytics) {
+angular.module("Dashboard").factory("DashboardChartsService", function ($http, $q) {
+    function widgets(startTime, endTime, locationAnalytics) {
         var canceller = $q.defer();
         var request = $http({
-            method: 'POST',
-            url: '/dashboard/api/update/widgets/',
-            data: {
+            method: 'GET',
+            url: '/api/dashboard/widgets/',
+            params: {
+                startTime: startTime,
+                endTime: endTime,
+                locations: locationAnalytics
+            },
+            timeout: canceller.promise
+        });
+        return httpReq(request);
+    }
+    function topLocations(startTime, endTime, locationAnalytics) {
+        var canceller = $q.defer();
+        var request = $http({
+            method: 'GET',
+            url: '/api/dashboard/widget-top/',
+            params: {
                 startTime: startTime,
                 endTime: endTime,
                 locations: locationAnalytics
@@ -356,6 +466,7 @@ angular.module("Dashboard").factory("WidgetService", function ($http, $q) {
 
 
     return {
-        update: update
+        widgets: widgets,
+        topLocations: topLocations
     }
 });

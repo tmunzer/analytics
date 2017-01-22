@@ -7,9 +7,16 @@
             </div>
         </md-toolbar>
         <div ng-controller="LocationCtrl" layout="column">
-            <h3 translate="filter.location"></h3>
+            <h3>
+            <span translate="filter.location"></span>        
+            </h3>
+            <div ng-show="locationsLoaded" style="background-color: rgb(76,175,80); height: 5px; width: 100%">
+            </div>
+            <md-progress-linear ng-show="!locationsLoaded" md-mode="indeterminate" class="md-accent">
+            </md-progress-linear>
+
             <script type="text/ng-template" id="locations_renderer.html">                    
-                    <md-checkbox ng-checked="exists(folder)" ng-click="toggle(folder)" aria-label="Selection location">
+                    <md-checkbox ng-checked="exists(folder)" ng-click="toggle(folder)" aria-label="{{folder.name}}">
                             <md-icon class="material-icons md-24">{{locationsIcon(folder)}}</md-icon>
                             <span>{{folder.name}}</span>
                             <span flex></span>
@@ -18,21 +25,16 @@
                     </md-list>
             </script>
 
-
-            <md-checkbox ng-checked="exists(locations)" ng-click="toggle(locations)">
-                            <md-icon class="material-icons md-24">{{locationsIcon(locations)}}</md-icon>
-                            <span>{{locations.name}}</span>
-                            <span flex></span>
-            </md-checkbox>
-            <md-list>
-                <md-list ng-repeat="folder in locations.folders"  ng-include="'locations_renderer.html'" style="margin-left:10px" layout="column">
+            <div ng-show="locationsLoaded">
+                <md-checkbox ng-checked="exists(locations)" ng-click="toggle(locations)" aria-label="{{locations.name}}">
+                                <md-icon class="material-icons md-24">{{locationsIcon(locations)}}</md-icon>
+                                <span>{{locations.name}}</span>
+                                <span flex></span>
+                </md-checkbox>
+                <md-list>
+                    <md-list ng-repeat="folder in locations.folders"  ng-include="'locations_renderer.html'" style="margin-left:10px" layout="column">
+                    </md-list>
                 </md-list>
-            </md-list>
-
-            <div ng-show="!locationsLoaded" style="padding: 0;">
-                <div layout="row" layout-align="space-around">
-                    <md-progress-circular md-mode="indeterminate" class="md-accent"></md-progress-circular>
-                </div>
             </div>
         </div>
 
@@ -140,7 +142,27 @@
         <section ng-controller="WidgetCtrl">
             <article layout="column" layout-gt-sm="row">
                 <md-content flex-gt-sm="45" md-whiteframe="2" style="margin: 10px 0" class="container">
-                    <h3>TOP 5 LOCATIONS BY</h3>
+                    <h3 style="height: 25px;">
+                        <span>TOP 5 LOCATIONS BY</span>                        
+                        <md-input-container class="header-input">                            
+                            <md-select ng-model="topLocationsChart" ng-selected="topLocationsChart">
+                                <md-option ng-repeat="choice in topLocationsChoices" ng-value="choice.value">{{choice.title}}</md-option>
+                            </md-select>
+                        </md-input-container>
+                    </h3>
+                    <div ng-show="!topLocationStarted">
+                        <div style="text-align: center; line-height: 250px;"> waiting</div>
+                    </div>
+                    <div class="entity-loading-widget" ng-show="topLocationStarted && !topLocationLoaded" 
+                    style="line-height: 250px;" layout="column" layout-align="space-around">
+                        <md-progress-circular md-mode="indeterminate" class="md-accent" style="margin: auto;">
+                        </md-progress-circular>
+                    </div>
+                    <div ng-show="topLocationStarted && topLocationLoaded" layout="row">
+                        <div flex="100">
+                            <div style="height: 250px;" id="topLocationChart"></div>
+                        </div>                        
+                    </div>
                 </md-content>
                 <span flex></span>
                 <md-content flex-gt-sm="45" md-whiteframe="2" style="margin: 10px 0" class="container">
@@ -148,7 +170,11 @@
                     <div ng-show="!storeFrontStarted">
                         <div style="text-align: center; line-height: 250px;"> waiting</div>
                     </div>
-                    <div class="entity-loading-widget" ng-show="storeFrontStarted && !storeFrontLoaded">Loading...</div>
+                    <div class="entity-loading-widget" ng-show="storeFrontStarted && !storeFrontLoaded"
+                    style="line-height: 250px;" layout="column" layout-align="space-around">
+                        <md-progress-circular md-mode="indeterminate" class="md-accent" style="margin: auto;">
+                        </md-progress-circular>
+                    </div>
                     <div ng-show="storeFrontStarted && storeFrontLoaded" layout="row">
                         <div flex="50">
                             <div style="height: 250px;" id="storeFrontChart"></div>
@@ -156,24 +182,15 @@
                         <div flex="50" style="margin-left:10px">
                             <div class="topAppGroupTitle"> Progress Compared to</div>
                             <div class="usageSection widget-section" md-whiteframe="4">
-                                <span class="num-indicator widget-number" ng-style="{{getTrendColor(storeFrontWeek)}}">
-                                    <i class="material-icons" style="vertical-align: middle;">{{getTrendIcon(storeFrontWeek)}}</i>
-                                    <span>{{getTrendPercentage(storeFrontWeek)}}</span>
-                                </span>
+                                <span ng-bind-html="getTrendHtml(storeFrontWeek)"></span>  
                                 <span class="num-label tagBlockTitle widget-info"> Previous Week</span>
                             </div>
                             <div class="usageSection widget-section" md-whiteframe="4">
-                                    <span class="num-indicator widget-number" ng-style="{{getTrendColor(storeFrontMonth)}}">
-                                    <i class="material-icons" style="vertical-align: middle;">{{getTrendIcon(storeFrontMonth)}}</i>
-                                    <span>{{getTrendPercentage(storeFrontMonth)}}</span>
-                                </span>
+                                <span ng-bind-html="getTrendHtml(storeFrontMonth)"></span>  
                                 <span class="num-label tagBlockTitle widget-info"> Previous Month</span>
                             </div>
                             <div class="usageSection widget-section"  md-whiteframe="4">
-                                    <span class="num-indicator widget-number" ng-style="{{getTrendColor(storeFrontYear)}}">
-                                    <i class="material-icons" style="vertical-align: middle;">{{getTrendIcon(storeFrontYear)}}</i>
-                                    <span>{{getTrendPercentage(storeFrontYear)}}</span>
-                                </span>
+                                <span ng-bind-html="getTrendHtml(storeFrontYear)"></span>  
                                 <span class="num-label tagBlockTitle widget-info"> Previous Year</span>        
                             </div>
                         </div>
@@ -186,7 +203,10 @@
                     <div ng-show="!passersByStarted">
                         <div style="text-align: center; line-height: 250px;"> waiting</div>
                     </div>
-                    <div class="entity-loading-widget"ng-show="passersByStarted && !passersByLoaded">Loading...</div>
+                    <div class="entity-loading-widget"ng-show="passersByStarted && !passersByLoaded" style="line-height: 250px;" layout="column" layout-align="space-around">
+                        <md-progress-circular md-mode="indeterminate" class="md-accent" style="margin: auto;">
+                        </md-progress-circular>
+                    </div>
                     <div ng-show="passersByStarted && passersByLoaded" layout="row">
                         <div flex="50">
                             <div style="height: 250px;" id="passersByChart"></div>
@@ -194,24 +214,15 @@
                         <div flex="50" style="margin-left:10px">
                             <div class="topAppGroupTitle"> Progress Compared to</div>
                             <div class="usageSection widget-section" md-whiteframe="4">
-                                <span class="num-indicator widget-number" ng-style="{{getTrendColor(passersByWeek)}}">
-                                    <i class="material-icons" style="vertical-align: middle;">{{getTrendIcon(passersByWeek)}}</i>
-                                    <span>{{getTrendPercentage(passersByWeek)}}</span>
-                                </span>
+                                <span ng-bind-html="getTrendHtml(passersByWeek)"></span>  
                                 <span class="num-label tagBlockTitle widget-info"> Previous Week</span>
                             </div>
                             <div class="usageSection widget-section" md-whiteframe="4">
-                                    <span class="num-indicator widget-number" ng-style="{{getTrendColor(passersByMonth)}}">
-                                    <i class="material-icons" style="vertical-align: middle;">{{getTrendIcon(passersByMonth)}}</i>
-                                    <span>{{getTrendPercentage(passersByMonth)}}</span>
-                                </span>
+                                <span ng-bind-html="getTrendHtml(passersByMonth)"></span>  
                                 <span class="num-label tagBlockTitle widget-info"> Previous Month</span>
                             </div>
                             <div class="usageSection widget-section"  md-whiteframe="4">
-                                    <span class="num-indicator widget-number" ng-style="{{getTrendColor(passersByYear)}}">
-                                    <i class="material-icons" style="vertical-align: middle;">{{getTrendIcon(passersByYear)}}</i>
-                                    <span>{{getTrendPercentage(passersByYear)}}</span>
-                                </span>
+                                <span ng-bind-html="getTrendHtml(passersByYear)"></span>  
                                 <span class="num-label tagBlockTitle widget-info"> Previous Year</span>                         
                             </div>
                         </div>
@@ -223,7 +234,10 @@
                     <div ng-show="!engagedStarted">
                         <div style="text-align: center; line-height: 250px;"> waiting</div>
                     </div>
-                    <div class="entity-loading-widget" ng-show="engagedStarted && !engagedLoaded">Loading...</div>
+                    <div class="entity-loading-widget" ng-show="engagedStarted && !engagedLoaded" style="line-height: 250px;" layout="column" layout-align="space-around">
+                        <md-progress-circular md-mode="indeterminate" class="md-accent" style="margin: auto;">
+                        </md-progress-circular>
+                    </div>
                     <div ng-show="engagedStarted && engagedLoaded" layout="row">
                         <div flex="50">
                             <div style="height: 250px; width: 100%" id="engagedChart"></div>
@@ -231,24 +245,15 @@
                         <div flex="50" style="margin-left:10px">
                             <div class="topAppGroupTitle">Progress Compared to</div>
                             <div class="usageSection widget-section" md-whiteframe="4">
-                                <span class="num-indicator widget-number" ng-style="{{getTrendColor(engagedWeek)}}">
-                                    <i class="material-icons" style="vertical-align: middle;">{{getTrendIcon(engagedWeek)}}</i>
-                                    <span>{{getTrendPercentage(engagedWeek)}}</span>
-                                </span>
+                                <span ng-bind-html="getTrendHtml(engagedWeek)"></span>  
                                 <span class="num-label tagBlockTitle widget-info"> Previous Week</span>
                             </div>
                             <div class="usageSection widget-section" md-whiteframe="4">
-                                    <span class="num-indicator widget-number" ng-style="{{getTrendColor(engagedMonth)}}">
-                                    <i class="material-icons" style="vertical-align: middle;">{{getTrendIcon(engagedMonth)}}</i>
-                                    <span>{{getTrendPercentage(engagedMonth)}}</span>
-                                </span>
+                                <span ng-bind-html="getTrendHtml(engagedMonth)"></span>  
                                 <span class="num-label tagBlockTitle widget-info"> Previous Month</span>
                             </div>
                             <div class="usageSection widget-section"  md-whiteframe="4">
-                                    <span class="num-indicator widget-number" ng-style="{{getTrendColor(engagedYear)}}">
-                                    <i class="material-icons" style="vertical-align: middle;">{{getTrendIcon(engagedYear)}}</i>
-                                    <span>{{getTrendPercentage(engagedYear)}}</span>
-                                </span>
+                                <span ng-bind-html="getTrendHtml(engagedYear)"></span>  
                                 <span class="num-label tagBlockTitle widget-info"> Previous Year</span>
                             </div>
                         </div>
@@ -261,7 +266,10 @@
                     <div ng-show="!newClientsStarted">
                         <div style="text-align: center; line-height: 250px;"> waiting</div>
                     </div>
-                    <div class="entity-loading-widget" ng-show="newClientsStarted && !newClientsLoaded">Loading...</div>
+                    <div class="entity-loading-widget" ng-show="newClientsStarted && !newClientsLoaded" style="line-height: 250px;" layout="column" layout-align="space-around">
+                        <md-progress-circular md-mode="indeterminate" class="md-accent" style="margin: auto;">
+                        </md-progress-circular>
+                    </div>
                     <div ng-show="newClientsStarted && newClientsLoaded" layout="row">
                         <div flex="50">
                             <div style="height: 250px;" id="newClientsChart"></div>
@@ -269,24 +277,15 @@
                         <div flex="50" style="margin-left:10px">
                             <div class="topAppGroupTitle"> Progress Compared to</div>
                             <div class="usageSection widget-section" md-whiteframe="4">
-                                <span class="num-indicator widget-number" ng-style="{{getTrendColor(newClientsWeek)}}">
-                                    <i class="material-icons" style="vertical-align: middle;">{{getTrendIcon(newClientsWeek)}}</i>
-                                    <span>{{getTrendPercentage(newClientsWeek)}}</span>
-                                </span>
+                                <span ng-bind-html="getTrendHtml(newClientsWeek)"></span>  
                                 <span class="num-label tagBlockTitle widget-info"> Previous Week</span>
                             </div>
                             <div class="usageSection widget-section" md-whiteframe="4">
-                                    <span class="num-indicator widget-number" ng-style="{{getTrendColor(newClientsMonth)}}">
-                                    <i class="material-icons" style="vertical-align: middle;">{{getTrendIcon(newClientsMonth)}}</i>
-                                    <span>{{getTrendPercentage(newClientsMonth)}}</span>
-                                </span>
+                                <span ng-bind-html="getTrendHtml(newClientsMonth)"></span>  
                                 <span class="num-label tagBlockTitle widget-info"> Previous Month</span>
                             </div>
                             <div class="usageSection widget-section"  md-whiteframe="4">
-                                    <span class="num-indicator widget-number" ng-style="{{getTrendColor(newClientsYear)}}">
-                                    <i class="material-icons" style="vertical-align: middle;">{{getTrendIcon(newClientsYear)}}</i>
-                                    <span>{{getTrendPercentage(newClientsYear)}}</span>
-                                </span>
+                                <span ng-bind-html="getTrendHtml(newClientsYear)"></span>  
                                 <span class="num-label tagBlockTitle widget-info"> Previous Year</span>
                             </div>
                         </div>
@@ -298,7 +297,10 @@
                     <div ng-show="!returningClientsStarted">
                         <div style="text-align: center; line-height: 250px;"> waiting</div>
                     </div>
-                    <div class="entity-loading-widget" ng-show="returningClientsStarted && !returningClientsLoaded">Loading...</div>
+                    <div class="entity-loading-widget" ng-show="returningClientsStarted && !returningClientsLoaded" style="line-height: 250px;" layout="column" layout-align="space-around">
+                        <md-progress-circular md-mode="indeterminate" class="md-accent" style="margin: auto;">
+                        </md-progress-circular>
+                    </div>
                     <div ng-show="returningClientsStarted && returningClientsLoaded" layout="row">
                         <div flex="50">
                             <div style="height: 250px;" id="returningClientsChart"></div>
@@ -306,24 +308,15 @@
                         <div flex="50" style="margin-left:10px">
                             <div class="topAppGroupTitle"> Progress Compared to</div>
                             <div class="usageSection widget-section" md-whiteframe="4">
-                                <span class="num-indicator widget-number" ng-style="{{getTrendColor(returningClientsWeek)}}">
-                                    <i class="material-icons" style="vertical-align: middle;">{{getTrendIcon(returningClientsWeek)}}</i>
-                                    <span>{{getTrendPercentage(returningClientsWeek)}}</span>
-                                </span>
+                                <span ng-bind-html="getTrendHtml(returningClientsWeek)"></span>  
                                 <span class="num-label tagBlockTitle widget-info"> Previous Week</span>
                             </div>
                             <div class="usageSection widget-section" md-whiteframe="4">
-                                <span class="num-indicator widget-number" ng-style="{{getTrendColor(returningClientsMonth)}}">
-                                    <i class="material-icons" style="vertical-align: middle;">{{getTrendIcon(returningClientsMonth)}}</i>
-                                    <span>{{getTrendPercentage(returningClientsMonth)}}</span>
-                                </span>
+                                <span ng-bind-html="getTrendHtml(returningClientsMonth)"></span>                            
                                 <span class="num-label tagBlockTitle widget-info"> Previous Month</span>
                             </div>
                             <div class="usageSection widget-section"  md-whiteframe="4">
-                                <span class="num-indicator widget-number" ng-style="{{getTrendColor(returningClientsYear)}}">
-                                    <i class="material-icons" style="vertical-align: middle;">{{getTrendIcon(returningClientsYear)}}</i>
-                                    <span>{{getTrendPercentage(returningClientsYear)}}</span>
-                                </span>
+                                <span ng-bind-html="getTrendHtml(returningClientsYear)"></span>  
                                 <span class="num-label tagBlockTitle widget-info"> Previous Year</span>
                             </div>
                         </div>
