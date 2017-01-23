@@ -281,8 +281,6 @@ analytics.controller("TimelineCtrl", function ($scope, $rootScope, TimelineServi
 
 
     function updateTimeline() {
-        $scope.period = "day";
-        $scope.range = 2;
         $rootScope.timelineLoaded = false;
         //if ($('#timeline').highcharts()) $('#timeline').highcharts().destroy();
         var endTime = new Date(new Date().toISOString().replace(/:[0-9]{2}:[0-9]{2}\.[0-9]{3}/, ":00:00.000"));
