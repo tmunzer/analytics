@@ -1,44 +1,5 @@
 <div class="main-container">
-    <md-sidenav class="md-sidenav-left" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
 
-        <md-toolbar>
-            <div class="md-toolbar-tools">
-                <h2 class="md-toolbar-tools" translate="filter.filterBy"></h2>
-            </div>
-        </md-toolbar>
-        <div ng-controller="LocationCtrl" layout="column">
-            <h3>
-            <span translate="filter.location"></span>        
-            </h3>
-            <div ng-show="locationsLoaded" style="background-color: rgb(76,175,80); height: 5px; width: 100%">
-            </div>
-            <md-progress-linear ng-show="!locationsLoaded" md-mode="indeterminate" class="md-accent">
-            </md-progress-linear>
-
-            <script type="text/ng-template" id="locations_renderer.html">                    
-                    <md-checkbox ng-checked="exists(folder)" ng-click="toggle(folder)" aria-label="{{folder.name}}">
-                            <md-icon class="material-icons md-24">{{locationsIcon(folder)}}</md-icon>
-                            <span>{{folder.name}}</span>
-                            <span flex></span>
-                    </md-checkbox>
-                    <md-list ng-repeat="folder in folder.folders"  ng-include="'locations_renderer.html'" style="margin-left:10px" layout="column">
-                    </md-list>
-            </script>
-
-            <div ng-show="locationsLoaded">
-                <md-checkbox ng-checked="exists(locations)" ng-click="toggle(locations)" aria-label="{{locations.name}}">
-                                <md-icon class="material-icons md-24">{{locationsIcon(locations)}}</md-icon>
-                                <span>{{locations.name}}</span>
-                                <span flex></span>
-                </md-checkbox>
-                <md-list>
-                    <md-list ng-repeat="folder in locations.folders"  ng-include="'locations_renderer.html'" style="margin-left:10px" layout="column">
-                    </md-list>
-                </md-list>
-            </div>
-        </div>
-
-    </md-sidenav>
 
     <md-content flex layout="column" class="main-view">
         <article layout="column" layout-gt-sm="row">
@@ -108,35 +69,7 @@
                     </ul>
             </md-content>
         </article>
-
-        <article md-whiteframe="2" ng-controller="TimelineCtrl" class="container">
-            <div class="inside">
-                <div class="entity-timeline-loading">
-                    <div class="entity-timeline-column entity-timeline-choose" flex layout="row">
-                        <md-input-container style="width: 150px">
-                            <label>Showing Data for</label>
-                            <md-select ng-model="period">
-                            <md-option value="day">1 Day</md-option>
-                            <md-option value="week">1 Week</md-option>
-                            <md-option value="month">1 Month</md-option>
-                            <md-option value="year">1 Year</md-option>
-                            </md-select>
-                        </md-input-container>
-                        <span style="min-width: 100px;"></span>
-                        <span style="align-self: center">Select Range</span>                        
-                        <md-button ng-repeat="duration in durations[period]" class="md-raised" ng-class="isCurrentRange(duration.range)" style="height: 20px;align-self: center;" ng-click="changeRange(period, duration.range)">{{duration.name}}</md-button>                                            
-                    </div>
-                    <div style="height:180px; min-height: 100px;">
-                        <div class="entity-timeline-bar-time" id="timeline">
-                    </div>
-                </div>
-                <div class="entity-timeline-show-time" style="text-align: center; margin-bottom: 5px">
-                    <span>Showing data from</span>                    
-                    <b>{{date.from | date : 'short'}}</b>
-                    <span style="font-weight: normal;"> to </span>
-                    <b>{{date.to | date : 'short'}}</b>
-            </div>
-        </article>
+    
 
 
         <section ng-controller="WidgetCtrl">
@@ -151,10 +84,10 @@
                         </md-input-container>
                     </h3>
                     <div ng-show="!topLocationStarted">
-                        <div style="text-align: center; line-height: 250px;"> waiting</div>
+                        <div style="text-align: center; line-height: 250px;">waiting</div>
                     </div>
                     <div class="entity-loading-widget" ng-show="topLocationStarted && !topLocationLoaded" 
-                    style="line-height: 250px;" layout="column" layout-align="space-around">
+                    style="height: 250px;" layout="column" layout-align="space-around">
                         <md-progress-circular md-mode="indeterminate" class="md-accent" style="margin: auto;">
                         </md-progress-circular>
                     </div>
@@ -171,7 +104,7 @@
                         <div style="text-align: center; line-height: 250px;"> waiting</div>
                     </div>
                     <div class="entity-loading-widget" ng-show="storeFrontStarted && !storeFrontLoaded"
-                    style="line-height: 250px;" layout="column" layout-align="space-around">
+                    style="height: 250px;" layout="column" layout-align="space-around">
                         <md-progress-circular md-mode="indeterminate" class="md-accent" style="margin: auto;">
                         </md-progress-circular>
                     </div>
@@ -203,7 +136,7 @@
                     <div ng-show="!passersByStarted">
                         <div style="text-align: center; line-height: 250px;"> waiting</div>
                     </div>
-                    <div class="entity-loading-widget"ng-show="passersByStarted && !passersByLoaded" style="line-height: 250px;" layout="column" layout-align="space-around">
+                    <div class="entity-loading-widget"ng-show="passersByStarted && !passersByLoaded" style="height: 250px;" layout="column" layout-align="space-around">
                         <md-progress-circular md-mode="indeterminate" class="md-accent" style="margin: auto;">
                         </md-progress-circular>
                     </div>
@@ -234,7 +167,7 @@
                     <div ng-show="!engagedStarted">
                         <div style="text-align: center; line-height: 250px;"> waiting</div>
                     </div>
-                    <div class="entity-loading-widget" ng-show="engagedStarted && !engagedLoaded" style="line-height: 250px;" layout="column" layout-align="space-around">
+                    <div class="entity-loading-widget" ng-show="engagedStarted && !engagedLoaded" style="height: 250px;" layout="column" layout-align="space-around">
                         <md-progress-circular md-mode="indeterminate" class="md-accent" style="margin: auto;">
                         </md-progress-circular>
                     </div>
@@ -266,7 +199,7 @@
                     <div ng-show="!newClientsStarted">
                         <div style="text-align: center; line-height: 250px;"> waiting</div>
                     </div>
-                    <div class="entity-loading-widget" ng-show="newClientsStarted && !newClientsLoaded" style="line-height: 250px;" layout="column" layout-align="space-around">
+                    <div class="entity-loading-widget" ng-show="newClientsStarted && !newClientsLoaded" style="height: 250px;" layout="column" layout-align="space-around">
                         <md-progress-circular md-mode="indeterminate" class="md-accent" style="margin: auto;">
                         </md-progress-circular>
                     </div>
@@ -297,7 +230,7 @@
                     <div ng-show="!returningClientsStarted">
                         <div style="text-align: center; line-height: 250px;"> waiting</div>
                     </div>
-                    <div class="entity-loading-widget" ng-show="returningClientsStarted && !returningClientsLoaded" style="line-height: 250px;" layout="column" layout-align="space-around">
+                    <div class="entity-loading-widget" ng-show="returningClientsStarted && !returningClientsLoaded" style="height: 250px;" layout="column" layout-align="space-around">
                         <md-progress-circular md-mode="indeterminate" class="md-accent" style="margin: auto;">
                         </md-progress-circular>
                     </div>

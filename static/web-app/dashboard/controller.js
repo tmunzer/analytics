@@ -119,6 +119,12 @@ angular.module('Dashboard').controller("WidgetCtrl", function ($scope, $rootScop
     $rootScope.$watch("date", function (a, b) {
         if ($location.path() == "/dashboard")
             if ($rootScope.date.from != "" && $rootScope.date.to != "") {
+        $scope.topLocationLoaded = false;
+        $scope.passersByLoaded = false;
+        $scope.engagedLoaded = false;
+        $scope.storeFrontLoaded = false;
+        $scope.newClientsLoaded = false;
+        $scope.returningClientsLoaded = false;
                 lastUpdateRequest = new Date();
                 var currentUpdateRequest = lastUpdateRequest;
                 setTimeout(function () {
