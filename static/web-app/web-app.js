@@ -219,8 +219,8 @@ analytics.controller("TimelineCtrl", function ($scope, $rootScope, TimelineServi
         to: ""
     };
     $rootScope.timelineLoaded = false;
-    $scope.period = "day";
-    $scope.range = 2;
+    $rootScope.period = "week";
+    $scope.range = 7;
     $scope.durations = {
         "day": [
             { name: "1H", range: "1" },
@@ -262,8 +262,8 @@ analytics.controller("TimelineCtrl", function ($scope, $rootScope, TimelineServi
 
     $scope.$watch("period", function () {
         if (initialized && $rootScope.locations) {
-            if ($scope.period == "day") $scope.range = 2;
-            else if ($scope.period == "month") $scope.range = 7;
+            if ($rootScope.period == "day") $scope.range = 2;
+            else if ($rootScope.period == "month") $scope.range = 7;
             else $scope.range = 1;
             updateTimeline();
         }
@@ -286,8 +286,7 @@ analytics.controller("TimelineCtrl", function ($scope, $rootScope, TimelineServi
         var endTime = new Date(new Date().toISOString().replace(/:[0-9]{2}:[0-9]{2}\.[0-9]{3}/, ":00:00.000"));
         var startTime = new Date(endTime);
         var selectedRange, step, format;
-        console.log($scope.period);
-        switch ($scope.period) {
+        switch ($rootScope.period) {
             case "day":
                 startTime.setDate(startTime.getDate() - 1);
                 selectedRange = 24;
@@ -296,7 +295,7 @@ analytics.controller("TimelineCtrl", function ($scope, $rootScope, TimelineServi
                 break;
             case "week":
                 startTime.setDate(startTime.getDate() - 7);
-                selectedRange = 24;
+                selectedRange = 24*7;
                 step = 24;
                 format = '{value:%Y-%m-%d}';
                 break;
@@ -472,9 +471,6 @@ analytics.controller("TimelineCtrl", function ($scope, $rootScope, TimelineServi
 
 })
 
-
-
-
 angular.module('analytics').factory("TimelineService", function ($http, $q) {
     function get(startTime, endTime, selectedLocations, timelineReq) {
         var canceller = $q.defer();
@@ -519,7 +515,6 @@ angular.module('analytics').factory("TimelineService", function ($http, $q) {
         get: get
     }
 });
-
 
 angular.module('analytics').factory("LocationsService", function ($http, $q) {
     function get() {

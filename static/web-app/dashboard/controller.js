@@ -9,16 +9,30 @@ angular.module('Dashboard').controller("DashboardCtrl", function ($scope, $rootS
         connected: 0,
         sensors: 0
     }
-
+    var updateCardsRequest;
     $rootScope.$watch("selectedLocations", function () {
         if ($location.path() == "/dashboard")
-            if ($rootScope.locations)
-                updateCards();
+            if ($rootScope.locations) {
+                updateCardsRequest = new Date();
+                var currentUpdateRequest = updateCardsRequest;
+                setTimeout(function () {
+                    if (currentUpdateRequest == updateCardsRequest) {
+                        updateCards();
+                    }
+                }, 200)
+            }
     })
     $rootScope.$watch("locations", function () {
         if ($location.path() == "/dashboard")
-            if ($rootScope.locations)
-                updateCards();
+            if ($rootScope.locations){
+                updateCardsRequest = new Date();
+                var currentUpdateRequest = updateCardsRequest;
+                setTimeout(function () {
+                    if (currentUpdateRequest == updateCardsRequest) {
+                        updateCards();
+                    }
+                }, 200)
+            }
     })
 
     function updateCards() {
@@ -119,12 +133,12 @@ angular.module('Dashboard').controller("WidgetCtrl", function ($scope, $rootScop
     $rootScope.$watch("date", function (a, b) {
         if ($location.path() == "/dashboard")
             if ($rootScope.date.from != "" && $rootScope.date.to != "") {
-        $scope.topLocationLoaded = false;
-        $scope.passersByLoaded = false;
-        $scope.engagedLoaded = false;
-        $scope.storeFrontLoaded = false;
-        $scope.newClientsLoaded = false;
-        $scope.returningClientsLoaded = false;
+                $scope.topLocationLoaded = false;
+                $scope.passersByLoaded = false;
+                $scope.engagedLoaded = false;
+                $scope.storeFrontLoaded = false;
+                $scope.newClientsLoaded = false;
+                $scope.returningClientsLoaded = false;
                 lastUpdateRequest = new Date();
                 var currentUpdateRequest = lastUpdateRequest;
                 setTimeout(function () {

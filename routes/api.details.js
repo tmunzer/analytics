@@ -7,52 +7,21 @@ var endpoints = require("../bin/aerohive/api/main");
  ROUTES
  ================================================================*/
 /*================================================================
- DETAILS
- ================================================================*/
-router.get('/', function (req, res, next) {
-    if (req.session.xapi) {
-        var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
-        res.render('details', {
-            title: 'Analytics',
-            current_page: 'details',
-            server: currentApi.vpcUrl,
-            ownerId: currentApi.ownerId,
-            accessToken: currentApi.accessToken
-        });
-    } else res.redirect("/login/");
-});
-
-
-/*================================================================
  API
  ================================================================*/
-// api call called to get the list of locations
-router.post('/api/init/', function (req, res, next) {
-    var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
 
-    endpoints.configuration.location.getLocations(currentApi, devAccount, function (err, locations) {
-        if (err) res.send(err);
-        else {
-            req.session.locations = locations;
-            res.json({
-                error: null,
-                locations: locations
-            });
-        }
-    });
-});
 // api call to get the list of clients over the time (heatmap display on the browser)
-router.post('/api/clienttimeseries/', function (req, res, next) {
+router.get('/clienttimeseries/', function (req, res, next) {
     var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
 
     var startTime, endTime, timeUnit, locDone, locations, series, timeseries;
     series = [];
     timeseries = [];
     locDone = 0;
-    if (req.body.startTime && req.body.endTime) {
+    if (req.query.startTime && req.query.endTime) {
         // retrieve the start time and end time from the POST method
-        startTime = new Date(req.body['startTime']);
-        endTime = new Date(req.body['endTime']);
+        startTime = new Date(req.query.startTime);
+        endTime = new Date(req.query.endTime);
 
         // set the TimeUnit depending on the duration to fit the ACS API constraints
         if (endTime - startTime <= 172800000) {
@@ -65,8 +34,8 @@ router.post('/api/clienttimeseries/', function (req, res, next) {
 
         // if the "locations" parameter exists, and is not null, will filter the request based on the locations selected by the user
         // otherwise takes the "root" folder
-        if (req.body.locations && req.body.locations.length > 0) {
-            locations = JSON.parse(req.body['locations']);
+        if (req.query.locations && req.query.locations.length > 0) {
+            locations = JSON.parse(req.query.locations);
             if (locations.length == 0) locations = [req.session.locations.id];
         } else locations = [req.session.locations.id];
 
@@ -80,7 +49,7 @@ router.post('/api/clienttimeseries/', function (req, res, next) {
                 endTime.toISOString(),
                 timeUnit,
                 function (err, result) {
-                    if (err) res.json({error: err});
+                    if (err) res.status(500).json({ error: err });
                     else {
                         // create the array for the xAxis
                         series = result['times'];
@@ -98,12 +67,12 @@ router.post('/api/clienttimeseries/', function (req, res, next) {
                     locDone++;
                     // if all locations are done, send back the response to the web browser
                     if (locDone == locations.length) {
-                        res.send({error: null, data: timeseries});
+                        res.status(200).send({timeseries: timeseries});
                     }
                 }
             )
         });
-    } else res.json({error: "missing parameters"});
+    } else res.status(400).json({ error: "missing parameters" });
 });
 
 module.exports = router;
