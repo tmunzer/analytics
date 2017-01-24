@@ -82,9 +82,9 @@ html
 
             
         div(id="main")
-            md-button.md-fab.md-warn.md-mini(aria-label="menu" style="position: fixed; bottom: 20px; left: 20px" ng-show="UserCtrl.showFab()" hide-gt-md ng-click='UserCtrl.sideNav("left")')
+            md-button.md-fab.md-warn.md-mini(aria-label="menu" style="position: fixed; bottom: 20px; left: 20px" ng-show="UserCtrl.showFab()" hide-gt-sm ng-click='UserCtrl.sideNav("left")')
                 md-icon.material-icons.md-12 menu
-            md-sidenav(class="md-sidenav-left" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')")
+            md-sidenav(class="md-sidenav-left" md-component-id="left" md-is-locked-open="$mdMedia('gt-sm')")
                 md-toolbar
                     div(class="md-toolbar-tools")
                         h2(class="md-toolbar-tools" translate="filter.filterBy")                                    
@@ -129,9 +129,9 @@ html
                             
                         
                         div(class="entity-timeline-show-time" style="text-align: center; margin-bottom: 5px")
-                            span Showing data from
+                            span="Showing data from "
                             b {{date.from | date : 'short'}}
-                            span(style="font-weight: normal;") to 
+                            span(style="font-weight: normal;")=" to " 
                             b {{date.to | date : 'short'}}
                     
                 

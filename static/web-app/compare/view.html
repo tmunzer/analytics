@@ -1,4 +1,22 @@
 <div class="main-container">
-
- 
+    <md-content flex layout="column" class="main-view">
+    <md-content layout="row" md-whiteframe="2">
+        <div style="margin: auto;">
+        <md-button class="md-raised" ng-class="isCurrent('locations')" style="height: 20px;align-self: center;" ng-click="changeComparison('locations')">Compare Locations</md-button>
+        <md-button class="md-raised" ng-class="isCurrent('periods')" style="height: 20px;align-self: center;" ng-click="changeComparison('periods')">Compare Periods</md-button>
+        <div>
+    </md-content>
+    <md-tabs md-dynamic-height md-border-bottom>
+        <md-tab>
+            <md-tab-label>Global</md-tab-label>
+            <md-tab-body>
+            </md-tab-body>
+        </md-tab>
+        <md-tab>
+            <md-tab-label>Over Time</md-tab-label>
+            <md-tab-body>
+            </md-tab-body>
+        </md-tab>
+    </md-tabs>
+    </md-content>
 </div>

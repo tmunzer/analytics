@@ -1,49 +1,49 @@
 <div class="main-container">
     <md-content flex layout="column" class="main-view">
-    <article>        
-        <md-content flex-gt-sm="100" md-whiteframe="2" style="margin: 10px 0;" class="container">
-            <h3 style="height: 25px;">
-                <span>Number of Devices</span>                        
-                <md-input-container class="header-input">                            
-                    <md-select ng-model="heatmapChoice" ng-selected="heatmapChoice">
-                        <md-option ng-repeat="choice in heatmapChoiceList" ng-value="choice.value">{{choice.title}}</md-option>
-                    </md-select>
-                </md-input-container>
-            </h3>
-            <div ng-show="!heatmapStarted">
-                <div style="text-align: center; line-height: 400px;">waiting</div>
-            </div>
-            <div class="entity-loading-widget" ng-show="heatmapStarted && !heatmapLoaded" 
-            style="height: 400px;" layout="column" layout-align="space-around">
-                <md-progress-circular md-mode="indeterminate" class="md-accent" style="margin: auto;">
-                </md-progress-circular>
-            </div>
-            <div ng-show="heatmapStarted && heatmapLoaded" layout="row">
-                <div flex="100">
-                    <div style="height: 400px;" id="heatmapChart"></div>
-                </div>                        
-            </div>
-        </md-content>             
-    </article>
-    <article>
-        <md-content flex-gt-sm="100" md-whiteframe="2" style="margin: 10px 0" class="container">
-            <h3 style="height: 25px;">
-                <span>Number of Devices</span>  
-            </h3>
-            <div ng-show="!detailsLineStarted">
-                <div style="text-align: center; line-height: 350px;">waiting</div>
-            </div>
-            <div class="entity-loading-widget" ng-show="detailsLineStarted && !detailsLineLoaded" 
-            style="height: 350px;" layout="column" layout-align="space-around">
-                <md-progress-circular md-mode="indeterminate" class="md-accent" style="margin: auto;">
-                </md-progress-circular>
-            </div>
-            <div ng-show="detailsLineStarted && detailsLineLoaded" layout="row">
-                <div flex="100">
-                    <div style="height: 350px;" id="detailsLineChart"></div>
-                </div>                        
-            </div>
-        </md-content>
-    </article>
+        <article>        
+            <md-content flex-gt-sm="100" md-whiteframe="2" style="margin: 10px 0;" class="container">
+                <h3 style="height: 25px;">
+                    <span>Number of Devices</span>                        
+                    <md-input-container class="header-input">                            
+                        <md-select ng-model="heatmapChoice" ng-selected="heatmapChoice">
+                            <md-option ng-repeat="choice in heatmapChoiceList" ng-value="choice.value">{{choice.title}}</md-option>
+                        </md-select>
+                    </md-input-container>
+                </h3>
+                <div ng-show="!heatmapStarted">
+                    <div style="text-align: center; line-height: 400px;">waiting</div>
+                </div>
+                <div class="entity-loading-widget" ng-show="heatmapStarted && !heatmapLoaded" 
+                style="height: 400px;" layout="column" layout-align="space-around">
+                    <md-progress-circular md-mode="indeterminate" class="md-accent" style="margin: auto;">
+                    </md-progress-circular>
+                </div>
+                <div ng-show="heatmapStarted && heatmapLoaded" layout="row">
+                    <div flex="100">
+                        <div style="height: 400px;" id="heatmapChart"></div>
+                    </div>                        
+                </div>
+            </md-content>             
+        </article>
+        <article>
+            <md-content flex-gt-sm="100" md-whiteframe="2" style="margin: 10px 0" class="container">
+                <h3 style="height: 25px;">
+                    <span>Number of Devices</span>  
+                </h3>
+                <div ng-show="!detailsLineStarted">
+                    <div style="text-align: center; line-height: 350px;">waiting</div>
+                </div>
+                <div class="entity-loading-widget" ng-show="detailsLineStarted && !detailsLineLoaded" 
+                style="height: 350px;" layout="column" layout-align="space-around">
+                    <md-progress-circular md-mode="indeterminate" class="md-accent" style="margin: auto;">
+                    </md-progress-circular>
+                </div>
+                <div ng-show="detailsLineStarted && detailsLineLoaded" layout="row">
+                    <div flex="100">
+                        <div style="height: 350px;" id="detailsLineChart"></div>
+                    </div>                        
+                </div>
+            </md-content>
+        </article>
     </md-content>
 </div>

@@ -22,7 +22,7 @@ html
         link(rel='stylesheet' href='/css/ah-tm.login.css')
 
     body
-        div.container(ng-app="login" ng-controller="LoginCtrl")
+        div(ng-app="login" ng-controller="LoginCtrl")
             div.logo
                 img(src="/images/login_page_logo.png" alt="Aerohive" class="ah-logo")
             div.page-footer
@@ -34,7 +34,7 @@ html
                 h2 Follow the instruction below to get started
             div.page-login(layout="column" layout-align="center center" layout-gt-sm="row" layout-align-gt-sm="center start")
                 
-                div.box(style="width: 450px;")
+                div.box.container(style="width: 450px;")
                     div.inside(md-whiteframe="5" style="width: 100%")
                         md-toolbar
                             div.md-toolbar-tools
