@@ -26,30 +26,32 @@ angular.module('Details').controller("DetailsCtrl", function ($scope, $rootScope
     var lastUpdateRequest;
 
     $scope.$watch("heatmapChoice", function () {
-        var data, range;
-        switch ($scope.heatmapChoice) {
-            case "associatedClients":
-                data = heatmapAssociatedClients;
-                range = heatmapAssociatedClientsRange;
-                break;
-            case "engagedClients":
-                data = heatmapEngagedClients;
-                range = heatmapEngagedClientsRange;
-                break;
-            case "passersbyClients":
-                data = heatmapPassersbyClients;
-                range = heatmapPassersbyClientsRange;
-                break;
-            case "unassociatedClients":
-                data = heatmapUnassociatedClients;
-                range = heatmapUnassociatedClientsRange;
-                break;
-            case "uniqueClients":
-                data = heatmapUniqueClients;
-                range = heatmapUniqueClientsRange;
-                break;
+        if ($scope.heatmapLoaded) {
+            var data, range;
+            switch ($scope.heatmapChoice) {
+                case "associatedClients":
+                    data = heatmapAssociatedClients;
+                    range = heatmapAssociatedClientsRange;
+                    break;
+                case "engagedClients":
+                    data = heatmapEngagedClients;
+                    range = heatmapEngagedClientsRange;
+                    break;
+                case "passersbyClients":
+                    data = heatmapPassersbyClients;
+                    range = heatmapPassersbyClientsRange;
+                    break;
+                case "unassociatedClients":
+                    data = heatmapUnassociatedClients;
+                    range = heatmapUnassociatedClientsRange;
+                    break;
+                case "uniqueClients":
+                    data = heatmapUniqueClients;
+                    range = heatmapUniqueClientsRange;
+                    break;
+            }
+            displayHeatmap(data, range, $scope.heatmapChoiceList[$scope.heatmapChoice].title);
         }
-        displayHeatmap(data,range,$scope.heatmapChoiceList[$scope.heatmapChoice].title);
     })
     $rootScope.$watch("date", function (a, b) {
         if ($location.path() == "/details")
