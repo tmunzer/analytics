@@ -1,3 +1,4 @@
+angular.module("Charts", []);
 angular.module('Dashboard', []);
 angular.module('Compare', []);
 angular.module("Details", []);
@@ -8,6 +9,7 @@ var analytics = angular.module("analytics", [
     'ngMaterial',
     'ngMessages',
     'md.data.table',
+    'Charts',
     'Dashboard',
     'Compare',
     'Details',

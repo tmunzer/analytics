@@ -172,13 +172,6 @@ span.help-tip {
     transition:all 0.1s ease-in-out;
 }
 
-table tfoot td {
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-
-
 input.invalid,textarea.invalid,select.invalid {
     color:#b94a48;
     border-color:#ee5f5b
@@ -205,25 +198,6 @@ input.invalid,textarea.invalid,select.invalid {
 }
 .tooltip.customClass .red {
     color: #d04d49;
-}
-
-
-
-table {
-    width: 100% !important;
-    font-size: 12px !important;
-
-}
-.table tbody tr:hover {
-    background-color: #fff8ea;
-    transition:all 0.2s ease-in-out;
-
-}
-.table tbody tr {
-    transition:all 0.2s ease-in-out;
-}
-table td {
-    cursor: default;
 }
 
 .main-view {

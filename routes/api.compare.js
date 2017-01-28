@@ -28,7 +28,7 @@ function locationsFromQuery(req) {
 /*================================================================
  API - PER LOCATION COMPARISON
  ================================================================*/
-router.get('/location/polar/', function (req, res, next) {
+router.get('/locations/global/', function (req, res, next) {
     var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
 
     var startTime, endTime, locations, locDone, averageDone, numLoc, polarReq;
@@ -131,8 +131,8 @@ router.get('/location/polar/', function (req, res, next) {
                 // send back the response to the web browser
                 res.json({
                     error: null,
-                    dataLocation: locResult,
-                    dataAverage: dataAverage,
+                    data: locResult,
+                    average: dataAverage,
                     reqId: polarReq
                 })
             }
@@ -235,7 +235,7 @@ router.get('/location/timeline/', function (req, res, next) {
  API - PER PERIOD COMPARISON
  ================================================================*/
 // route to get the "Global" charts
-router.get("/period/polar/", function (req, res, next) {
+router.get("/periods/global/", function (req, res, next) {
     var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
 
     var oneHour, oneDay, oneWeek, oneMonth, range, reqPeriods, i;
@@ -441,9 +441,8 @@ router.get("/period/polar/", function (req, res, next) {
                                 dataAverage['returningClients'] = parseInt((dataAverage['returningClients'] / reqPeriods.length).toFixed(0));
                                 // send back the response to the web browser
                                 res.json({
-                                    error: null,
-                                    dataAverage: dataAverage,
-                                    dataPeriod: reqPeriods,
+                                    average: dataAverage,
+                                    data: reqPeriods,
                                     reqId: ajaxReqId
                                 })
                             }

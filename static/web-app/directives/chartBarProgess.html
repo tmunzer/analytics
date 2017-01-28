@@ -1,0 +1,31 @@
+<md-content flex-gt-sm="45" md-whiteframe="2" style="margin: 10px 0" class="container">
+    <h3>{{title}}</h3>
+    <div id="start">
+        <div style="text-align: center; line-height: 250px;" flex> waiting</div>
+    </div>
+    <div class="entity-loading-widget" id="load"
+    style="height: 250px;" layout="column" layout-align="space-around">
+        <md-progress-circular md-mode="indeterminate" class="md-accent" style="margin: auto;">
+        </md-progress-circular>
+    </div>
+    <div id="chart" layout="row">
+        <div flex="50">
+            <div style="height: 250px;" id="storeFrontChart"></div>
+        </div>
+        <div flex="50" style="margin-left:10px">
+            <div class="topAppGroupTitle"> Progress Compared to</div>
+            <div class="usageSection widget-section" md-whiteframe="4">
+                <span ng-bind-html="getTrendHtml(week)"></span>  
+                <span class="num-label tagBlockTitle widget-info"> Previous Week</span>
+            </div>
+            <div class="usageSection widget-section" md-whiteframe="4">
+                <span ng-bind-html="getTrendHtml(month)"></span>  
+                <span class="num-label tagBlockTitle widget-info"> Previous Month</span>
+            </div>
+            <div class="usageSection widget-section"  md-whiteframe="4">
+                <span ng-bind-html="getTrendHtml(year)"></span>  
+                <span class="num-label tagBlockTitle widget-info"> Previous Year</span>        
+            </div>
+        </div>
+    </div>
+</md-content>

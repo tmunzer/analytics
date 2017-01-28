@@ -49,7 +49,7 @@ angular.module('Dashboard').controller("DashboardCtrl", function ($scope, $rootS
                 $scope.devices.connected = "X";
                 $scope.devices.devices = "X";
             } else {
-                $scope.maps.folder = promise.data.locationsCount.folder;
+                $scope.maps.folders = promise.data.locationsCount.folder;
                 $scope.maps.buildings = promise.data.locationsCount.building;
                 $scope.maps.floors = promise.data.locationsCount.floor;
                 $scope.devices.sensors = promise.data.devicesCount.sensor;
@@ -61,44 +61,6 @@ angular.module('Dashboard').controller("DashboardCtrl", function ($scope, $rootS
     }
 });
 
-angular.module('Dashboard').factory("CardsService", function ($http, $q) {
-
-    function update(locations) {
-        var canceller = $q.defer();
-        var request = $http({
-            method: "GET",
-            url: "/api/dashboard/cards/",
-            params: locations,
-            timeout: canceller.promise
-        });
-        return httpReq(request);
-    }
-    function httpReq(request) {
-        var promise = request.then(
-            function (response) {
-                return response;
-            },
-            function (response) {
-                return { error: response.data };
-            });
-
-        promise.abort = function () {
-            canceller.resolve();
-        };
-        promise.finally(function () {
-            console.info("Cleaning up object references.");
-            promise.abort = angular.noop;
-            canceller = request = promise = null;
-        });
-
-        return promise;
-    }
-
-
-    return {
-        update: update
-    }
-});
 
 angular.module('Dashboard').controller("WidgetCtrl", function ($scope, $rootScope, $location, $sce, DashboardChartsService) {
 
@@ -200,7 +162,7 @@ angular.module('Dashboard').controller("WidgetCtrl", function ($scope, $rootScop
             '<i class="material-icons" style="vertical-align: middle;">' + getTrendIcon(percentage) + '</i>' +
             '<span>' + getTrendPercentage(percentage) + '</span>' +
             '</span>';
-        return $sce.trustAsHtml(htmlString);;
+        return $sce.trustAsHtml(htmlString);
     }
 
     function updateWidgets() {
@@ -431,62 +393,5 @@ angular.module('Dashboard').controller("WidgetCtrl", function ($scope, $rootScop
         }
         displayWidgetChart("topLocationChart", title, xAxisData, data, percentage);
 
-    }
-});
-
-angular.module("Dashboard").factory("DashboardChartsService", function ($http, $q) {
-    function widgets(startTime, endTime, locationAnalytics) {
-        var canceller = $q.defer();
-        var request = $http({
-            method: 'GET',
-            url: '/api/dashboard/widgets/',
-            params: {
-                startTime: startTime,
-                endTime: endTime,
-                locations: locationAnalytics
-            },
-            timeout: canceller.promise
-        });
-        return httpReq(request);
-    }
-    function topLocations(startTime, endTime, locationAnalytics) {
-        var canceller = $q.defer();
-        var request = $http({
-            method: 'GET',
-            url: '/api/dashboard/widget-top/',
-            params: {
-                startTime: startTime,
-                endTime: endTime,
-                locations: locationAnalytics
-            },
-            timeout: canceller.promise
-        });
-        return httpReq(request);
-    }
-    function httpReq(request) {
-        var promise = request.then(
-            function (response) {
-                return response;
-            },
-            function (response) {
-                return { error: response.data };
-            });
-
-        promise.abort = function () {
-            canceller.resolve();
-        };
-        promise.finally(function () {
-            console.info("Cleaning up object references.");
-            promise.abort = angular.noop;
-            canceller = request = promise = null;
-        });
-
-        return promise;
-    }
-
-
-    return {
-        widgets: widgets,
-        topLocations: topLocations
     }
 });

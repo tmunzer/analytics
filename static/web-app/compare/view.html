@@ -1,22 +1,244 @@
 <div class="main-container">
-    <md-content flex layout="column" class="main-view">
-    <md-content layout="row" md-whiteframe="2">
-        <div style="margin: auto;">
-        <md-button class="md-raised" ng-class="isCurrent('locations')" style="height: 20px;align-self: center;" ng-click="changeComparison('locations')">Compare Locations</md-button>
-        <md-button class="md-raised" ng-class="isCurrent('periods')" style="height: 20px;align-self: center;" ng-click="changeComparison('periods')">Compare Periods</md-button>
+    <md-content flex layout="column" class="main-view" flex="100">
+        <md-content layout="row" md-whiteframe="2">
+            <div style="margin: auto;">
+                <md-button class="md-raised" ng-class="isCurrent('locations')" style="height: 20px;align-self: center;" ng-click="changeComparison('locations')">Compare Locations</md-button>
+                <md-button class="md-raised" ng-class="isCurrent('periods')" style="height: 20px;align-self: center;" ng-click="changeComparison('periods')">Compare Periods</md-button>
+            </div>
+        </md-content>
         <div>
-    </md-content>
-    <md-tabs md-dynamic-height md-border-bottom>
+    <md-tabs md-border-bottom md-dynamic-height>
         <md-tab>
             <md-tab-label>Global</md-tab-label>
-            <md-tab-body>
+            <md-tab-body layout="column" flex>
+                <article layout="column" layout-gt-sm="row">
+                    <chart-polar 
+                        title="Periods statistics" 
+                        containerid="polarChart" 
+                        started="polarStarted" 
+                        loaded="polarLoaded" 
+                        categories="polarCategories" 
+                        data="polarData">
+                    </chart-polar>                                    
+                </article>
+
+                <article layout="column" layout-gt-sm="row">
+                    <md-content flex-gt-sm="100" md-whiteframe="2" style="margin: 10px 0" class="container">
+                        <h3 style="height: 25px;">
+                            <span ng-show="isCurrent('locations')">Locations statistics</span>
+                            <span ng-show="isCurrent('periods')">Progress compared to other periods</span>                                                    
+                        </h3>
+                        <div ng-show="!tableStarted">
+                            <div style="text-align: center; line-height: 250px;">waiting</div>
+                        </div>
+                        <div class="entity-loading-widget" ng-show="tableStarted && !tableLoaded" 
+                        style="height: 250px;" layout="column" layout-align="space-around">
+                            <md-progress-circular md-mode="indeterminate" class="md-accent" style="margin: auto;">
+                            </md-progress-circular>
+                        </div>
+                        <div ng-show="tableStarted && tableLoaded" layout="row">
+                            <div flex="100">
+                                <div style="height: 250px;" ng-bind-html="table"></div>
+                            </div>                        
+                        </div>
+                    </md-content>
+                </article>
+
+                <article layout="column" layout-gt-sm="row">
+                    <chart-bar-stacked-percent 
+                        title="StoreFront Conversion (%)" 
+                        containerid="storefrontChart" 
+                        started="storefrontStarted" 
+                        loaded="storefrontLoaded" 
+                        categories="storefrontCategories" 
+                        data="storefrontData">
+                    </chart-bar-stacked-percent>
+                    <span flex></span>
+                    <chart-bar-stacked
+                        title="StoreFront Conversion (Client Count)" 
+                        containerid="storefrontCountChart" 
+                        started="storefrontStarted" 
+                        loaded="storefrontLoaded" 
+                        categories="storefrontCountCategories" 
+                        data="storefrontCountData">
+                    </chart-bar-stacked>
+                </article>
+           
+                <article layout="column" layout-gt-sm="row">
+                    <chart-bar-stacked-percent 
+                        title="Loyalty (%)" 
+                        containerid="loyaltyChart" 
+                        started="loyaltyStarted" 
+                        loaded="loyaltyLoaded" 
+                        categories="loyaltyCategories" 
+                        data="loyaltyData">
+                    </chart-bar-stacked-percent>            
+                    <span flex></span>
+                    <chart-bar-stacked
+                        title="Loyalty (Client Count)" 
+                        containerid="loyaltyCountChart" 
+                        started="loyaltyStarted" 
+                        loaded="loyaltyLoaded" 
+                        categories="loyaltyCountCategories" 
+                        data="loyaltyCountData">
+                    </chart-bar-stacked>
+                </article>
+
+                <article layout="column" layout-gt-sm="row">
+                    <chart-bar-stacked-percent 
+                        title="Wi-Fi Connections (%)" 
+                        containerid="wifiChart" 
+                        started="wifiStarted" 
+                        loaded="wifiLoaded" 
+                        categories="wifiCategories" 
+                        data="wifiData">
+                    </chart-bar-stacked-percent>
+                    <span flex></span>
+                    <chart-bar-stacked
+                        title="Wi-Fi Connections (Client Count)" 
+                        containerid="wifiCountChart" 
+                        started="wifiStarted" 
+                        loaded="wifiLoaded" 
+                        categories="wifiCountCategories" 
+                        data="wifiCountData">
+                    </chart-bar-stacked>
+                </article>
+
             </md-tab-body>
         </md-tab>
         <md-tab>
             <md-tab-label>Over Time</md-tab-label>
             <md-tab-body>
+                <article flex="100">
+                    <md-content flex-gt-sm="100" md-whiteframe="2" style="margin: 10px 0" class="container">
+                        <h3 style="height: 25px;">
+                            <span>StoreFront conversion over time</span>                                                
+                        </h3>
+                        <div ng-show="!storefrontStarted">
+                            <div style="text-align: center; line-height: 250px;">waiting</div>
+                        </div>
+                        <div class="entity-loading-widget" ng-show="storefrontStarted && !storefrontLoaded" 
+                        style="height: 250px;" layout="column" layout-align="space-around">
+                            <md-progress-circular md-mode="indeterminate" class="md-accent" style="margin: auto;">
+                            </md-progress-circular>
+                        </div>
+                        <div ng-show="storefrontStarted && storefrontLoaded" layout="row">
+                            <div flex="100">
+                                <div style="height: 250px;" id="storefrontData"></div>
+                            </div>                        
+                        </div>
+                    </md-content>
+                </article>
+
+                <article flex="100">
+                    <md-content flex-gt-sm="100" md-whiteframe="2" style="margin: 10px 0" class="container">
+                        <h3 style="height: 25px;">
+                            <span>Number of Engaged Clients over time</span>                                                
+                        </h3>
+                        <div ng-show="!engagedStarted">
+                            <div style="text-align: center; line-height: 250px;">waiting</div>
+                        </div>
+                        <div class="entity-loading-widget" ng-show="engagedStarted && !engagedLoaded" 
+                        style="height: 250px;" layout="column" layout-align="space-around">
+                            <md-progress-circular md-mode="indeterminate" class="md-accent" style="margin: auto;">
+                            </md-progress-circular>
+                        </div>
+                        <div ng-show="engagedStarted && engagedLoaded" layout="row">
+                            <div flex="100">
+                                <div style="height: 250px;" id="engagedData"></div>
+                            </div>                        
+                        </div>
+                    </md-content>
+                </article>
+
+                <article flex="100">
+                    <md-content flex-gt-sm="100" md-whiteframe="2" style="margin: 10px 0" class="container">
+                        <h3 style="height: 25px;">
+                            <span>Number of Passers By over time</span>                                                
+                        </h3>
+                        <div ng-show="!passerbyStarted">
+                            <div style="text-align: center; line-height: 250px;">waiting</div>
+                        </div>
+                        <div class="entity-loading-widget" ng-show="passerbyStarted && !passerbyLoaded" 
+                        style="height: 250px;" layout="column" layout-align="space-around">
+                            <md-progress-circular md-mode="indeterminate" class="md-accent" style="margin: auto;">
+                            </md-progress-circular>
+                        </div>
+                        <div ng-show="passerbyStarted && passerbyLoaded" layout="row">
+                            <div flex="100">
+                                <div style="height: 250px;" id="passerbyData"></div>
+                            </div>                        
+                        </div>
+                    </md-content>
+                </article>
+  
+
+                <article flex="100">
+                    <md-content flex-gt-sm="100" md-whiteframe="2" style="margin: 10px 0" class="container">
+                        <h3 style="height: 25px;">
+                            <span>Number of Unique Devices over time</span>                                                
+                        </h3>
+                        <div ng-show="!uniqueStarted">
+                            <div style="text-align: center; line-height: 250px;">waiting</div>
+                        </div>
+                        <div class="entity-loading-widget" ng-show="uniqueStarted && !uniqueLoaded" 
+                        style="height: 250px;" layout="column" layout-align="space-around">
+                            <md-progress-circular md-mode="indeterminate" class="md-accent" style="margin: auto;">
+                            </md-progress-circular>
+                        </div>
+                        <div ng-show="uniqueStarted && uniqueLoaded" layout="row">
+                            <div flex="100">
+                                <div style="height: 250px;" id="uniqueData"></div>
+                            </div>                        
+                        </div>
+                    </md-content>
+                </article>
+  
+                <article flex="100">
+                    <md-content flex-gt-sm="100" md-whiteframe="2" style="margin: 10px 0" class="container">
+                        <h3 style="height: 25px;">
+                            <span>Number of Associated Clients over time</span>                                                
+                        </h3>
+                        <div ng-show="!associatedStarted">
+                            <div style="text-align: center; line-height: 250px;">waiting</div>
+                        </div>
+                        <div class="entity-loading-widget" ng-show="associatedStarted && !associatedLoaded" 
+                        style="height: 250px;" layout="column" layout-align="space-around">
+                            <md-progress-circular md-mode="indeterminate" class="md-accent" style="margin: auto;">
+                            </md-progress-circular>
+                        </div>
+                        <div ng-show="associatedStarted && associatedLoaded" layout="row">
+                            <div flex="100">
+                                <div style="height: 250px;" id="associatedData"></div>
+                            </div>                        
+                        </div>
+                    </md-content>
+                </article>
+
+                <article flex="100">
+                    <md-content flex-gt-sm="100" md-whiteframe="2" style="margin: 10px 0" class="container">
+                        <h3 style="height: 25px;">
+                            <span>Number of Unassociated Clients over time</span>                                                
+                        </h3>
+                        <div ng-show="!unassociatedStarted">
+                            <div style="text-align: center; line-height: 250px;">waiting</div>
+                        </div>
+                        <div class="entity-loading-widget" ng-show="unassociatedStarted && !unassociatedLoaded" 
+                        style="height: 250px;" layout="column" layout-align="space-around">
+                            <md-progress-circular md-mode="indeterminate" class="md-accent" style="margin: auto;">
+                            </md-progress-circular>
+                        </div>
+                        <div ng-show="unassociatedStarted && unassociatedLoaded" layout="row">
+                            <div flex="100">
+                                <div style="height: 250px;" id="unassociatedData"></div>
+                            </div>                        
+                        </div>
+                    </md-content>
+                </article>
+
             </md-tab-body>
         </md-tab>
     </md-tabs>
+        </div>
     </md-content>
 </div>

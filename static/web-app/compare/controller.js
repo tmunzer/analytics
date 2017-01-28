@@ -1,56 +1,73 @@
-angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope, PeriodService) {
-    var compare = "locations"
-
-
-    $scope.isCurrent = function (item) {
-        if (compare == item) return "md-primary";
-    }
-    $scope.changeComparison = function (item) {
-        compare = item;
-    }
-
-
-    var periodPolarReq;
-
+angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope, $location, $sce, CompareService) {
+    var compare = "locations";
 
     $scope.polarStarted = false;
     $scope.polarLoaded = false;
     $scope.tableStarted = false;
     $scope.tableLoaded = false;
-    $scope.storeFrontStarted = false;
-    $scope.storeFrontLoaded = false;
+    $scope.storefrontStarted = false;
+    $scope.storefrontLoaded = false;
     $scope.loyaltyStarted = false;
     $scope.loyaltyLoaded = false;
     $scope.wifiLoaded = false;
     $scope.wifiStarted = false;
+    $scope.table = "";
 
-    function updatePeriod() {
+    var updateRequest;
+
+    $scope.isCurrent = function (item) {
+        if (compare == item) return "md-primary";
+    }
 
 
+    $scope.changeComparison = function (item) {
+        compare = item;
+        startUpdate();
+    }
+    $rootScope.$watch("date", function (a, b) {
+        if ($location.path() == "/compare")
+            startUpdate();
+    }, true)
+
+    function startUpdate() {
+        if ($rootScope.date.from != "" && $rootScope.date.to != "") {
+            updateRequest = new Date();
+            var currentUpdateRequest = updateRequest;
+            setTimeout(function () {
+                if (currentUpdateRequest == updateRequest) {
+                    updateCharts();
+                }
+            }, 2000)
+        }
+    }
+
+    function updateCharts() {
         var endTime = $rootScope.date.to;
         var startTime = $rootScope.date.from;
         var locationAnalytics = $rootScope.selectedLocations;
         // @TODO: Current API limitation
         if (endTime - startTime <= 2678400000) {
 
-
             $scope.polarStarted = true;
-            $scope.polarLoaded = false;
             $scope.tableStarted = true;
-            $scope.tableLoaded = false;
-            $scope.storeFrontStarted = true;
-            $scope.storeFrontLoaded = false;
+            $scope.storefrontStarted = true;
             $scope.loyaltyStarted = true;
+            $scope.wifiStarted = true;
+
+            $scope.polarLoaded = false;
+            $scope.tableLoaded = false;
+            $scope.storefrontLoaded = false;
             $scope.loyaltyLoaded = false;
-            $scope.wifiLoaded = true;
-            $scope.wifiStarted = false;
+            $scope.wifiLoaded = false;
 
             var request;
-            if (compare == "periods") request = PeriodService.get(startTime, endTime, locationAnalytics);
+            if (compare == "periods") request = CompareService.getPeriods(startTime, endTime, locationAnalytics);
+            if (compare == "locations") request = CompareService.getLocations(startTime, endTime, locationAnalytics);
             else a = 1;
             request.then(function (promise) {
                 if (promise && promise.error) console.log(promise.error);
                 else {
+                    console.log(promise);
                     var series = [];
                     var locationsSeries = [];
                     var storefrontBars = [];
@@ -78,37 +95,37 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope
                     var returningClients;
 
 
-                    dataPeriod = data.dataPeriod;
-                    dataAverage = [
-                        data.dataAverage['uniqueClients'],
-                        data.dataAverage['engagedClients'],
-                        data.dataAverage['passersbyClients'],
-                        data.dataAverage['associatedClients'],
-                        data.dataAverage['unassociatedClients'],
-                        data.dataAverage['newClients'],
-                        data.dataAverage['returningClients']
+                    var data = promise.data.data;
+                    var average = [
+                        promise.data.average['uniqueClients'],
+                        promise.data.average['engagedClients'],
+                        promise.data.average['passersbyClients'],
+                        promise.data.average['associatedClients'],
+                        promise.data.average['unassociatedClients'],
+                        promise.data.average['newClients'],
+                        promise.data.average['returningClients']
                     ];
-                    if (data.dataAverage['uniqueClients'] == 0) storeFrontClients = 0;
-                    else storeFrontClients = ((data.dataAverage['engagedClients'] / data.dataAverage['uniqueClients']) * 100).toFixed(0);
+                    if (promise.data.average['uniqueClients'] == 0) storeFrontClients = 0;
+                    else storeFrontClients = ((promise.data.average['engagedClients'] / promise.data.average['uniqueClients']) * 100).toFixed(0);
 
                     series.push({
                         type: 'area',
                         color: 'rgba(0, 0, 0, 0.2)',
                         name: "Average",
-                        data: dataAverage,
+                        data: average,
                         pointPlacement: 'on'
                     });
 
-                    dataPeriod.forEach(function (currentPeriod) {
+                    data.forEach(function (currentPeriod) {
 
                         var dataChart = [
-                            data.dataAverage['uniqueClients'],
-                            data.dataAverage['engagedClients'],
-                            data.dataAverage['passersbyClients'],
-                            data.dataAverage['associatedClients'],
-                            data.dataAverage['unassociatedClients'],
-                            data.dataAverage['newClients'],
-                            data.dataAverage['returningClients']
+                            promise.data.average['uniqueClients'],
+                            promise.data.average['engagedClients'],
+                            promise.data.average['passersbyClients'],
+                            promise.data.average['associatedClients'],
+                            promise.data.average['unassociatedClients'],
+                            promise.data.average['newClients'],
+                            promise.data.average['returningClients']
                         ];
 
                         series.push({
@@ -117,10 +134,6 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope
                             data: dataChart,
                             pointPlacement: 'on'
                         });
-
-
-
-
 
                         if (currentPeriod['uniqueClients'] == 0) {
                             engaged = 0;
@@ -201,47 +214,58 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope
                         data: returningCountBars
                     }];
 
-                    displayLocationPole('polarChart', "", series);
-                    showData("polar");
+                    $scope.polarData = series;
+                    $scope.polarCategories = ['uniqueClients', 'engagedClients', 'passersbyClients', 'associatedClients',
+                        'unassociatedClients', 'storeFrontClients'];
+                    $scope.polarLoaded = true;
 
-                    displayStackedBarChart("visitorsVsEngagedBarChart", "", locationsSeries, visitorsVsEngaged, true);
-                    showData("visitorsVsEngagedBar");
-                    displayStackedBarChart("visitorsVsEngagedCountBarChart", "", locationsSeries, visitorsVsEngagedCount);
-                    showData("visitorsVsEngagedCountBar");
+                    $scope.storefrontData = visitorsVsEngaged;
+                    $scope.storefrontCategories = locationsSeries;
+                    $scope.storefrontCountData = visitorsVsEngagedCount;
+                    $scope.storefrontCountCategories = locationsSeries;
+                    $scope.storefrontLoaded = true;
 
-                    displayStackedBarChart("wifiBarChart", "", locationsSeries, wifiClients, true);
-                    showData("wifiBar");
-                    displayStackedBarChart("wifiCountBarChart", "", locationsSeries, wifiClientsCount);
-                    showData("wifiCountBar");
+                    $scope.wifiData = wifiClients;
+                    $scope.wifiCategories = locationsSeries;
+                    $scope.wifiCountData = wifiClientsCount;
+                    $scope.wifiCountCategories = locationsSeries;
+                    $scope.wifiLoaded = true;
 
-                    displayStackedBarChart("loyaltyBarChart", "", locationsSeries, loyaltyClients, true);
-                    showData("loyaltyBar");
-                    displayStackedBarChart("loyaltyCountBarChart", "", locationsSeries, loyaltyClientsCount);
-                    showData("loyaltyCountBar");
+                    $scope.loyaltyData = loyaltyClients;
+                    $scope.loyaltyCategories = locationsSeries;
+                    $scope.loyaltyCountData = loyaltyClientsCount;
+                    $scope.loyaltyCountCategories = locationsSeries;
+                    $scope.loyaltyLoaded = true;
 
-                    var htmlString = "<table class='table table-hover'><thead><tr><th></th>";
-                    for (var i = 0; i < dataPeriod.length - 1; i++) {
-                        htmlString += "<th>" + dataPeriod[i]['period'] + "</th>";
-                    }
-                    htmlString += "</tr></thead><tbody>";
-                    htmlString += "<tr><th>Engaged Clients</th>" + getTableRow(dataPeriod, "engagedClients") + "</tr>";
-                    htmlString += "<tr><th>PassersBy Clients</th>" + getTableRow(dataPeriod, "passersbyClients") + "</tr>";
-                    htmlString += "<tr><th>New Clients</th>" + getTableRow(dataPeriod, "newClients") + "</tr>";
-                    htmlString += "<tr><th>Returning Clients</th>" + getTableRow(dataPeriod, "returningClients") + "</tr>";
-                    htmlString += "<tr><th>Associated Clients</th>" + getTableRow(dataPeriod, "associatedClients") + "</tr>";
-                    htmlString += "<tr><th>Unassociated Clients</th>" + getTableRow(dataPeriod, "unassociatedClients") + "</tr>";
-                    htmlString += "</tbody></table>";
-                    $("#tableCompare").html(htmlString);
-                    showData("tableCompare");
+                    $scope.table = getPeriodsTable(data);
+                    $scope.tableLoaded = true;
                 }
             })
         }
     }
 
-    function getTableRow(dataPeriod, dataName) {
+    function getPeriodsTable(data) {
+        var htmlString = "<md-table-container>" +
+            "<table class='md-table small'>" +
+            "<thead class='md-head'><tr class='md-row'><th class='md-column'></th>";
+        for (var i = 0; i < data.length - 1; i++) {
+            htmlString += "<th class='md-column'>" + data[i]['period'] + "</th>";
+        }
+        htmlString += "</tr></thead><tbody class='md-body'>";
+        htmlString += "<tr class='md-row'><td class='md-cell'>Engaged Clients</th>" + getTableRow(data, "engagedClients") + "</tr>";
+        htmlString += "<tr class='md-row'><td class='md-cell'>PassersBy Clients</th>" + getTableRow(data, "passersbyClients") + "</tr>";
+        htmlString += "<tr class='md-row'><td class='md-cell'>New Clients</th>" + getTableRow(data, "newClients") + "</tr>";
+        htmlString += "<tr class='md-row'><td class='md-cell'>Returning Clients</th>" + getTableRow(data, "returningClients") + "</tr>";
+        htmlString += "<tr class='md-row'><td class='md-cell'>Associated Clients</th>" + getTableRow(data, "associatedClients") + "</tr>";
+        htmlString += "<tr class='md-row'><td class='md-cell'>Unassociated Clients</th>" + getTableRow(data, "unassociatedClients") + "</tr>";
+        htmlString += "</tbody></table><md-table-container>";
+        return $sce.trustAsHtml(htmlString);
+    }
+
+    function getTableRow(data, dataName) {
         var htmlString = "";
-        for (var i = 0; i < dataPeriod.length - 1; i++) {
-            htmlString += "<td>" + getPercentage(dataPeriod[dataPeriod.length - 1][dataName], dataPeriod[i][dataName]) + "</td>";
+        for (var i = 0; i < data.length - 1; i++) {
+            htmlString += "<td class='md-cell'>" + getPercentage(data[data.length - 1][dataName], data[i][dataName]) + "</td>";
         }
         return htmlString;
     }
@@ -262,215 +286,70 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope
         return htmlString
     }
 
-    function displayPolarChart(containerId, title, series) {
-        $('#' + containerId).highcharts({
-            colors: ['#0085bd', '#00aff8', '#307fa1', '#606c71', '#3095cf', '#005c83', '#003248', '#00090d'],
 
-            chart: {
-                polar: true,
-                type: 'line',
-                width: 800,
-                height: 390
-            },
 
-            title: {
-                text: title,
-                x: -80
-            },
 
-            pane: {
-                size: '80%'
-            },
-
-            xAxis: {
-                categories: ['uniqueClients', 'engagedClients', 'passersbyClients', 'associatedClients',
-                    'unassociatedClients', 'storeFrontClients'],
-                tickmarkPlacement: 'on',
-                lineWidth: 0
-            },
-
-            yAxis: {
-                gridLineInterpolation: 'polygon',
-                lineWidth: 0,
-                min: 0
-            },
-
-            tooltip: {
-                shared: true,
-                pointFormat: '<span style="color:{series.color}">{series.name}: <b>{point.y:,.0f}</b><br/>'
-            },
-
-            legend: {
-                align: 'right',
-                verticalAlign: 'top',
-                y: 70,
-                layout: 'vertical'
-            },
-
-            series: series
-
-        });
-    }
-
-    function displayBarChart(containerId, title, xAxisData, data, percentage) {
-        var yAxisTitle, pointFormatPercentage;
-        if (percentage) {
-            yAxisTitle = "% of Devices";
-            pointFormatPercentage = "%";
-        } else {
-            yAxisTitle = 'Number of devices';
-            pointFormatPercentage = "";
-        }
-        var container = $('#' + containerId);
-        if (container.highcharts()) container.highcharts().destroy();
-        container.highcharts({
-            chart: {
-                type: 'column',
-                height: 250
-            },
-            title: {
-                text: ''
-            },
-            xAxis: {
-                categories: xAxisData
-            },
-            yAxis: {
-                min: 0,
-                title: {
-                    text: yAxisTitle
-                }
-
-            },
-            legend: {
-                enabled: false
-            },
-            plotOptions: {
-                series: {
-                    borderWidth: 0,
-                    dataLabels: {
-                        enabled: false
-                    }
-                }
-            },
-
-            tooltip: {
-                headerFormat: '<span style="font-size:11px">{point.x}</span><br>',
-                pointFormat: '<span style="color:{point.color}">{series.name}</span>: <b>{point.y}' + pointFormatPercentage + '</b><br/>'
-            },
-
-            series: [{
-                name: title,
-                data: data
-            }]
-        });
-    }
-
-    function displayStackedBarChart(containerId, title, xAxisData, data, percentage) {
-        var yAxisTitle, pointFormatPercentage;
-        if (percentage) {
-            yAxisTitle = "% of Devices";
-            pointFormatPercentage = "%";
-        } else {
-            yAxisTitle = 'Number of devices';
-            pointFormatPercentage = "";
-        }
-        var container = $('#' + containerId);
-        if (container.highcharts()) container.highcharts().destroy();
-        container.highcharts({
-            chart: {
-                type: 'column'
-            },
-            title: {
-                text: title
-            },
-            xAxis: {
-                categories: xAxisData
-            },
-            yAxis: {
-                min: 0,
-                title: {
-                    text: yAxisTitle
-                },
-                stackLabels: {
-                    enabled: true,
-                    style: {
-                        fontWeight: 'bold',
-                        color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
-                    }
-                }
-            },
-            legend: {
-                align: 'right',
-                verticalAlign: 'top',
-                borderColor: '#CCC',
-                borderWidth: 1,
-                shadow: false
-            },
-            tooltip: {
-                headerFormat: '<b>{point.x}</b><br/>',
-                pointFormat: '{series.name}: {point.y}' + pointFormatPercentage + '<br/>Total: {point.stackTotal}' + pointFormatPercentage
-            },
-            plotOptions: {
-                column: {
-                    stacking: 'normal',
-                    dataLabels: {
-                        enabled: true,
-                        style: {
-                            textShadow: '0 0 3px contrast'
-                        }
-                    }
-                }
-            },
-            series: data
-        });
-    }
 
 
 });
 
 
 
+/*
 
+var chart = new Highcharts.chart({
+        colors: ['#0085bd', '#00aff8', '#307fa1', '#606c71', '#3095cf', '#005c83', '#003248', '#00090d'],
 
-angular.module("Compare").factory("PeriodService", function ($http, $q) {
-    function get(startTime, endTime, locationAnalytics) {
-        var canceller = $q.defer();
-        var request = $http({
-            method: "GET",
-            url: "/api/compare/polar/",
-            params: {
-                startTime: startTime,
-                endTime: endTime,
-                locations: locationAnalytics
-            },
-            timeout: canceller.promise
-        });
-        return httpReq(request);
-    }
+        chart: {
+            renderTo: containerId,
+            polar: true,
+            type: 'line',
+            height: 390,
+            events: {
+                load: function (chart) {
+                    setTimeout(function () {
+                        chart.target.reflow();
+                    });
+                }
+            }
+        },
 
-    function httpReq(request) {
-        var promise = request.then(
-            function (response) {
-                return response;
-            },
-            function (response) {
-                return { error: response.data };
-            });
+        title: {
+            text: title,
+            x: -80
+        },
 
-        promise.abort = function () {
-            canceller.resolve();
-        };
-        promise.finally(function () {
-            console.info("Cleaning up object references.");
-            promise.abort = angular.noop;
-            canceller = request = promise = null;
-        });
+        pane: {
+            size: '80%'
+        },
 
-        return promise;
-    }
+        xAxis: {
+            categories: ['uniqueClients', 'engagedClients', 'passersbyClients', 'associatedClients',
+                'unassociatedClients', 'newClients', 'returningClients'],
+            tickmarkPlacement: 'on',
+            lineWidth: 0
+        },
 
+        yAxis: {
+            gridLineInterpolation: 'polygon',
+            lineWidth: 0,
+            min: 0
+        },
 
-    return {
-        get: get
-    }
-});
+        tooltip: {
+            shared: true,
+            pointFormat: '<span style="color:{series.color}">{series.name}: <b>{point.y:,.0f}</b><br/>'
+        },
+
+        legend: {
+            align: 'right',
+            verticalAlign: 'top',
+            y: 70,
+            layout: 'vertical'
+        },
+
+        series: series
+
+    });
+
+*/
