@@ -1,4 +1,5 @@
 angular.module('Dashboard').controller("DashboardCtrl", function ($scope, $rootScope, $location, CardsService) {
+    $rootScope.compareLocations = false;
     $scope.maps = {
         folders: 0,
         buildings: 0,

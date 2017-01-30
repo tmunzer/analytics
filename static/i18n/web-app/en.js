@@ -12,6 +12,7 @@ var en = {
     },
     filter: {
         filterBy: "Filter By",
+        compare: 'Compare',
         location: "location"
     }
 }

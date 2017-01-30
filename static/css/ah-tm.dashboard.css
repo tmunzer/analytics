@@ -209,3 +209,13 @@ input.invalid,textarea.invalid,select.invalid {
         margin-left: 0;
     }
 }
+
+.compare {
+    height: 30px;
+    text-align: left;
+    line-height: 30px !important;
+    padding-left: 5px;
+    font: 12px helvetica,arial,sans-serif;
+    vertical-align: middle;
+    text-transform: uppercase;
+}

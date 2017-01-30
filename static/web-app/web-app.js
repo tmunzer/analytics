@@ -56,6 +56,7 @@ analytics
 
     });
 
+
 analytics.controller("UserCtrl", function ($scope, $rootScope, $mdDialog, $mdSidenav, $location, $translate) {
     var originatorEv;
 
@@ -88,15 +89,28 @@ analytics.controller("HeaderCtrl", function ($scope, $location) {
 
 });
 
-analytics.controller("LocationCtrl", function ($scope, $rootScope, LocationsService) {
+analytics.controller("LocationCtrl", function ($scope, $rootScope, $location, LocationsService) {
 
     $rootScope.locations;
+    $rootScope.compareLocations = false;
+    $rootScope.locationFilter = "GENERIC";
     // rootscope variable to filter requests
     $rootScope.selectedLocations = [];
     // scope variable to know which checkbox is checked
     $scope.checkedLocations = [];
     $scope.locationsLoaded = false;
     var lastUpdateRequest;
+
+    $scope.locationTypeEnable = function (location) {
+        if (location) {
+            if ($rootScope.compareLocations == false) return false;
+            else {
+                //console.log(location.folderType, $rootScope.locationFilter);
+                //console.log(!location.folderType == $rootScope.locationFilter);
+                return !location.folderType.indexOf($rootScope.locationFilter);
+            }
+        }
+    }
 
     $rootScope.$watch("selectedLocations", function () {
         if ($rootScope.locations) {
@@ -263,6 +277,7 @@ analytics.controller("TimelineCtrl", function ($scope, $rootScope, TimelineServi
     };
 
     $scope.$watch("period", function () {
+        $rootScope.period = $scope.period;
         if (initialized && $rootScope.locations) {
             if ($rootScope.period == "day") $scope.range = 2;
             else if ($rootScope.period == "month") $scope.range = 7;
@@ -297,7 +312,7 @@ analytics.controller("TimelineCtrl", function ($scope, $rootScope, TimelineServi
                 break;
             case "week":
                 startTime.setDate(startTime.getDate() - 7);
-                selectedRange = 24*7;
+                selectedRange = 24 * 7;
                 step = 24;
                 format = '{value:%Y-%m-%d}';
                 break;
@@ -331,7 +346,7 @@ analytics.controller("TimelineCtrl", function ($scope, $rootScope, TimelineServi
                 var chart = [];
                 for (var x in data) {
                     time[x] = new Date(data[x]['time']);
-                    chart[x] = data[x]['uniqueClients'];
+                    chart[x] = data[x].uniqueClients;
                     if (chart[x] > maxChart) maxChart = chart[x];
                 }
                 // Create the chart

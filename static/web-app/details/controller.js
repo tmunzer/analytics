@@ -1,4 +1,5 @@
 angular.module('Details').controller("DetailsCtrl", function ($scope, $rootScope, $location, DetailsService) {
+    $rootScope.compareLocations = false;
     var heatmapUniqueClients, heatmapUniqueClientsRange,
         heatmapEngagedClients, heatmapEngagedClientsRange,
         heatmapPassersbyClients, heatmapPassersbyClientsRange,

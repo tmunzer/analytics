@@ -12,12 +12,12 @@ angular.module("Compare").factory("CompareService", function ($http, $q) {
             timeout: canceller.promise
         });
         return httpReq(request);
-    }
-    function getLocations(startTime, endTime, locationAnalytics) {
+    }    
+    function getPeriodsTimeline(startTime, endTime, locationAnalytics) {
         var canceller = $q.defer();
         var request = $http({
-            method: "GET",
-            url: "/api/compare/locations/global",
+            method: 'GET',
+            url: '/api/compare/periods/timeline',
             params: {
                 startTime: startTime,
                 endTime: endTime,
@@ -27,31 +27,62 @@ angular.module("Compare").factory("CompareService", function ($http, $q) {
         });
         return httpReq(request);
     }
-
-    function httpReq(request) {
-        var promise = request.then(
-            function (response) {
-                return response;
+    function getLocations(startTime, endTime, locationAnalytics, locationFilter) {
+        var canceller = $q.defer();
+        var request = $http({
+            method: "GET",
+            url: "/api/compare/locations/global",
+            params: {
+                startTime: startTime,
+                endTime: endTime,
+                locations: locationAnalytics,
+                locationFilter: locationFilter
             },
-            function (response) {
-                return { error: response.data };
-            });
-
-        promise.abort = function () {
-            canceller.resolve();
-        };
-        promise.finally(function () {
-            console.info("Cleaning up object references.");
-            promise.abort = angular.noop;
-            canceller = request = promise = null;
+            timeout: canceller.promise
         });
-
-        return promise;
+        return httpReq(request);
     }
+    function getLocationsTimeline(startTime, endTime, locationAnalytics, locationFilter) {
+        var canceller = $q.defer();
+        var request = $http({
+            method: 'GET',
+            url: '/api/compare/locations/timeline',
+            params: {
+                startTime: startTime,
+                endTime: endTime,
+                //locationFilter: locationFilter,
+                locations: locationAnalytics
+            },
+            timeout: canceller.promise
+        });
+        return httpReq(request);
+    }
+    function httpReq(request) {
+                var promise = request.then(
+                    function (response) {
+                        return response;
+                    },
+                    function (response) {
+                        return { error: response.data };
+                    });
+
+                promise.abort = function () {
+                    canceller.resolve();
+                };
+                promise.finally(function () {
+                    console.info("Cleaning up object references.");
+                    promise.abort = angular.noop;
+                    canceller = request = promise = null;
+                });
+
+                return promise;
+            }
 
 
     return {
-        getPeriods: getPeriods,
-        getLocations:getLocations
-    }
-});
+            getPeriods: getPeriods,
+            getPeriodsTimeline: getPeriodsTimeline,
+            getLocations: getLocations,
+            getLocationsTimeline: getLocationsTimeline
+        }
+    });

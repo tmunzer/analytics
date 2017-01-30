@@ -1,5 +1,6 @@
 angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope, $location, $sce, CompareService) {
-    var compare = "locations";
+    $rootScope.compareLocations = false;
+    var compare = "periods";
 
     $scope.polarStarted = false;
     $scope.polarLoaded = false;
@@ -13,17 +14,71 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope
     $scope.wifiStarted = false;
     $scope.table = "";
 
+    $scope.lineStarted = false;
+    $scope.lineLoaded = false;
+
+    $scope.storefrontLineData;
+    $scope.engagedLineData;
+    $scope.passersbyLineData;
+    $scope.uniqueLineData;
+    $scope.associatedLineData;
+    $scope.unassociatedLineData;
+    $scope.lineCategories = [];
+
+    $scope.bestWorstLocation = {
+        storefront: {
+            best: "",
+            bestValue: null,
+            worst: "",
+            worstValue: null
+        },
+        passersbyClients: {
+            best: "",
+            bestValue: null,
+            worst: "",
+            worstValue: null
+        },
+        engagedClients: {
+            best: "",
+            bestValue: null,
+            worst: "",
+            worstValue: null
+        },
+        associatedClients: {
+            best: "",
+            bestValue: null,
+            worst: "",
+            worstValue: null
+        },
+        newClients: {
+            best: "",
+            bestValue: null,
+            worst: "",
+            worstValue: null
+        },
+        returningClients: {
+            best: "",
+            bestValue: null,
+            worst: "",
+            worstValue: null
+        }
+    }
+
     var updateRequest;
 
     $scope.isCurrent = function (item) {
         if (compare == item) return "md-primary";
     }
 
-
     $scope.changeComparison = function (item) {
         compare = item;
+        if (compare == "locations") $rootScope.compareLocations = true;
         startUpdate();
     }
+    $rootScope.$watch("locationFilter", function () {
+        if ($location.path() == "/compare")
+            startUpdate();
+    }, true)
     $rootScope.$watch("date", function (a, b) {
         if ($location.path() == "/compare")
             startUpdate();
@@ -36,6 +91,7 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope
             setTimeout(function () {
                 if (currentUpdateRequest == updateRequest) {
                     updateCharts();
+                    updateTimelines();
                 }
             }, 2000)
         }
@@ -44,7 +100,6 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope
     function updateCharts() {
         var endTime = $rootScope.date.to;
         var startTime = $rootScope.date.from;
-        var locationAnalytics = $rootScope.selectedLocations;
         // @TODO: Current API limitation
         if (endTime - startTime <= 2678400000) {
 
@@ -61,15 +116,15 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope
             $scope.wifiLoaded = false;
 
             var request;
-            if (compare == "periods") request = CompareService.getPeriods(startTime, endTime, locationAnalytics);
-            if (compare == "locations") request = CompareService.getLocations(startTime, endTime, locationAnalytics);
-            else a = 1;
+            if (compare == "periods") request = CompareService.getPeriods(startTime, endTime, $rootScope.selectedLocations);
+            else if (compare == "locations") request = CompareService.getLocations(startTime, endTime, $rootScope.selectedLocations, $rootScope.locationFilter);
+            else console.log("no comparison selected");
             request.then(function (promise) {
                 if (promise && promise.error) console.log(promise.error);
                 else {
-                    console.log(promise);
-                    var series = [];
-                    var locationsSeries = [];
+                    var seriesPolar = [];
+                    var seriesBar = [];
+
                     var storefrontBars = [];
                     var storeFrontClients;
 
@@ -97,18 +152,17 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope
 
                     var data = promise.data.data;
                     var average = [
-                        promise.data.average['uniqueClients'],
-                        promise.data.average['engagedClients'],
-                        promise.data.average['passersbyClients'],
-                        promise.data.average['associatedClients'],
-                        promise.data.average['unassociatedClients'],
-                        promise.data.average['newClients'],
-                        promise.data.average['returningClients']
+                        promise.data.average.engagedClients,
+                        promise.data.average.passersbyClients,
+                        promise.data.average.associatedClients,
+                        promise.data.average.unassociatedClients,
+                        promise.data.average.newClients,
+                        promise.data.average.returningClients
                     ];
-                    if (promise.data.average['uniqueClients'] == 0) storeFrontClients = 0;
-                    else storeFrontClients = ((promise.data.average['engagedClients'] / promise.data.average['uniqueClients']) * 100).toFixed(0);
+                    if (promise.data.average.uniqueClients == 0) storeFrontClients = 0;
+                    else storeFrontClients = ((promise.data.average.engagedClients / promise.data.average.uniqueClients) * 100).toFixed(0);
 
-                    series.push({
+                    seriesPolar.push({
                         type: 'area',
                         color: 'rgba(0, 0, 0, 0.2)',
                         name: "Average",
@@ -116,26 +170,25 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope
                         pointPlacement: 'on'
                     });
 
-                    data.forEach(function (currentPeriod) {
+                    data.forEach(function (currentSerie) {
 
                         var dataChart = [
-                            promise.data.average['uniqueClients'],
-                            promise.data.average['engagedClients'],
-                            promise.data.average['passersbyClients'],
-                            promise.data.average['associatedClients'],
-                            promise.data.average['unassociatedClients'],
-                            promise.data.average['newClients'],
-                            promise.data.average['returningClients']
+                            currentSerie.engagedClients,
+                            currentSerie.passersbyClients,
+                            currentSerie.associatedClients,
+                            currentSerie.unassociatedClients,
+                            currentSerie.newClients,
+                            currentSerie.returningClients
                         ];
 
-                        series.push({
+                        seriesPolar.push({
                             type: 'line',
-                            name: currentPeriod['period'],
+                            name: currentSerie.serie,
                             data: dataChart,
                             pointPlacement: 'on'
                         });
 
-                        if (currentPeriod['uniqueClients'] == 0) {
+                        if (currentSerie.uniqueClients == 0) {
                             engaged = 0;
                             passersBy = 0;
                             associated = 0;
@@ -144,31 +197,32 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope
                             returningClients = 0;
                         }
                         else {
-                            engaged = ((currentPeriod['engagedClients'] / currentPeriod['uniqueClients']) * 100).toFixed(0);
-                            passersBy = ((currentPeriod['passersbyClients'] / currentPeriod['uniqueClients']) * 100).toFixed(0);
-                            associated = ((currentPeriod['associatedClients'] / currentPeriod['uniqueClients']) * 100).toFixed(0);
-                            unassociated = ((currentPeriod['unassociatedClients'] / currentPeriod['uniqueClients']) * 100).toFixed(0);
-                            newClients = ((currentPeriod['newClients'] / currentPeriod['uniqueClients']) * 100).toFixed(0);
-                            returningClients = ((currentPeriod['returningClients'] / currentPeriod['uniqueClients']) * 100).toFixed(0);
+                            engaged = ((currentSerie.engagedClients / currentSerie.uniqueClients) * 100).toFixed(0);
+                            passersBy = ((currentSerie.passersbyClients / currentSerie.uniqueClients) * 100).toFixed(0);
+                            associated = ((currentSerie.associatedClients / currentSerie.uniqueClients) * 100).toFixed(0);
+                            unassociated = ((currentSerie.unassociatedClients / currentSerie.uniqueClients) * 100).toFixed(0);
+                            newClients = ((currentSerie.newClients / currentSerie.uniqueClients) * 100).toFixed(0);
+                            returningClients = ((currentSerie.returningClients / currentSerie.uniqueClients) * 100).toFixed(0);
                         }
 
-                        locationsSeries.push(currentPeriod['period']);
+                        seriesBar.push(currentSerie.serie);
 
                         engagedBars.push(parseInt(engaged));
                         passersByBars.push(parseInt(passersBy));
-                        engagedCountBars.push(currentPeriod['engagedClients']);
-                        passersByCountBars.push(currentPeriod['passersbyClients']);
+                        engagedCountBars.push(currentSerie.engagedClients);
+                        passersByCountBars.push(currentSerie.passersbyClients);
 
                         associatedBars.push(parseInt(associated));
                         unassociatedBars.push(parseInt(unassociated));
-                        associatedCountBars.push(currentPeriod['associatedClients']);
-                        unassociatedCountBars.push(currentPeriod['unassociatedClients']);
+                        associatedCountBars.push(currentSerie.associatedClients);
+                        unassociatedCountBars.push(currentSerie.unassociatedClients);
 
                         newBars.push(parseInt(newClients));
                         returningBars.push(parseInt(returningClients));
-                        newCountBars.push(currentPeriod['newClients']);
-                        returningCountBars.push(currentPeriod['returningClients']);
+                        newCountBars.push(currentSerie.newClients);
+                        returningCountBars.push(currentSerie.returningClients);
 
+                        if (compare == "locations") getBestWorstLocation(currentSerie);
                     });
 
                     var visitorsVsEngaged = [{
@@ -214,34 +268,259 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope
                         data: returningCountBars
                     }];
 
-                    $scope.polarData = series;
-                    $scope.polarCategories = ['uniqueClients', 'engagedClients', 'passersbyClients', 'associatedClients',
-                        'unassociatedClients', 'storeFrontClients'];
+                    $scope.polarData = seriesPolar;
+                    $scope.polarCategories = ['engagedClients', 'passersbyClients', 'associatedClients',
+                        'unassociatedClients', 'newClients', 'returningClients'];
                     $scope.polarLoaded = true;
 
                     $scope.storefrontData = visitorsVsEngaged;
-                    $scope.storefrontCategories = locationsSeries;
+                    $scope.storefrontCategories = seriesBar;
                     $scope.storefrontCountData = visitorsVsEngagedCount;
-                    $scope.storefrontCountCategories = locationsSeries;
+                    $scope.storefrontCountCategories = seriesBar;
                     $scope.storefrontLoaded = true;
 
                     $scope.wifiData = wifiClients;
-                    $scope.wifiCategories = locationsSeries;
+                    $scope.wifiCategories = seriesBar;
                     $scope.wifiCountData = wifiClientsCount;
-                    $scope.wifiCountCategories = locationsSeries;
+                    $scope.wifiCountCategories = seriesBar;
                     $scope.wifiLoaded = true;
 
                     $scope.loyaltyData = loyaltyClients;
-                    $scope.loyaltyCategories = locationsSeries;
+                    $scope.loyaltyCategories = seriesBar;
                     $scope.loyaltyCountData = loyaltyClientsCount;
-                    $scope.loyaltyCountCategories = locationsSeries;
+                    $scope.loyaltyCountCategories = seriesBar;
                     $scope.loyaltyLoaded = true;
 
-                    $scope.table = getPeriodsTable(data);
+                    if (compare == "periods") $scope.table = getPeriodsTable(data);
+                    if (compare == "locations") $scope.table = getLocationsTable($scope.bestWorstLocation);
                     $scope.tableLoaded = true;
                 }
             })
         }
+    }
+
+    function updateTimelines() {
+        $scope.lineStarted = false;
+        $scope.lineLoaded = false;
+
+        var endTime = $rootScope.date.to;
+        var startTime = $rootScope.date.from;
+
+        var dataLocation, dataAverage, format, step;
+        if (endTime - startTime <= 2678400000) {
+
+            $scope.lineStarted = true;
+            $scope.lineLoaded = false;
+
+            var request;
+            if (compare == "periods") request = CompareService.getPeriodsTimeline(startTime, endTime, $rootScope.selectedLocations);
+            else if (compare == "locations") request = CompareService.getLocationsTimeline(startTime, endTime, $rootScope.selectedLocations, $rootScope.locationFilter);
+            else console.log("no comparison selected");
+
+            request.then(function (promise) {
+                if (promise && promise.error) console.log(promise.error);
+                else {
+                    var tmpUnique, tmpStorefront, tmpEngaged, tmpPassersBy, tmpAssociated, tmpUnassociated, tmpNew, tmpReturning, timeserie;
+                    var seriesUnique = [];
+                    var seriesStorefront = [];
+                    var seriesEngaged = [];
+                    var seriesPassersBy = [];
+                    var seriesAssociated = [];
+                    var seriesUnassociated = [];
+                    var seriesNew = [];
+                    var seriesReturning = [];
+                    var timeserie = [];
+
+                    promise.data.timeserie.forEach(function (time) {
+                        timeserie.push(new Date(time));
+                    });
+                    promise.data.series.forEach(function (currentSerie) {
+                        tmpUnique = [];
+                        tmpStorefront = [];
+                        tmpEngaged = [];
+                        tmpPassersBy = [];
+                        tmpAssociated = [];
+                        tmpUnassociated = [];
+                        tmpNew = [];
+                        tmpReturning = [];
+                        currentSerie.data.forEach(function (currentData) {
+                            tmpUnique.push(currentData.uniqueClients);
+                            tmpStorefront.push(currentData.storefrontClients);
+                            tmpEngaged.push(currentData.engagedClients);
+                            tmpPassersBy.push(currentData.passersbyClients);
+                            tmpAssociated.push(currentData.associatedClients);
+                            tmpUnassociated.push(currentData.unassociatedClients);
+                            tmpNew.push(currentData.newClients);
+                            tmpReturning.push(currentData.returningClients);
+                        });
+
+                        seriesUnique.push({
+                            name: currentSerie.name,
+                            data: tmpUnique,
+                            marker: {
+                                symbol: "circle"
+                            }
+                        });
+                        seriesStorefront.push({
+                            name: currentSerie.name,
+                            data: tmpStorefront,
+                            marker: {
+                                symbol: "circle"
+                            }
+                        });
+                        seriesEngaged.push({
+                            name: currentSerie.name,
+                            data: tmpEngaged,
+                            marker: {
+                                symbol: "circle"
+                            }
+                        });
+                        seriesPassersBy.push({
+                            name: currentSerie.name,
+                            data: tmpPassersBy,
+                            marker: {
+                                symbol: "circle"
+                            }
+                        });
+                        seriesAssociated.push({
+                            name: currentSerie.name,
+                            data: tmpAssociated,
+                            marker: {
+                                symbol: "circle"
+                            }
+                        });
+                        seriesUnassociated.push({
+                            name: currentSerie.name,
+                            data: tmpUnassociated,
+                            marker: {
+                                symbol: "circle"
+                            }
+                        });
+                        seriesNew.push({
+                            name: currentSerie.name,
+                            data: tmpNew,
+                            marker: {
+                                symbol: "circle"
+                            }
+                        });
+                        seriesReturning.push({
+                            name: currentSerie.name,
+                            data: tmpReturning,
+                            marker: {
+                                symbol: "circle"
+                            }
+                        });
+                    });
+
+                    $scope.lineLoaded = true;
+
+                    $scope.storefrontLineData = seriesStorefront;
+                    $scope.engagedLineData = seriesEngaged;
+                    $scope.passersbyLineData = seriesPassersBy;
+                    $scope.uniqueLineData = seriesUnique;
+                    $scope.associatedLineData = seriesAssociated;
+                    $scope.unassociatedLineData = seriesUnassociated;
+                    $scope.lineCategories = timeserie;
+                    /*displayLineChart('newData', timeserie, seriesNew, format, step);
+                    $("#newData").show();
+                    $("#newEmpty").hide();
+                    $("#newLoading").hide();
+                    displayLineChart('returningData', timeserie, seriesReturning, format, step);
+                    $("#returningData").show();
+                    $("#returningEmpty").hide();
+                    $("#returningLoading").hide();*/
+                }
+            })
+        }
+    }
+
+    function getBestWorstLocation(currentSerie) {
+        var storeFrontClients;
+        var series = ['passersbyClients', 'engagedClients', 'associatedClients', 'newClients', 'returningClients'];
+
+        if (currentSerie.uniqueClients == 0) storeFrontClients = 0;
+        else storeFrontClients = ((currentSerie.engagedClients / currentSerie.uniqueClients) * 100).toFixed(0);
+
+        if ($scope.bestWorstLocation.storefront.bestValue == null || $scope.bestWorstLocation.storefront.bestValue < parseInt(storeFrontClients)) {
+            $scope.bestWorstLocation.storefront.bestValue = parseInt(storeFrontClients);
+            $scope.bestWorstLocation.storefront.best = currentSerie.serie;
+        }
+        if ($scope.bestWorstLocation.storefront.worstValue == null || $scope.bestWorstLocation.storefront.worstValue > parseInt(storeFrontClients)) {
+            $scope.bestWorstLocation.storefront.worstValue = parseInt(storeFrontClients);
+            $scope.bestWorstLocation.storefront.worst = currentSerie.serie;
+        }
+
+        series.forEach(function (serie) {
+            if ($scope.bestWorstLocation[serie].bestValue == null || $scope.bestWorstLocation[serie].bestValue < currentSerie[serie]) {
+                $scope.bestWorstLocation[serie].bestValue = currentSerie[serie];
+                $scope.bestWorstLocation[serie].best = currentSerie.serie;
+            }
+            if ($scope.bestWorstLocation[serie].worstValue == null || $scope.bestWorstLocation[serie].worstValue > currentSerie[serie]) {
+                $scope.bestWorstLocation[serie].worstValue = currentSerie[serie];
+                $scope.bestWorstLocation[serie].worst = currentSerie.serie;
+            }
+        });
+    }
+
+    function getLocationsTable(data) {
+        var serie1 = [
+            {
+                name: "Storefront Conversion",
+                best: $scope.bestWorstLocation.storefront.best,
+                worst: $scope.bestWorstLocation.storefront.worst
+            },
+            {
+                name: "Passers By",
+                best: $scope.bestWorstLocation.passersbyClients.best,
+                worst: $scope.bestWorstLocation.passersbyClients.worst
+            },
+            {
+                name: "Visitors",
+                best: $scope.bestWorstLocation.engagedClients.best,
+                worst: $scope.bestWorstLocation.engagedClients.worst
+            }
+        ];
+        var serie2 = [
+            {
+                name: "New Clients",
+                best: $scope.bestWorstLocation.newClients.best,
+                worst: $scope.bestWorstLocation.newClients.worst
+            },
+            {
+                name: "Returning Clients",
+                best: $scope.bestWorstLocation.returningClients.best,
+                worst: $scope.bestWorstLocation.returningClients.worst
+            },
+            {
+                name: "Wi-Fi Connections",
+                best: $scope.bestWorstLocation.associatedClients.best,
+                worst: $scope.bestWorstLocation.associatedClients.worst
+            }
+        ];
+        var htmlString = '<md-content class="flex-100 layout-row"><md-content class="flex-50 layout-column layout-padding">';
+        serie1.forEach(function (serie) {
+            htmlString +=
+                '<div class="flex-100 layout-row" class="usageSection widget-section bestLoc">' +
+                '<span class="num-label tagBlockTitle widget-info" style="width: 35%; float: left;">' + serie.name + "</span>" +
+                '<span class="num-indicator widget-number md-whiteframe-5dp" style="width: 65%;">' +
+                '<div class="compare"><span class="compare" style="color: green;">Best: </span><span class="compare">' + serie.best + "</div>" +
+                '<div class="compare"><span class="compare" style="color: red;">Worst: </span><span class="compare">' + serie.worst + "</div>" +
+                '</span>' +
+                '</div>';
+        });
+        htmlString += '<div class="flex"></div></md-content><md-content class="flex-50 layout-column layout-padding">';
+        serie2.forEach(function (serie) {
+            htmlString +=
+                '<div class="flex-100 layout-row" class="usageSection widget-section bestLoc">' +
+                '<span class="num-label tagBlockTitle widget-info" style="width: 35%; float: left;">' + serie.name + "</span>" +
+                '<span class="num-indicator widget-number md-whiteframe-5dp" style="width: 65%;">' +
+                '<div class="compare"><span class="compare" style="color: green;">Best: </span><span class="compare">' + serie.best + "</div>" +
+                '<div class="compare"><span class="compare" style="color: red;">Worst: </span><span class="compare">' + serie.worst + "</div>" +
+                '</span>' +
+                '</div>';
+        });
+        htmlString += '</md-content></md-content>';
+        return $sce.trustAsHtml(htmlString);
     }
 
     function getPeriodsTable(data) {
@@ -287,69 +566,6 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope
     }
 
 
-
-
-
-
 });
 
 
-
-/*
-
-var chart = new Highcharts.chart({
-        colors: ['#0085bd', '#00aff8', '#307fa1', '#606c71', '#3095cf', '#005c83', '#003248', '#00090d'],
-
-        chart: {
-            renderTo: containerId,
-            polar: true,
-            type: 'line',
-            height: 390,
-            events: {
-                load: function (chart) {
-                    setTimeout(function () {
-                        chart.target.reflow();
-                    });
-                }
-            }
-        },
-
-        title: {
-            text: title,
-            x: -80
-        },
-
-        pane: {
-            size: '80%'
-        },
-
-        xAxis: {
-            categories: ['uniqueClients', 'engagedClients', 'passersbyClients', 'associatedClients',
-                'unassociatedClients', 'newClients', 'returningClients'],
-            tickmarkPlacement: 'on',
-            lineWidth: 0
-        },
-
-        yAxis: {
-            gridLineInterpolation: 'polygon',
-            lineWidth: 0,
-            min: 0
-        },
-
-        tooltip: {
-            shared: true,
-            pointFormat: '<span style="color:{series.color}">{series.name}: <b>{point.y:,.0f}</b><br/>'
-        },
-
-        legend: {
-            align: 'right',
-            verticalAlign: 'top',
-            y: 70,
-            layout: 'vertical'
-        },
-
-        series: series
-
-    });
-
-*/
