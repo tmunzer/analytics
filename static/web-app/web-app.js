@@ -103,14 +103,17 @@ analytics.controller("LocationCtrl", function ($scope, $rootScope, $location, Lo
 
     $scope.locationTypeEnable = function (location) {
         if (location) {
-            if ($rootScope.compareLocations == false) return false;
+            if ($scope.compareLocations == false) return false;
             else {
                 //console.log(location.folderType, $rootScope.locationFilter);
                 //console.log(!location.folderType == $rootScope.locationFilter);
-                return !location.folderType.indexOf($rootScope.locationFilter);
+                return !location.folderType == $rootScope.locationFilter;
             }
         }
     }
+    $scope.$watch("locationFilter", function(){
+        $rootScope.locationFilter = $scope.locationFilter;
+    })
 
     $rootScope.$watch("selectedLocations", function () {
         if ($rootScope.locations) {

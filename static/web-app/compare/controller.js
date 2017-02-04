@@ -25,7 +25,7 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope
     $scope.unassociatedLineData;
     $scope.lineCategories = [];
 
-    $scope.bestWorstLocation = {
+    var bestWorstLocation = {
         storefront: {
             best: "",
             bestValue: null,
@@ -63,7 +63,7 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope
             worstValue: null
         }
     }
-
+    $scope.bestWorstLocation = bestWorstLocation;
     var updateRequest;
 
     $scope.isCurrent = function (item) {
@@ -73,9 +73,11 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope
     $scope.changeComparison = function (item) {
         compare = item;
         if (compare == "locations") $rootScope.compareLocations = true;
+        else $rootScope.compareLocations = false;
         startUpdate();
     }
     $rootScope.$watch("locationFilter", function () {
+        console.log($rootScope.locationFilter);
         if ($location.path() == "/compare")
             startUpdate();
     }, true)
@@ -85,6 +87,12 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope
     }, true)
 
     function startUpdate() {
+        $scope.lineStarted = false;
+        $scope.polarStarted = false;
+        $scope.tableStarted = false;
+        $scope.storefrontStarted = false;
+        $scope.loyaltyStarted = false;
+        $scope.wifiStarted = false;
         if ($rootScope.date.from != "" && $rootScope.date.to != "") {
             updateRequest = new Date();
             var currentUpdateRequest = updateRequest;
@@ -300,9 +308,18 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope
     }
 
     function updateTimelines() {
+
+        $scope.storefrontLineData = undefined;
+        $scope.engagedLineData = undefined;
+        $scope.passersbyLineData = undefined;
+        $scope.uniqueLineData = undefined;
+        $scope.associatedLineData = undefined;
+        $scope.unassociatedLineData = undefined;
+        $scope.lineCategories = [];
+
         $scope.lineStarted = false;
         $scope.lineLoaded = false;
-
+        $scope.bestWorstLocation = bestWorstLocation;
         var endTime = $rootScope.date.to;
         var startTime = $rootScope.date.from;
 
@@ -421,14 +438,7 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope
                     $scope.associatedLineData = seriesAssociated;
                     $scope.unassociatedLineData = seriesUnassociated;
                     $scope.lineCategories = timeserie;
-                    /*displayLineChart('newData', timeserie, seriesNew, format, step);
-                    $("#newData").show();
-                    $("#newEmpty").hide();
-                    $("#newLoading").hide();
-                    displayLineChart('returningData', timeserie, seriesReturning, format, step);
-                    $("#returningData").show();
-                    $("#returningEmpty").hide();
-                    $("#returningLoading").hide();*/
+
                 }
             })
         }
@@ -528,7 +538,7 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope
             "<table class='md-table small'>" +
             "<thead class='md-head'><tr class='md-row'><th class='md-column'></th>";
         for (var i = 0; i < data.length - 1; i++) {
-            htmlString += "<th class='md-column'>" + data[i]['period'] + "</th>";
+            htmlString += "<th class='md-column'>" + data[i].serie + "</th>";
         }
         htmlString += "</tr></thead><tbody class='md-body'>";
         htmlString += "<tr class='md-row'><td class='md-cell'>Engaged Clients</th>" + getTableRow(data, "engagedClients") + "</tr>";

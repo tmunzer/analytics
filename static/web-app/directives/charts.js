@@ -48,7 +48,8 @@ angular.module("Charts").directive('chartLine', function () {
             }
 
             scope.$watch("started", function () {
-                if (!scope.started && !scope.loaded) changeDisplayed("wait");
+                console.log(scope.started, scope.loaded);
+                if (!scope.started) changeDisplayed("wait");
                 else if (scope.started && !scope.loaded) changeDisplayed("load");
             })
 
@@ -120,7 +121,7 @@ angular.module("Charts").directive('chartPolar', function () {
             }
 
             scope.$watch("started", function () {
-                if (!scope.started && !scope.loaded) changeDisplayed("wait");
+                if (!scope.started) changeDisplayed("wait");
                 else if (scope.started && !scope.loaded) changeDisplayed("load");
             })
 
@@ -209,7 +210,7 @@ angular.module("Charts").directive('chartBar', function () {
                 else element[0].querySelector("#chart").style.display = "none";
             }
             scope.$watch("started", function () {
-                if (!scope.started && !scope.loaded) changeDisplayed("wait");
+                if (!scope.started) changeDisplayed("wait");
                 else if (scope.started && !scope.loaded) changeDisplayed("load");
             })
             scope.$watch("loaded", function () {
@@ -294,7 +295,7 @@ angular.module("Charts").directive('chartBarStacked', function () {
                 else element[0].querySelector("#chart").style.display = "none";
             }
             scope.$watch("started", function () {
-                if (!scope.started && !scope.loaded) changeDisplayed("wait");
+                if (!scope.started) changeDisplayed("wait");
                 else if (scope.started && !scope.loaded) changeDisplayed("load");
             });
             scope.$watch("loaded", function () {
@@ -389,8 +390,8 @@ angular.module("Charts").directive('chartBarProgess', function () {
                     else element[0].querySelector("#chart").style.display = "none";
                 }
                 scope.$watch("started", function () {
-                    if (!scope.started && !scope.loaded) changeDisplayed("wait");
-                    else if (scope.started && !scope.loaded) changeDisplayed("load");
+                if (!scope.started) changeDisplayed("wait");
+                else if (scope.started && !scope.loaded) changeDisplayed("load");
                 })
                 scope.$watch("loaded", function () {
                     if (scope.started && scope.loaded) {

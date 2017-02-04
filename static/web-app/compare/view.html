@@ -1,6 +1,6 @@
 <div class="main-container">
     <md-content flex layout="column" class="main-view" flex="100">
-        <md-content layout="row" md-whiteframe="2">
+        <md-content layout="row">
             <div style="margin: auto;">                
                 <md-button class="md-raised" ng-class="isCurrent('periods')" style="height: 20px;align-self: center;" ng-click="changeComparison('periods')">Compare Periods</md-button>
                 <md-button class="md-raised" ng-class="isCurrent('locations')" style="height: 20px;align-self: center;" ng-click="changeComparison('locations')">Compare Locations</md-button>
@@ -23,7 +23,7 @@
                         </article>
 
                         <article layout="column" layout-gt-sm="row">
-                            <md-content flex-gt-sm="100" md-whiteframe="2" style="margin: 10px 0" class="container">
+                            <md-content flex-gt-sm="100" style="margin: 10px 0" class="container" md-whiteframe="2">
                                 <h3 style="height: 25px;">
                                     <span ng-show="isCurrent('locations')">Locations statistics</span>
                                     <span ng-show="isCurrent('periods')">Progress compared to other periods</span>                                                    
