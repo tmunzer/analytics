@@ -17,6 +17,6 @@
     "highcharts-ng": "^1.0.0"
   },
   "resolutions": {
-    "angular": "1.6.1"
+    "angular": "1.6.2"
   }
 }
