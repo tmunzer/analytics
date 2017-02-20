@@ -107,7 +107,7 @@ analytics.controller("LocationCtrl", function ($scope, $rootScope, $location, Lo
             else {
                 //console.log(location.folderType, $rootScope.locationFilter);
                 //console.log(!location.folderType == $rootScope.locationFilter);
-                return !location.folderType == $rootScope.locationFilter;
+                return location.folderType != $rootScope.locationFilter;
             }
         }
     }
@@ -130,6 +130,7 @@ analytics.controller("LocationCtrl", function ($scope, $rootScope, $location, Lo
     function updateLocations() {
         var request = LocationsService.get();
         request.then(function (promise) {
+            console.log(promise);
             if (promise && promise.error) console.log(promise.error);
             else {
                 $rootScope.locations = promise.data;

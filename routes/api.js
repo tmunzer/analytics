@@ -33,6 +33,7 @@ router.get('/apLocationFolders/', function (req, res, next) {
     var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
 
     endpoints.configuration.location.getLocations(currentApi, devAccount, function (err, locations) {
+        console.log(err, locations);
         if (err) res.json({ error: err });
         else if (locations == null) res.json(
             {

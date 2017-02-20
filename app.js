@@ -36,7 +36,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'static')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 
 var loginMethod = require('./config').login;
@@ -69,6 +69,8 @@ if (loginMethod) {
 } else {
   var login = require('./routes/login_api');
 }
+
+//load routes
 var oauth = require('./routes/oauth');
 var api = require('./routes/api');
 var apiDashboard = require('./routes/api.dashboard');
@@ -76,6 +78,7 @@ var apiDetails = require('./routes/api.details');
 var apiCompare = require('./routes/api.compare');
 var webApp = require("./routes/web-app");
 
+//assign routes to entry points
 app.use('/', login);
 app.use('/oauth/', oauth);
 app.use('/api/', api);

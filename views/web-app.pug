@@ -94,9 +94,9 @@ html
                         h3
                             span(translate="filter.location" ng-show="!compareLocations")
                             md-input-container(ng-show="compareLocations" class="header-input" style="background-color: rgb(255,255,255);color: #1e88e5;")
-                                md-select( ng-model="locationFilter" ng-selected="locationFilter")
+                                md-select( ng-model="locationFilter" ng-selected="locationFilter" aria-label="location filter")
                                     md-option(value="GENERIC") Folders
-                                    md-option(value="BUILING") Buildings
+                                    md-option(value="BUILDING") Buildings
                                     md-option(value="FLOOR") Floors
                         div(ng-show="locationsLoaded" style="background-color: rgb(76,175,80); height: 5px; width: 100%")                    
                         md-progress-linear(ng-show="!locationsLoaded" md-mode="indeterminate" class="md-accent")                    
@@ -107,7 +107,7 @@ html
                                         span(flex)                            
                                 md-list(ng-repeat="folder in folder.folders"  ng-include="'locations_renderer.html'" style="margin-left:10px" layout="column")                                                
                         div(ng-show="locationsLoaded" style="padding: 5px")
-                            md-checkbox(ng-checked="exists(locations)" ng-click="toggle(locations)" aria-label="{{locations.name}}" ng-disabled="locationTypeEnable(location)")
+                            md-checkbox(ng-if="locations" ng-checked="exists(locations)" ng-click="toggle(locations)" aria-label="{{locations.name}}" ng-disabled="locationTypeEnable(locations)")
                                             md-icon(class="material-icons md-24") {{locationsIcon(locations)}}
                                             span {{locations.name}}
                                             span(flex)                        
