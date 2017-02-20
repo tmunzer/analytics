@@ -104,11 +104,7 @@ analytics.controller("LocationCtrl", function ($scope, $rootScope, $location, Lo
     $scope.locationTypeEnable = function (location) {
         if (location) {
             if ($scope.compareLocations == false) return false;
-            else {
-                //console.log(location.folderType, $rootScope.locationFilter);
-                //console.log(!location.folderType == $rootScope.locationFilter);
-                return location.folderType != $rootScope.locationFilter;
-            }
+            else return location.folderType != $rootScope.locationFilter;
         }
     }
     $scope.$watch("locationFilter", function () {
@@ -127,34 +123,9 @@ analytics.controller("LocationCtrl", function ($scope, $rootScope, $location, Lo
         }
     })
 
-    function updateLocations() {
-        var request = LocationsService.get();
-        request.then(function (promise) {
-            if (promise && !promise.error) {
-                $rootScope.locations = promise;
-                $scope.locationsLoaded = true;
-                addParentRef($rootScope.locations, null, function (newLocations) {
-                    $rootScope.locations = newLocations;
-                })
-            }
-        })
-    }
 
-    function addParentRef(folder, parentId, cb) {
-        folder.parentId = parentId;
-        if (folder.folders.length > 0) {
-            var done = 0;
-            for (var i in folder.folders) {
-                var child = folder.folders[i];
-                if (child.folders) addParentRef(child, folder.id, function (newChild) {
-                    child = newChild;
-                    done++;
-                    if (done == folder.folders.length) cb(folder);
-                });
-                else cb(folder);
-            }
-        } else cb(folder);
-    }
+
+
 
     $scope.locationsIcon = function (folder) {
         if (folder && folder.folderType == "GENERIC") return "map";
@@ -190,7 +161,7 @@ analytics.controller("LocationCtrl", function ($scope, $rootScope, $location, Lo
         // check the box for childs
         var idChecked = $scope.checkedLocations.indexOf(item.id);
         if (idChecked < 0) $scope.checkedLocations.push(item.id);
-
+        else $scope.checkedLocations.splice(idChecked, 1);
         item.folders.forEach(function (folder) {
             // if the child is present in the selected locations (to filter the request) 
             // remove it (because it will be filtered on the newly checked location)
@@ -226,6 +197,17 @@ analytics.controller("LocationCtrl", function ($scope, $rootScope, $location, Lo
             var parentItem = searchLocation($rootScope.locations, item.parentId);
             if (parentItem) uncheckParents(parentItem);
         }
+    }
+
+    function updateLocations() {
+        var request = LocationsService.get();
+        request.then(function (promise) {
+            console.log(promise);
+            if (promise && !promise.error) {
+                $rootScope.locations = promise;
+                $scope.locationsLoaded = true;
+            }
+        })
     }
     if (!$rootScope.locations) updateLocations();
 })
@@ -545,11 +527,21 @@ angular.module('analytics').factory("LocationsService", function ($http, $q, $ro
         });
         return httpReq(request);
     };
-
+    function addParentRef(folder, parentId) {
+        folder.parentId = parentId;
+        if (folder.folders.length > 0) {
+            for (var i in folder.folders) {
+                if (folder.folders[i].folders) folder.folders[i] = addParentRef(folder.folders[i], folder.id);
+            }
+        }
+        return folder;
+    }
     function httpReq(request) {
         var promise = request.then(
             function (response) {
-                return response.data;
+                var folders = response.data;
+                console.log(folders);
+                return addParentRef(response.data, null);
             },
             function (response) {
                 console.log(response);

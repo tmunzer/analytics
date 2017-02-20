@@ -48,7 +48,6 @@ angular.module("Charts").directive('chartLine', function () {
             }
 
             scope.$watch("started", function () {
-                console.log(scope.started, scope.loaded);
                 if (!scope.started) changeDisplayed("wait");
                 else if (scope.started && !scope.loaded) changeDisplayed("load");
             })
