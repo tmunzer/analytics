@@ -17,7 +17,7 @@ function locationsFromQuery(req) {
         locations = req.query.locations;
         if (locations.length == 0) locations = req.session.locations.id;
     } else locations = req.session.locations.id;
-    if (typeof locations == "number") locations = [locations];
+    if (typeof locations == "number" || typeof locations == "string") locations = [locations];
     return locations;
 }
 

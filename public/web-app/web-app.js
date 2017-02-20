@@ -123,10 +123,6 @@ analytics.controller("LocationCtrl", function ($scope, $rootScope, $location, Lo
         }
     })
 
-
-
-
-
     $scope.locationsIcon = function (folder) {
         if (folder && folder.folderType == "GENERIC") return "map";
         else if (folder && folder.folderType == "BUILDING") return "business";
@@ -135,12 +131,9 @@ analytics.controller("LocationCtrl", function ($scope, $rootScope, $location, Lo
 
     //called when a checkbox is clicked
     $scope.toggle = function (item) {
-        var idSelected = $rootScope.selectedLocations.indexOf(item.id);
         var idChecked = $scope.checkedLocations.indexOf(item.id);
-        // if the checkbox was checked
+        // if the user just unchecked the box
         if (idChecked > -1) {
-            // remove the id from the location filter list 
-            $rootScope.selectedLocations.splice(idSelected, 1);
             // uncheck the box
             $scope.checkedLocations.splice(idChecked, 1);
             // uncheck the parent boxes and remove the id from the location filter list if needed
@@ -151,25 +144,48 @@ analytics.controller("LocationCtrl", function ($scope, $rootScope, $location, Lo
                 if ($rootScope.selectedLocations.indexOf(child.id) < 0) $rootScope.selectedLocations.push(child.id);
             })
         }
-        // if the checkbox wasn't checked
+        // if the user just checked the box
         else {
             $rootScope.selectedLocations.push(item.id);
-            toggleChilds(item);
+            $scope.checkedLocations.push(item.id);
+            checkChilds(item);
         }
+        updateSelectedLocations();
+        console.log($rootScope.selectedLocations);
     };
-    function toggleChilds(item) {
-        // check the box for childs
-        var idChecked = $scope.checkedLocations.indexOf(item.id);
-        if (idChecked < 0) $scope.checkedLocations.push(item.id);
-        else $scope.checkedLocations.splice(idChecked, 1);
-        item.folders.forEach(function (folder) {
-            // if the child is present in the selected locations (to filter the request) 
-            // remove it (because it will be filtered on the newly checked location)
-            var idSelected = $rootScope.selectedLocations.indexOf(folder.id);
-            if (idSelected > -1) $rootScope.selectedLocations.splice(idSelected, 1);
-            if (folder.folders) toggleChilds(folder);
-        });
+
+    function updateSelectedLocationsLoop(item) {
+        if ($scope.checkedLocations.indexOf(item.id) > -1) $rootScope.selectedLocations.push(item.id);
+        else if (item.folders.length > 0)
+            item.folders.forEach(function (folder) {
+                updateSelectedLocationsLoop(folder);
+            })
     }
+    function updateSelectedLocations() {
+        $rootScope.selectedLocations = [];
+        updateSelectedLocationsLoop($rootScope.locations);
+    }
+
+
+    function checkChilds(item) {
+        item.folders.forEach(function (folder) {
+            var idChecked = $scope.checkedLocations.indexOf(folder.id);
+            // check the box for childs
+            if (idChecked < 0) $scope.checkedLocations.push(folder.id);
+            // if child folders, do the same
+            if (folder.folders.length > 0) checkChilds(folder);
+        });
+    };
+
+    function uncheckParents(item) {
+        var idChecked = $scope.checkedLocations.indexOf(item.parentId);
+        if (idChecked > -1) $scope.checkedLocations.splice(idChecked, 1);;
+        if (item.parentId) {
+            var parentItem = searchLocation($rootScope.locations, item.parentId);
+            if (parentItem) uncheckParents(parentItem);
+        }
+    }
+
 
     $scope.exists = function (item) {
         if (item) return $scope.checkedLocations.indexOf(item.id) > -1;
@@ -188,21 +204,10 @@ analytics.controller("LocationCtrl", function ($scope, $rootScope, $location, Lo
         }
         return null;
     }
-    function uncheckParents(item) {
-        var idSelected = $rootScope.selectedLocations.indexOf(item.parentId);
-        if (idSelected > -1) $rootScope.selectedLocations.splice(idSelected, 1);
-        var idChecked = $scope.checkedLocations.indexOf(item.parentId);
-        if (idChecked > -1) $scope.checkedLocations.splice(idChecked, 1);;
-        if (item.parentId) {
-            var parentItem = searchLocation($rootScope.locations, item.parentId);
-            if (parentItem) uncheckParents(parentItem);
-        }
-    }
 
     function updateLocations() {
         var request = LocationsService.get();
         request.then(function (promise) {
-            console.log(promise);
             if (promise && !promise.error) {
                 $rootScope.locations = promise;
                 $scope.locationsLoaded = true;
