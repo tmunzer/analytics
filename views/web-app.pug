@@ -17,16 +17,16 @@ html
                                     table
                                         tbody
                                             tr
-                                                th(style="padding: 5px 10px;" translate="layout.hmngServer")
+                                                th(style="padding: 5px 10px; text-align: left;" translate="modal.about.hmngServer")
                                                 td(style="padding: 5px 10px;")= server
                                             tr
-                                                th(style="padding: 5px 10px;" translate="layout.ownerId")
+                                                th(style="padding: 5px 10px; text-align: left;" translate="modal.about.ownerId")
                                                 td(style="padding: 5px 10px;")= ownerId
                                             tr
-                                                th(style="padding: 5px 10px;" translate="layout.accessToken")
+                                                th(style="padding: 5px 10px; text-align: left;" translate="modal.about.accessToken")
                                                 td(style="padding: 5px 10px;")= accessToken
                             md-dialog-actions(layout="row")
-                                md-button(ng-click="close()" translate="button.close" aria-label="close")
+                                md-button(ng-click="close()" translate="modal.button.close" aria-label="close")
 
         header.md-page-header(ng-controller="HeaderCtrl")
             div.header

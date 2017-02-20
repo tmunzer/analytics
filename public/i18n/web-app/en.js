@@ -20,7 +20,13 @@ var en = {
             message: "Message",
             code: "Code",            
         },
+        about: {
+            hmngServer: "HiveManager NG Server: ",
+            ownerId: "OnwerId: ",
+            accessToken: "Access Token: "
+        },
         button: {
+            close: "Close",
             reload: "Reload",
             otherCred: "Try to use other credentials"
             

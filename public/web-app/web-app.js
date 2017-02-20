@@ -130,7 +130,6 @@ analytics.controller("LocationCtrl", function ($scope, $rootScope, $location, Lo
     function updateLocations() {
         var request = LocationsService.get();
         request.then(function (promise) {
-            console.log(promise);
             if (promise && !promise.error) {
                 $rootScope.locations = promise;
                 $scope.locationsLoaded = true;

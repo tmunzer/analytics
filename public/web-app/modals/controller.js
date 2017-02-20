@@ -57,7 +57,24 @@ angular.module('Modals').controller('ModalCtrl', function ($scope, $rootScope, $
         }
     });
 
-
+$scope.open = function (template, items) {
+        var modalTemplateUrl = "";
+        var controller = "";
+        switch (template) {
+            case 'about':
+                controller = "DialogController";
+                modalTemplateUrl = 'modalAboutContent.html';
+                break;
+        }
+        $mdDialog.show({
+            controller: controller,
+            templateUrl: modalTemplateUrl,
+            escapeToClose: false,
+            locals: {
+                items: items
+            }
+        });
+    };
 });
 
 
