@@ -111,7 +111,7 @@ analytics.controller("LocationCtrl", function ($scope, $rootScope, $location, Lo
             }
         }
     }
-    $scope.$watch("locationFilter", function(){
+    $scope.$watch("locationFilter", function () {
         $rootScope.locationFilter = $scope.locationFilter;
     })
 
@@ -131,9 +131,8 @@ analytics.controller("LocationCtrl", function ($scope, $rootScope, $location, Lo
         var request = LocationsService.get();
         request.then(function (promise) {
             console.log(promise);
-            if (promise && promise.error) console.log(promise.error);
-            else {
-                $rootScope.locations = promise.data;
+            if (promise && !promise.error) {
+                $rootScope.locations = promise;
                 $scope.locationsLoaded = true;
                 addParentRef($rootScope.locations, null, function (newLocations) {
                     $rootScope.locations = newLocations;
@@ -537,7 +536,7 @@ angular.module('analytics').factory("TimelineService", function ($http, $q) {
     }
 });
 
-angular.module('analytics').factory("LocationsService", function ($http, $q) {
+angular.module('analytics').factory("LocationsService", function ($http, $q, $rootScope) {
     function get() {
         var canceller = $q.defer();
         var request = $http({
@@ -551,10 +550,14 @@ angular.module('analytics').factory("LocationsService", function ($http, $q) {
     function httpReq(request) {
         var promise = request.then(
             function (response) {
-                return response;
+                return response.data;
             },
             function (response) {
-                return { error: response.data };
+                console.log(response);
+                if (response.status && response.status >= 0) {
+                    $rootScope.$broadcast('apiError', response.data.error);
+                    return ($q.reject(response.data.error));
+                }
             });
 
         promise.abort = function () {

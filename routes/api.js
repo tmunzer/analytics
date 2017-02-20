@@ -34,7 +34,7 @@ router.get('/apLocationFolders/', function (req, res, next) {
 
     endpoints.configuration.location.getLocations(currentApi, devAccount, function (err, locations) {
         console.log(err, locations);
-        if (err) res.json({ error: err });
+        if (err) res.status(err.status).json({ error: err });
         else if (locations == null) res.json(
             {
                 warning: {

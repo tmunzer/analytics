@@ -61,9 +61,12 @@ angular.module('Modals').controller('ModalCtrl', function ($scope, $rootScope, $
 });
 
 
-angular.module('Modals').controller('DialogController', function ($scope, $mdDialog, items) {
+angular.module('Modals').controller('DialogController', function ($scope, $mdDialog, $window, items) {
     // items is injected in the controller, not its scope!
     $scope.items = items;
+    $scope.reload = function () {
+        $window.location.reload();
+    }
     $scope.close = function () {
         // Easily hides most recent dialog shown...
         // no specific instance reference is needed.
