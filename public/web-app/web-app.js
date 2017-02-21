@@ -262,8 +262,6 @@ analytics.controller("TimelineCtrl", function ($scope, TimelineService, Location
         var endTime = new Date(new Date().toISOString().replace(/:[0-9]{2}:[0-9]{2}\.[0-9]{3}/, ":00:00.000"));
         var startTime = new Date(endTime);
         var selectedRange, step, format;
-        console.log(TimelineService);
-        console.log(TimelineService.period.get());
         switch (TimelineService.period.get()) {
             case "day":
                 startTime.setDate(startTime.getDate() - 1);
@@ -290,7 +288,7 @@ analytics.controller("TimelineCtrl", function ($scope, TimelineService, Location
                 format = '{value:%m-%Y}';
                 break;
         }
-        request = TimelineService.timeline.get(
+        request = TimelineService.timeline.retrieve(
             startTime,
             endTime,
             LocationsService.selected.get()

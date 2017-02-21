@@ -1,5 +1,8 @@
 angular.module('Dashboard').controller("DashboardCtrl", function ($scope, $rootScope, $location, CardsService, LocationsService) {
     $rootScope.compareLocations = false;
+    $scope.selected = LocationsService.selected;
+    $scope.locations = LocationsService.locations;
+
     $scope.maps = {
         folders: 0,
         buildings: 0,
@@ -11,9 +14,11 @@ angular.module('Dashboard').controller("DashboardCtrl", function ($scope, $rootS
         sensors: 0
     }
     var updateCardsRequest;
-  /*  $rootScope.$watch("selectedLocations", function () {
+
+    // update the cards when the locations are loaded
+    $scope.$watch("locations.isReady()", function () {
         if ($location.path() == "/dashboard")
-            if (LocationsService.location.get() != []) {
+            if ($scope.locations.isReady()){
                 updateCardsRequest = new Date();
                 var currentUpdateRequest = updateCardsRequest;
                 setTimeout(function () {
@@ -23,9 +28,10 @@ angular.module('Dashboard').controller("DashboardCtrl", function ($scope, $rootS
                 }, 200)
             }
     })
-    $rootScope.$watch("locations", function () {
+    // update the cards when the selected locations change
+    $scope.$watch("selected.get()", function () {
         if ($location.path() == "/dashboard")
-            if ($rootScope.locations){
+            if (LocationsService.locations.isReady()) {
                 updateCardsRequest = new Date();
                 var currentUpdateRequest = updateCardsRequest;
                 setTimeout(function () {
@@ -35,10 +41,11 @@ angular.module('Dashboard').controller("DashboardCtrl", function ($scope, $rootS
                 }, 200)
             }
     })
-*/
+
+
     function updateCards() {
         var data = {};
-        if (LocationsService.selected.get().length > 0) data = { locations: JSON.stringify(LocationsService.selected.get()) };
+        if (LocationsService.selected.get().length > 0) data = { locations:LocationsService.selected.get() };
         var request = CardsService.update(data);
         request.then(function (promise) {
             if (promise && promise.error) {
@@ -62,7 +69,7 @@ angular.module('Dashboard').controller("DashboardCtrl", function ($scope, $rootS
 });
 
 
-angular.module('Dashboard').controller("WidgetCtrl", function ($scope, $rootScope, $location, $sce, TimelineService, LocationsService, DashboardChartsService) {
+angular.module('Dashboard').controller("WidgetCtrl", function ($scope, $location, $sce, TimelineService, LocationsService, DashboardChartsService) {
 
     $scope.date = TimelineService.date;
     $scope.timeline = TimelineService.timeline;
@@ -95,9 +102,10 @@ angular.module('Dashboard').controller("WidgetCtrl", function ($scope, $rootScop
     var lastUpdateRequest;
     var topLocations = {};
 
-    $scope.$watch("date", function (a, b) {
+    // update the charts when the dates (from and to) change
+    $scope.$watch("date.get()", function () {
         if ($location.path() == "/dashboard")
-            if ($scope.date.get().from != "" && $scope.date.get().to != "") {
+            if ($scope.date.isReady()) {
                 $scope.topLocationLoaded = false;
                 $scope.passersByLoaded = false;
                 $scope.engagedLoaded = false;
@@ -115,19 +123,6 @@ angular.module('Dashboard').controller("WidgetCtrl", function ($scope, $rootScop
             }
     }, true)
 
-    $scope.$watch("timeline", function (a, b) {
-        if ($location.path() == "/dashboard") {
-            lastUpdateRequest = new Date();
-            var currentUpdateRequest = lastUpdateRequest;
-            setTimeout(function () {
-                if (currentUpdateRequest == lastUpdateRequest)
-                    if ($scope.timeline.isReady()) {
-                        updateWidgets();
-                        updateTopLocation();
-                    }
-            }, 500)
-        }
-    });
 
     $scope.$watch("topLocationsChart", function () {
         var choice = $scope.topLocationsChart;

@@ -7,7 +7,7 @@ angular.module('analytics').factory("TimelineService", function ($http, $q) {
     var period = "week";
     var range = 7;
     var isReady = false;
-    function get(startTime, endTime, selectedLocations) {
+    function retrieve(startTime, endTime, selectedLocations) {
         var canceller = $q.defer();
         var request = $http({
             url: '/api/timeline/',
@@ -49,7 +49,7 @@ angular.module('analytics').factory("TimelineService", function ($http, $q) {
 
     return {
         timeline: {
-            get: get,
+            retrieve: retrieve,
             isReady: function () { return isReady },
         },
         date: {
