@@ -57,7 +57,7 @@ router.get('/apLocationFolders/', function (req, res, next) {
 router.get('/timeline/', function (req, res, next) {
     var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
 
-    var startTime, endTime, timeUnit, locations, locDone, timelineReq;
+    var startTime, endTime, timeUnit, locations, locDone;
     var timeline = [];
 
     if (req.query.startTime && req.query.endTime) {
@@ -72,23 +72,18 @@ router.get('/timeline/', function (req, res, next) {
         } else {
             timeUnit = "OneDay";
         }
-        // retrieve the "reqId" parameter from the POST Method.
-        // This will be sent back to the web browser to identify the request
-        timelineReq = req.query.reqId;
 
         // if the "locations" parameter exists, and is not null, will filter the request based on the locations selected by the user
         // otherwise takes the "root" folder
-        if (req.query.locations && req.query.locations.length > 0) {
-            locations = JSON.parse(req.query.locations);
-            if (locations.length == 0) locations = [req.session.locations.id];
-        } else locations = [req.session.locations.id];
+        var locations = locationsFromQuery(req);
 
         locDone = 0;
 
         // For each location, send the API call
         locations.forEach(function (location) {
             endpoints.clientlocation.clienttimeseries.GET(currentApi, devAccount, location, startTime.toISOString(), endTime.toISOString(), timeUnit, function (err, result) {
-                if (err) res.json({ error: err });
+                if (err && err.status) res.status(err.status).json({ error: err });
+                else if (err) res.status(500).json({ error: err });
                 else {
                     // will addition the number of "unique client" from each location to get an overall number of unique clients
                     for (var i in result['times']) {
@@ -96,19 +91,18 @@ router.get('/timeline/', function (req, res, next) {
                             timeline[i]["uniqueClients"] += result['times'][i]['uniqueClients'];
                         } else timeline[i] = { time: result['times'][i]['time'], uniqueClients: result['times'][i]['uniqueClients'] };
                     }
+                    locDone++;
+                    // if all the locations are done, send back the response to the web browser
+                    if (locDone == locations.length) {
+                        res.json({
+                            data: timeline
+                        });
+                    }
                 }
-                locDone++;
-                // if all the locations are done, send back the response to the web browser
-                if (locDone == locations.length) {
-                    res.json({
-                        error: null,
-                        data: timeline,
-                        reqId: timelineReq
-                    });
-                }
+
             });
         });
-    } else res.json({ error: "missing parameters" });
+    } else res.status(403).json({ error: "missing parameters" });
 });
 
 module.exports = router;

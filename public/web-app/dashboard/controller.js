@@ -1,4 +1,4 @@
-angular.module('Dashboard').controller("DashboardCtrl", function ($scope, $rootScope, $location, CardsService) {
+angular.module('Dashboard').controller("DashboardCtrl", function ($scope, $rootScope, $location, CardsService, LocationsService) {
     $rootScope.compareLocations = false;
     $scope.maps = {
         folders: 0,
@@ -11,9 +11,9 @@ angular.module('Dashboard').controller("DashboardCtrl", function ($scope, $rootS
         sensors: 0
     }
     var updateCardsRequest;
-    $rootScope.$watch("selectedLocations", function () {
+  /*  $rootScope.$watch("selectedLocations", function () {
         if ($location.path() == "/dashboard")
-            if ($rootScope.locations) {
+            if (LocationsService.location.get() != []) {
                 updateCardsRequest = new Date();
                 var currentUpdateRequest = updateCardsRequest;
                 setTimeout(function () {
@@ -35,14 +35,13 @@ angular.module('Dashboard').controller("DashboardCtrl", function ($scope, $rootS
                 }, 200)
             }
     })
-
+*/
     function updateCards() {
         var data = {};
-        if ($rootScope.selectedLocations.length > 0) data = { locations: JSON.stringify($rootScope.selectedLocations) };
+        if (LocationsService.selected.get().length > 0) data = { locations: JSON.stringify(LocationsService.selected.get()) };
         var request = CardsService.update(data);
         request.then(function (promise) {
             if (promise && promise.error) {
-                console.log(promise.error);
                 $scope.maps.folders = "X";
                 $scope.maps.buildings = "X";
                 $scope.maps.floors = "X";
@@ -63,7 +62,10 @@ angular.module('Dashboard').controller("DashboardCtrl", function ($scope, $rootS
 });
 
 
-angular.module('Dashboard').controller("WidgetCtrl", function ($scope, $rootScope, $location, $sce, DashboardChartsService) {
+angular.module('Dashboard').controller("WidgetCtrl", function ($scope, $rootScope, $location, $sce, TimelineService, LocationsService, DashboardChartsService) {
+
+    $scope.date = TimelineService.date;
+    $scope.timeline = TimelineService.timeline;
 
     $scope.topLocationStarted = false;
     $scope.passersByStarted = false;
@@ -93,9 +95,9 @@ angular.module('Dashboard').controller("WidgetCtrl", function ($scope, $rootScop
     var lastUpdateRequest;
     var topLocations = {};
 
-    $rootScope.$watch("date", function (a, b) {
+    $scope.$watch("date", function (a, b) {
         if ($location.path() == "/dashboard")
-            if ($rootScope.date.from != "" && $rootScope.date.to != "") {
+            if ($scope.date.get().from != "" && $scope.date.get().to != "") {
                 $scope.topLocationLoaded = false;
                 $scope.passersByLoaded = false;
                 $scope.engagedLoaded = false;
@@ -113,13 +115,13 @@ angular.module('Dashboard').controller("WidgetCtrl", function ($scope, $rootScop
             }
     }, true)
 
-    $rootScope.$watch("timelineLoaded", function (a, b) {
+    $scope.$watch("timeline", function (a, b) {
         if ($location.path() == "/dashboard") {
             lastUpdateRequest = new Date();
             var currentUpdateRequest = lastUpdateRequest;
             setTimeout(function () {
                 if (currentUpdateRequest == lastUpdateRequest)
-                    if ($rootScope.timelineLoaded == true) {
+                    if ($scope.timeline.isReady()) {
                         updateWidgets();
                         updateTopLocation();
                     }
@@ -179,12 +181,12 @@ angular.module('Dashboard').controller("WidgetCtrl", function ($scope, $rootScop
         $scope.storeFrontLoaded = false;
         $scope.newClientsLoaded = false;
         $scope.returningClientsLoaded = false;
-        var endTime = $rootScope.date.to;
-        var startTime = $rootScope.date.from;
+        var endTime = $scope.date.get().to;
+        var startTime = $scope.date.get().from;
         // @TODO: Current API limitation
         if (endTime - startTime <= 2678400000) {
 
-            var request = DashboardChartsService.widgets(startTime, endTime, $rootScope.selectedLocations);
+            var request = DashboardChartsService.widgets(startTime, endTime, LocationsService.selected.get());
             request.then(function (promise) {
                 if (promise && promise.error) console.log(promise.error);
                 else {
@@ -333,14 +335,14 @@ angular.module('Dashboard').controller("WidgetCtrl", function ($scope, $rootScop
 
     function updateTopLocation() {
 
-        var endTime = $rootScope.date.to;
-        var startTime = $rootScope.date.from;
+        var endTime = $scope.date.get().to;
+        var startTime = $scope.date.get().from;
         // @TODO: Current API limitation
         if (endTime - startTime <= 2678400000) {
 
             $scope.topLocationStarted = true;
             $scope.topLocationLoaded = false;
-            var request = DashboardChartsService.topLocations(startTime, endTime, $rootScope.selectedLocations);
+            var request = DashboardChartsService.topLocations(startTime, endTime, LocationsService.selected.get());
             request.then(function (promise) {
                 if (promise && promise.error) console.log(promise.error);
                 else {

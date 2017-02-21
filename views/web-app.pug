@@ -5,7 +5,7 @@ html
         meta(name="viewport" content="width=device-width, initial-scale=1")
 
 
-    body(ng-app="analytics").icons-docs(ng-controller="UserCtrl as UserCtrl")
+    body.icons-docs(ng-app="analytics" ng-controller="UserCtrl as UserCtrl")
         div.modal.fade.bs-example-modal-lg(ng-controller="ModalCtrl")
                     script(type="text/ng-template" id="modalAboutContent.html")
                         md-dialog(aria-label="List dialog")
@@ -179,6 +179,7 @@ html
         
 
         script(src="/web-app/web-app.js")
+        script(src="/web-app/services.js")
         script(src="/web-app/routes.js")
         script(src="/web-app/directives/charts.js")
         script(src="/web-app/dashboard/controller.js")

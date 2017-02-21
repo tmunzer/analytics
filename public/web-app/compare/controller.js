@@ -1,6 +1,6 @@
-angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope, $location, $sce, CompareService) {
+angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope, $location, $sce, LocationsService, CompareService) {
     $rootScope.compareLocations = false;
-    var compare = "periods";
+    $rootScope.compare = "periods";
 
     $scope.polarStarted = false;
     $scope.polarLoaded = false;
@@ -67,17 +67,20 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope
     var updateRequest;
 
     $scope.isCurrent = function (item) {
-        if (compare == item) return "md-primary";
+        if ($rootScope.compare == item) return "md-primary";
     }
 
     $scope.changeComparison = function (item) {
-        compare = item;
-        if (compare == "locations") $rootScope.compareLocations = true;
+        $rootScope.compare = item;
+        if ($rootScope.compare == "locations") {
+            $rootScope.compareLocations = true;
+            LocationsService.selected.reset();
+            $rootScope.changeComparison
+        }
         else $rootScope.compareLocations = false;
         startUpdate();
     }
     $rootScope.$watch("locationFilter", function () {
-        console.log($rootScope.locationFilter);
         if ($location.path() == "/compare")
             startUpdate();
     }, true)
@@ -124,8 +127,8 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope
             $scope.wifiLoaded = false;
 
             var request;
-            if (compare == "periods") request = CompareService.getPeriods(startTime, endTime, $rootScope.selectedLocations);
-            else if (compare == "locations") request = CompareService.getLocations(startTime, endTime, $rootScope.selectedLocations, $rootScope.locationFilter);
+            if ($rootScope.compare == "periods") request = CompareService.getPeriods(startTime, endTime, LocationsService.selected.get());
+            else if ($rootScope.compare == "locations") request = CompareService.getLocations(startTime, endTime, LocationsService.selected.get(), LocationsService.filter.get());
             else console.log("no comparison selected");
             request.then(function (promise) {
                 if (promise && promise.error) console.log(promise.error);
@@ -230,7 +233,7 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope
                         newCountBars.push(currentSerie.newClients);
                         returningCountBars.push(currentSerie.returningClients);
 
-                        if (compare == "locations") getBestWorstLocation(currentSerie);
+                        if ($rootScope.compare == "locations") getBestWorstLocation(currentSerie);
                     });
 
                     var visitorsVsEngaged = [{
@@ -299,8 +302,8 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope
                     $scope.loyaltyCountCategories = seriesBar;
                     $scope.loyaltyLoaded = true;
 
-                    if (compare == "periods") $scope.table = getPeriodsTable(data);
-                    if (compare == "locations") $scope.table = getLocationsTable($scope.bestWorstLocation);
+                    if ($rootScope.compare == "periods") $scope.table = getPeriodsTable(data);
+                    if ($rootScope.compare == "locations") $scope.table = getLocationsTable($scope.bestWorstLocation);
                     $scope.tableLoaded = true;
                 }
             })
@@ -330,8 +333,8 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope
             $scope.lineLoaded = false;
 
             var request;
-            if (compare == "periods") request = CompareService.getPeriodsTimeline(startTime, endTime, $rootScope.selectedLocations);
-            else if (compare == "locations") request = CompareService.getLocationsTimeline(startTime, endTime, $rootScope.selectedLocations, $rootScope.locationFilter);
+            if ($rootScope.compare == "periods") request = CompareService.getPeriodsTimeline(startTime, endTime, LocationsService.selected.get());
+            else if ($rootScope.compare == "locations") request = CompareService.getLocationsTimeline(startTime, endTime, LocationsService.selected.get(), LocationsService.filter.get());
             else console.log("no comparison selected");
 
             request.then(function (promise) {

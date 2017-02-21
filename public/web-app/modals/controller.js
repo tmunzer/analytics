@@ -82,7 +82,7 @@ angular.module('Modals').controller('DialogController', function ($scope, $mdDia
     // items is injected in the controller, not its scope!
     $scope.items = items;
     $scope.reload = function () {
-        $window.location.reload();
+        //$window.location.reload();
     }
     $scope.close = function () {
         // Easily hides most recent dialog shown...

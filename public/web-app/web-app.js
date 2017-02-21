@@ -91,15 +91,10 @@ analytics.controller("HeaderCtrl", function ($scope, $location) {
 
 analytics.controller("LocationCtrl", function ($scope, $rootScope, $location, LocationsService) {
 
-    $rootScope.locations;
     $rootScope.compareLocations = false;
-    $rootScope.locationFilter = "GENERIC";
-    // rootscope variable to filter requests
-    $rootScope.selectedLocations = [];
-    // scope variable to know which checkbox is checked
-    $scope.checkedLocations = [];
-    $scope.locationsLoaded = false;
+    $scope.locationsSelected = LocationsService.selected.get();
     var lastUpdateRequest;
+
 
     $scope.locationTypeEnable = function (location) {
         if (location) {
@@ -108,19 +103,7 @@ analytics.controller("LocationCtrl", function ($scope, $rootScope, $location, Lo
         }
     }
     $scope.$watch("locationFilter", function () {
-        $rootScope.locationFilter = $scope.locationFilter;
-    })
-
-    $rootScope.$watch("selectedLocations", function () {
-        if ($rootScope.locations) {
-            lastUpdateRequest = new Date();
-            var currentUpdateRequest = lastUpdateRequest;
-            setTimeout(function () {
-                if (currentUpdateRequest == lastUpdateRequest) {
-                    updateLocations();
-                }
-            }, 2000)
-        }
+        LocationsService.filter.set($scope.locationFilter);
     })
 
     $scope.locationsIcon = function (folder) {
@@ -131,100 +114,72 @@ analytics.controller("LocationCtrl", function ($scope, $rootScope, $location, Lo
 
     //called when a checkbox is clicked
     $scope.toggle = function (item) {
-        var idChecked = $scope.checkedLocations.indexOf(item.id);
+        var idChecked = LocationsService.checked.get().indexOf(item.id);
         // if the user just unchecked the box
         if (idChecked > -1) {
             // uncheck the box
-            $scope.checkedLocations.splice(idChecked, 1);
+            LocationsService.checked.del(item.id);
             // uncheck the parent boxes and remove the id from the location filter list if needed
             uncheckParents(item);
-            // add the direct childs id to the location filter list if needed
-            var currentLocation = searchLocation($rootScope.locations, item.id);
-            currentLocation.folders.forEach(function (child) {
-                if ($rootScope.selectedLocations.indexOf(child.id) < 0) $rootScope.selectedLocations.push(child.id);
-            })
         }
         // if the user just checked the box
         else {
-            $rootScope.selectedLocations.push(item.id);
-            $scope.checkedLocations.push(item.id);
-            checkChilds(item);
+            LocationsService.checked.add(item.id);
+            if ($location.path() != "/compare" || $rootScope.compare != "locations")
+                checkChilds(item);
         }
-        updateSelectedLocations();
-        console.log($rootScope.selectedLocations);
-    };
+        // update the list of selected locations
+        LocationsService.selected.refresh();
 
-    function updateSelectedLocationsLoop(item) {
-        if ($scope.checkedLocations.indexOf(item.id) > -1) $rootScope.selectedLocations.push(item.id);
-        else if (item.folders.length > 0)
-            item.folders.forEach(function (folder) {
-                updateSelectedLocationsLoop(folder);
-            })
-    }
-    function updateSelectedLocations() {
-        $rootScope.selectedLocations = [];
-        updateSelectedLocationsLoop($rootScope.locations);
-    }
+        $scope.locationsSelected = LocationsService.selected.get();
+    };
 
 
     function checkChilds(item) {
         item.folders.forEach(function (folder) {
-            var idChecked = $scope.checkedLocations.indexOf(folder.id);
+            var idChecked = LocationsService.checked.get().indexOf(folder.id);
             // check the box for childs
-            if (idChecked < 0) $scope.checkedLocations.push(folder.id);
+            if (idChecked < 0) LocationsService.checked.add(folder.id);
             // if child folders, do the same
-            if (folder.folders.length > 0) checkChilds(folder);
+            if (folder.folders.length > -1) checkChilds(folder);
         });
     };
 
     function uncheckParents(item) {
-        var idChecked = $scope.checkedLocations.indexOf(item.parentId);
-        if (idChecked > -1) $scope.checkedLocations.splice(idChecked, 1);;
         if (item.parentId) {
-            var parentItem = searchLocation($rootScope.locations, item.parentId);
+            LocationsService.checked.del(item.parentId);
+            var parentItem = LocationsService.locations.search(item.parentId);
             if (parentItem) uncheckParents(parentItem);
         }
     }
 
 
     $scope.exists = function (item) {
-        if (item) return $scope.checkedLocations.indexOf(item.id) > -1;
+        if (item) return LocationsService.checked.get().indexOf(item.id) > -1;
     };
 
-    function searchLocation(item, itemId) {
-        if (item.id == itemId) {
-            return item;
-        } else if (item.folders != null) {
-            var i;
-            var result = null;
-            for (i = 0; result == null && i < item.folders.length; i++) {
-                result = searchLocation(item.folders[i], itemId);
-            }
-            return result;
-        }
-        return null;
-    }
 
-    function updateLocations() {
-        var request = LocationsService.get();
-        request.then(function (promise) {
-            if (promise && !promise.error) {
-                $rootScope.locations = promise;
-                $scope.locationsLoaded = true;
-            }
-        })
-    }
-    if (!$rootScope.locations) updateLocations();
+
+
+    var request = LocationsService.locations.retrieve();
+    request.then(function (promise) {
+        if (promise) {
+            $scope.locations = LocationsService.locations.get();
+            $scope.locationsLoaded = LocationsService.locations.isReady();
+        }
+    })
+
 })
 
-analytics.controller("TimelineCtrl", function ($scope, $rootScope, TimelineService) {
-    var request, initialized;
-    $rootScope.date = {
-        from: "",
-        to: ""
-    };
-    $rootScope.timelineLoaded = false;
-    $rootScope.period = "week";
+analytics.controller("TimelineCtrl", function ($scope, TimelineService, LocationsService) {
+    var request, initialized, updateTimelineRequest;
+
+    $scope.selected = LocationsService.selected;
+    $scope.locations = LocationsService.locations;
+    $scope.timeline = TimelineService;
+    
+
+    $scope.period="week";
     $scope.range = 7;
     $scope.durations = {
         "day": [
@@ -265,34 +220,51 @@ analytics.controller("TimelineCtrl", function ($scope, $rootScope, TimelineServi
         }
     };
 
+    // update timeline when user change the period (ex: 1D / 2D / 7D buttons)
     $scope.$watch("period", function () {
-        $rootScope.period = $scope.period;
-        if (initialized && $rootScope.locations) {
-            if ($rootScope.period == "day") $scope.range = 2;
-            else if ($rootScope.period == "month") $scope.range = 7;
+        TimelineService.period.set($scope.period);
+        if (initialized && LocationsService.locations.isReady()) {
+            if (TimelineService.period.get() == "day") $scope.range = 2;
+            else if (TimelineService.period.get() == "month") $scope.range = 7;
             else $scope.range = 1;
             updateTimeline();
         }
     })
-    $rootScope.$watch("locations", function () {
-        if ($rootScope.locations) {
-            updateTimeline();
-        }
-    })
-    $rootScope.$watch("selectedLocations", function () {
-        if ($rootScope.locations) {
-            updateTimeline();
+
+    // update timeline once the locations are loaded
+    $scope.$watch("locations.isReady()", function () {
+        if ($scope.locations.isReady()) {
+            updateTimelineRequest = new Date();
+            var currentUpdateRequest = updateTimelineRequest;
+            setTimeout(function () {
+                if (currentUpdateRequest == updateTimelineRequest) updateTimeline();
+            }, 200)
         }
     }, true)
 
+    // update timeline once the selected locations changed
+    $scope.$watch("selected.get()", function () {
+        if ($scope.locations.isReady()) {
+            updateTimelineRequest = new Date();
+            var currentUpdateRequest = updateTimelineRequest;
+            setTimeout(function () {
+                if (currentUpdateRequest == updateTimelineRequest) updateTimeline();
+            }, 200)
+        }
+    }, true)
+
+    // change the timeline values
+    $scope.$watch("timeline.date.get()", function(){
+        if ($scope.timeline.date.get().from != "" && $scope.timeline.date.get().to != "") $scope.date = $scope.timeline.date.get();
+    }, true)
 
     function updateTimeline() {
-        $rootScope.timelineLoaded = false;
-        //if ($('#timeline').highcharts()) $('#timeline').highcharts().destroy();
         var endTime = new Date(new Date().toISOString().replace(/:[0-9]{2}:[0-9]{2}\.[0-9]{3}/, ":00:00.000"));
         var startTime = new Date(endTime);
         var selectedRange, step, format;
-        switch ($rootScope.period) {
+        console.log(TimelineService);
+        console.log(TimelineService.period.get());
+        switch (TimelineService.period.get()) {
             case "day":
                 startTime.setDate(startTime.getDate() - 1);
                 selectedRange = 24;
@@ -318,17 +290,15 @@ analytics.controller("TimelineCtrl", function ($scope, $rootScope, TimelineServi
                 format = '{value:%m-%Y}';
                 break;
         }
-        timelineReq = new Date().getTime();
-        request = TimelineService.get(
+        request = TimelineService.timeline.get(
             startTime,
             endTime,
-            $rootScope.selectedLocations,
-            timelineReq
+            LocationsService.selected.get()
         );
 
         request.then(function (promise) {
             if (promise && promise.error) apiWarning(promise.error);
-            else { } if (promise.data.reqId == timelineReq) {
+            else {
                 var data = promise.data.data;
                 var maxChart = 0;
                 var time = [];
@@ -344,7 +314,7 @@ analytics.controller("TimelineCtrl", function ($scope, $rootScope, TimelineServi
                         useUTC: false
                     }
                 });
-                $scope.timeline = new Highcharts.StockChart({
+                $scope.timelineChart = new Highcharts.StockChart({
                     chart: {
                         renderTo: 'timeline',
                         backgroundColor: 'rgb(255,255,255)',
@@ -352,10 +322,10 @@ analytics.controller("TimelineCtrl", function ($scope, $rootScope, TimelineServi
                         events: {
                             redraw: function () {
                                 $scope.safeApply(
-                                    $rootScope.date = {
+                                    TimelineService.date.set({
                                         from: this.xAxis[1].categories[(this.xAxis[0].getExtremes().min).toFixed(0)],
                                         to: this.xAxis[1].categories[(this.xAxis[0].getExtremes().max).toFixed(0)]
-                                    }
+                                    })
                                 )
                             }
                         }
@@ -420,13 +390,14 @@ analytics.controller("TimelineCtrl", function ($scope, $rootScope, TimelineServi
                     }]
                 });
             }
-            if ($scope.timeline) {
-                max = $scope.timeline.xAxis[0].getExtremes().max;
-                min = $scope.timeline.xAxis[0].getExtremes().min;
-                $rootScope.date.from = $scope.timeline.xAxis[1].categories[min];
-                $rootScope.date.to = $scope.timeline.xAxis[1].categories[max];
+            if ($scope.timelineChart) {
+                max = $scope.timelineChart.xAxis[0].getExtremes().max;
+                min = $scope.timelineChart.xAxis[0].getExtremes().min;
+                TimelineService.date.set({
+                    from: $scope.timelineChart.xAxis[1].categories[min],
+                    to: $scope.timelineChart.xAxis[1].categories[max]
+                })
             }
-            $rootScope.timelineLoaded = true;
         });
     }
 
@@ -445,14 +416,16 @@ analytics.controller("TimelineCtrl", function ($scope, $rootScope, TimelineServi
         else if (period == "month") step = 1;
         else if (period == "year") step = 30;
         // retrieve the max value
-        max = $scope.timeline.xAxis[0].getExtremes().dataMax;
+        max = $scope.timelineChart.xAxis[0].getExtremes().dataMax;
         //if 0 (max range) retrive the min value
-        if (range == 0) min = $scope.timeline.xAxis[0].getExtremes().dataMin;
+        if (range == 0) min = $scope.timelineChart.xAxis[0].getExtremes().dataMin;
         //or calculate the value depending on the range and the step
         else min = max - (range * step);
-        $scope.timeline.xAxis[0].setExtremes(min, max);
-        $rootScope.date.from = $scope.timeline.xAxis[1].categories[min];
-        $rootScope.date.to = $scope.timeline.xAxis[1].categories[max];
+        $scope.timelineChart.xAxis[0].setExtremes(min, max);
+        TimelineService.date.set({
+                    from: $scope.timelineChart.xAxis[1].categories[min],
+                    to: $scope.timelineChart.xAxis[1].categories[max]
+                })
     }
 
 
@@ -476,100 +449,3 @@ analytics.controller("TimelineCtrl", function ($scope, $rootScope, TimelineServi
     initialized = true;
 
 })
-
-angular.module('analytics').factory("TimelineService", function ($http, $q) {
-    function get(startTime, endTime, selectedLocations, timelineReq) {
-        var canceller = $q.defer();
-        var request = $http({
-            url: '/api/timeline/',
-            method: "GET",
-            params: {
-                startTime: startTime.toISOString(),
-                endTime: endTime.toISOString(),
-                locations: JSON.stringify(selectedLocations),
-                reqId: timelineReq
-            },
-            timeout: canceller.promise
-        });
-        return httpReq(request);
-    };
-
-
-    function httpReq(request) {
-        var promise = request.then(
-            function (response) {
-                return response;
-            },
-            function (response) {
-                return { error: response.data };
-            });
-
-        promise.abort = function () {
-            canceller.resolve();
-        };
-        promise.finally(function () {
-            console.info("Cleaning up object references.");
-            promise.abort = angular.noop;
-            canceller = request = promise = null;
-        });
-
-        return promise;
-    }
-
-
-    return {
-        get: get
-    }
-});
-
-angular.module('analytics').factory("LocationsService", function ($http, $q, $rootScope) {
-    function get() {
-        var canceller = $q.defer();
-        var request = $http({
-            url: '/api/apLocationFolders',
-            method: "GET",
-            timeout: canceller.promise
-        });
-        return httpReq(request);
-    };
-    function addParentRef(folder, parentId) {
-        folder.parentId = parentId;
-        if (folder.folders.length > 0) {
-            for (var i in folder.folders) {
-                if (folder.folders[i].folders) folder.folders[i] = addParentRef(folder.folders[i], folder.id);
-            }
-        }
-        return folder;
-    }
-    function httpReq(request) {
-        var promise = request.then(
-            function (response) {
-                var folders = response.data;
-                console.log(folders);
-                return addParentRef(response.data, null);
-            },
-            function (response) {
-                console.log(response);
-                if (response.status && response.status >= 0) {
-                    $rootScope.$broadcast('apiError', response.data.error);
-                    return ($q.reject(response.data.error));
-                }
-            });
-
-        promise.abort = function () {
-            canceller.resolve();
-        };
-        promise.finally(function () {
-            console.info("Cleaning up object references.");
-            promise.abort = angular.noop;
-            canceller = request = promise = null;
-        });
-
-        return promise;
-    }
-
-
-    return {
-        get: get
-    }
-});
