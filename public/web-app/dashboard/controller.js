@@ -72,6 +72,7 @@ angular.module('Dashboard').controller("DashboardCtrl", function ($scope, $locat
 angular.module('Dashboard').controller("WidgetCtrl", function ($scope, $location, $sce, TimelineService, LocationsService, DashboardChartsService) {
 
     $scope.date = TimelineService.date;
+    $scope.lastTimelineChange = TimelineService.timeline.lastChange;
     $scope.timeline = TimelineService.timeline;
     $scope.locations = LocationsService.locations;
 
@@ -105,6 +106,14 @@ angular.module('Dashboard').controller("WidgetCtrl", function ($scope, $location
 
     // update the charts when the dates (from and to) change
     $scope.$watch("date.get()", function () {
+        startUpdate();
+    }, true)
+
+    // update the charts when the selected locations change
+    $scope.$watch("lastTimelineChange()", function () {
+        startUpdate();
+    }, true)
+    function startUpdate() {
         if ($location.path() == "/dashboard")
             if ($scope.date.isReady()) {
                 $scope.topLocationLoaded = false;
@@ -122,22 +131,7 @@ angular.module('Dashboard').controller("WidgetCtrl", function ($scope, $location
                     }
                 }, 2000)
             }
-    }, true)
-
-    // update the charts when the selected locations change
-    $scope.$watch("selected.get()", function () {
-        if ($location.path() == "/dashboard")
-            if ($scope.date.isReady()) {
-                lastUpdateRequest = new Date();
-                var currentUpdateRequest = lastUpdateRequest;
-                setTimeout(function () {
-                    if (currentUpdateRequest == lastUpdateRequest) {
-                        updateWidgets();
-                        updateTopLocation();
-                    }
-                }, 2000)
-            }
-    })
+    }
     $scope.$watch("topLocationsChart", function () {
         var choice = $scope.topLocationsChart;
         displayTopLocation($scope.topLocationsChoices[choice].value, $scope.topLocationsChoices[choice].title, $scope.topLocationsChoices[choice].percentage);

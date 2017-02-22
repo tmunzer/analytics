@@ -7,6 +7,8 @@ angular.module('analytics').factory("TimelineService", function ($http, $q) {
     var period = "week";
     var range = 7;
     var isReady = false;
+    var lastChange;
+
     function retrieve(startTime, endTime, selectedLocations) {
         var canceller = $q.defer();
         var request = $http({
@@ -28,6 +30,7 @@ angular.module('analytics').factory("TimelineService", function ($http, $q) {
         var promise = request.then(
             function (response) {
                 isReady = true;
+                lastChange = new Date().valueOf();
                 return response;
             },
             function (response) {
@@ -51,11 +54,12 @@ angular.module('analytics').factory("TimelineService", function ($http, $q) {
         timeline: {
             retrieve: retrieve,
             isReady: function () { return isReady },
+            lastChange: function () { return lastChange }
         },
         date: {
             get: function () { return date },
             set: function (new_date) { date = new_date },
-            isReady: function(){return date.from != "" && date.to != ""}
+            isReady: function () { return date.from != "" && date.to != "" }
         },
         period: {
             get: function () { return period },
@@ -181,8 +185,8 @@ angular.module('analytics').factory("LocationsService", function ($http, $q, $ro
             isReady: function () { return isReady }
         },
         compareLocations: {
-            get: function(){return compareLocations},
-            set: function(val){compareLocations = val}
+            get: function () { return compareLocations },
+            set: function (val) { compareLocations = val }
         }
     }
 });

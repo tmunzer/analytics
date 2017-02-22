@@ -1,6 +1,7 @@
 angular.module('Compare').controller("CompareCtrl", function ($scope, $location, $sce, LocationsService, TimelineService, LocationsService, ComparisonService) {
     $scope.locationFilter = LocationsService.filter;
     $scope.date = TimelineService.date;
+    $scope.lastTimelineChange = TimelineService.timeline.lastChange;
     LocationsService.compareLocations.set(false);
     ComparisonService.current.set("periods");
 
@@ -81,31 +82,31 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $location,
         else LocationsService.compareLocations.set(false);
         startUpdate();
     }
-    $scope.$watch("locationFilter.get()", function () {
-        if ($location.path() == "/compare")
-            startUpdate();
+    $scope.$watch("lastTimelineChange()", function () {
+        startUpdate();
     }, true)
     $scope.$watch("date.get()", function (a, b) {
-        if ($location.path() == "/compare")
-            startUpdate();
+        startUpdate();
     }, true)
 
     function startUpdate() {
-        $scope.lineStarted = false;
-        $scope.polarStarted = false;
-        $scope.tableStarted = false;
-        $scope.storefrontStarted = false;
-        $scope.loyaltyStarted = false;
-        $scope.wifiStarted = false;
-        if ($scope.date.isReady()) {
-            updateRequest = new Date();
-            var currentUpdateRequest = updateRequest;
-            setTimeout(function () {
-                if (currentUpdateRequest == updateRequest) {
-                    updateCharts();
-                    updateTimelines();
-                }
-            }, 2000)
+        if ($location.path() == "/compare") {
+            $scope.lineStarted = false;
+            $scope.polarStarted = false;
+            $scope.tableStarted = false;
+            $scope.storefrontStarted = false;
+            $scope.loyaltyStarted = false;
+            $scope.wifiStarted = false;
+            if ($scope.date.isReady()) {
+                updateRequest = new Date();
+                var currentUpdateRequest = updateRequest;
+                setTimeout(function () {
+                    if (currentUpdateRequest == updateRequest) {
+                        updateCharts();
+                        updateTimelines();
+                    }
+                }, 2000)
+            }
         }
     }
 
