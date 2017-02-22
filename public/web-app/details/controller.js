@@ -1,5 +1,9 @@
-angular.module('Details').controller("DetailsCtrl", function ($scope, $rootScope, $location, DetailsService) {
-    $rootScope.compareLocations = false;
+angular.module('Details').controller("DetailsCtrl", function ($scope, $location, LocationsService, TimelineService, DetailsService) {
+    LocationsService.compareLocations.set(false);
+
+    $scope.date = TimelineService.date;
+    $scope.selected = LocationsService.selected;
+
     var heatmapUniqueClients, heatmapUniqueClientsRange,
         heatmapEngagedClients, heatmapEngagedClientsRange,
         heatmapPassersbyClients, heatmapPassersbyClientsRange,
@@ -54,9 +58,21 @@ angular.module('Details').controller("DetailsCtrl", function ($scope, $rootScope
             displayHeatmap(data, range, $scope.heatmapChoiceList[$scope.heatmapChoice].title);
         }
     })
-    $rootScope.$watch("date", function (a, b) {
+    $scope.$watch("date.get()", function (a, b) {
         if ($location.path() == "/details")
-            if ($rootScope.date.from != "" && $rootScope.date.to != "") {
+            if ($scope.date.isReady()) {
+                lastUpdateRequest = new Date();
+                var currentUpdateRequest = lastUpdateRequest;
+                setTimeout(function () {
+                    if (currentUpdateRequest == lastUpdateRequest) {
+                        updateDetails();
+                    }
+                }, 2000)
+            }
+    }, true)
+    $scope.$watch("selected.get()", function () {
+        if ($location.path() == "/details")
+            if ($scope.date.isReady()) {
                 lastUpdateRequest = new Date();
                 var currentUpdateRequest = lastUpdateRequest;
                 setTimeout(function () {
@@ -67,7 +83,6 @@ angular.module('Details').controller("DetailsCtrl", function ($scope, $rootScope
             }
     }, true)
 
-
     function updateDetails() {
 
         $scope.heatmapStarted = true;
@@ -75,9 +90,9 @@ angular.module('Details').controller("DetailsCtrl", function ($scope, $rootScope
         $scope.detailsLineStarted = true;
         $scope.detailsLineLoaded = false;
 
-        var endTime = $rootScope.date.to;
-        var startTime = $rootScope.date.from;
-        var locationAnalytics = $rootScope.selectedLocations;
+        var endTime = $scope.date.get().to;
+        var startTime = $scope.date.get().from;
+        var locationAnalytics = $scope.selected.get();
         if (endTime - startTime <= 2678400000) {
             //line chart
             var lineTime = [];
@@ -99,7 +114,7 @@ angular.module('Details').controller("DetailsCtrl", function ($scope, $rootScope
             heatmapAssociatedClientsRange = { min: 0, max: 0 };
             heatmapUnassociatedClientsRange = { min: 0, max: 0 };
 
-            switch ($rootScope.period) {
+            switch (TimelineService.period.get()) {
                 case "day":
                     format = '{value:%H:%M}';
                     step = 24;

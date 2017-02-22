@@ -1,5 +1,5 @@
-angular.module('Dashboard').controller("DashboardCtrl", function ($scope, $rootScope, $location, CardsService, LocationsService) {
-    $rootScope.compareLocations = false;
+angular.module('Dashboard').controller("DashboardCtrl", function ($scope, $location, CardsService, LocationsService) {
+    LocationsService.compareLocations.set(false);
     $scope.selected = LocationsService.selected;
     $scope.locations = LocationsService.locations;
 
@@ -45,7 +45,7 @@ angular.module('Dashboard').controller("DashboardCtrl", function ($scope, $rootS
 
     function updateCards() {
         var data = {};
-        if (LocationsService.selected.get().length > 0) data = { locations:LocationsService.selected.get() };
+        if (LocationsService.selected.get().length > 0) data = { locations:LocationsService.checked.get() };
         var request = CardsService.update(data);
         request.then(function (promise) {
             if (promise && promise.error) {

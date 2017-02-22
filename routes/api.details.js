@@ -3,9 +3,22 @@ var router = express.Router();
 
 var devAccount = require("./../config").devAccount;
 var endpoints = require("../bin/aerohive/api/main");
+
 /*================================================================
- ROUTES
+ COMMON FUNCTIONS
  ================================================================*/
+function locationsFromQuery(req) {
+    // if the "locations" parameter exists, and is not null, will filter the request based on the locations selected by the user
+    // otherwise takes the "root" folder
+    if (req.query.locations && req.query.locations.length > 0) {
+        console.log(req.query.locations);
+        locations = req.query.locations;
+        if (locations.length == 0) locations = req.session.locations.id;
+    } else locations = req.session.locations.id;
+    if (typeof locations == "number" || typeof locations == "string") locations = [locations];
+    return locations;
+}
+
 /*================================================================
  API
  ================================================================*/
@@ -32,18 +45,13 @@ router.get('/clienttimeseries/', function (req, res, next) {
             timeUnit = "OneDay";
         }
 
-        // if the "locations" parameter exists, and is not null, will filter the request based on the locations selected by the user
-        // otherwise takes the "root" folder
-        if (req.query.locations && req.query.locations.length > 0) {
-            locations = JSON.parse(req.query.locations);
-            if (locations.length == 0) locations = [req.session.locations.id];
-        } else locations = [req.session.locations.id];
+        locations = locationsFromQuery(req)
 
         locations.forEach(function (location) {
             // retrieve the data from the ACS for every selected location
             endpoints.clientlocation.clienttimeseries.GET(
                 currentApi,
-                devAccount, 
+                devAccount,
                 location,
                 startTime.toISOString(),
                 endTime.toISOString(),
@@ -67,7 +75,7 @@ router.get('/clienttimeseries/', function (req, res, next) {
                     locDone++;
                     // if all locations are done, send back the response to the web browser
                     if (locDone == locations.length) {
-                        res.status(200).send({timeseries: timeseries});
+                        res.status(200).send({ timeseries: timeseries });
                     }
                 }
             )

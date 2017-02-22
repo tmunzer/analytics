@@ -57,7 +57,7 @@ analytics
     });
 
 
-analytics.controller("UserCtrl", function ($scope, $rootScope, $mdDialog, $mdSidenav, $location, $translate) {
+analytics.controller("UserCtrl", function ($scope, $mdDialog, $mdSidenav, $location, $translate) {
     var originatorEv;
 
     this.openMenu = function ($mdOpenMenu, ev) {
@@ -91,15 +91,15 @@ analytics.controller("HeaderCtrl", function ($scope, $location) {
 
 analytics.controller("LocationCtrl", function ($scope, $rootScope, $location, LocationsService) {
 
-    $rootScope.compareLocations = false;
+    LocationsService.compareLocations.set(false);
     $scope.locationsSelected = LocationsService.selected.get();
     var lastUpdateRequest;
 
 
     $scope.locationTypeEnable = function (location) {
         if (location) {
-            if ($scope.compareLocations == false) return false;
-            else return location.folderType != $rootScope.locationFilter;
+            if (LocationsService.compareLocations.get() == false) return false;
+            else return location.folderType != LocationsService.filter.get();
         }
     }
     $scope.$watch("locationFilter", function () {

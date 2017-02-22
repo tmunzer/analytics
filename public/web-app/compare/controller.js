@@ -1,5 +1,7 @@
-angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope, $location, $sce, LocationsService, CompareService) {
-    $rootScope.compareLocations = false;
+angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope, $location, $sce, LocationsService, TimelineService, CompareService) {
+    $scope.locationFilter = LocationsService.filter;
+    $scope.date = TimelineService.date;
+    LocationsService.compareLocations.set(false);
     $rootScope.compare = "periods";
 
     $scope.polarStarted = false;
@@ -73,18 +75,18 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope
     $scope.changeComparison = function (item) {
         $rootScope.compare = item;
         if ($rootScope.compare == "locations") {
-            $rootScope.compareLocations = true;
+            LocationsService.compareLocations.set(true);
             LocationsService.selected.reset();
             $rootScope.changeComparison
         }
-        else $rootScope.compareLocations = false;
+        else LocationsService.compareLocations.set(false);
         startUpdate();
     }
-    $rootScope.$watch("locationFilter", function () {
+    $scope.$watch("locationFilter.get()", function () {
         if ($location.path() == "/compare")
             startUpdate();
     }, true)
-    $rootScope.$watch("date", function (a, b) {
+    $scope.$watch("date.get()", function (a, b) {
         if ($location.path() == "/compare")
             startUpdate();
     }, true)
@@ -96,7 +98,7 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope
         $scope.storefrontStarted = false;
         $scope.loyaltyStarted = false;
         $scope.wifiStarted = false;
-        if ($rootScope.date.from != "" && $rootScope.date.to != "") {
+        if ($scope.date.isReady()) {
             updateRequest = new Date();
             var currentUpdateRequest = updateRequest;
             setTimeout(function () {
@@ -109,8 +111,8 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope
     }
 
     function updateCharts() {
-        var endTime = $rootScope.date.to;
-        var startTime = $rootScope.date.from;
+        var endTime = $scope.date.get().to;
+        var startTime = $scope.date.get().from;
         // @TODO: Current API limitation
         if (endTime - startTime <= 2678400000) {
 
@@ -323,8 +325,8 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $rootScope
         $scope.lineStarted = false;
         $scope.lineLoaded = false;
         $scope.bestWorstLocation = bestWorstLocation;
-        var endTime = $rootScope.date.to;
-        var startTime = $rootScope.date.from;
+        var endTime = $scope.date.get().to;
+        var startTime = $scope.date.get().from;
 
         var dataLocation, dataAverage, format, step;
         if (endTime - startTime <= 2678400000) {

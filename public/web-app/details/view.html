@@ -5,7 +5,7 @@
                 <h3 style="height: 25px;">
                     <span>Number of </span>                        
                     <md-input-container class="header-input" style="background-color: rgb(255,255,255);color: #1e88e5;">                            
-                        <md-select ng-model="heatmapChoice" ng-selected="heatmapChoice">
+                        <md-select ng-model="heatmapChoice" ng-selected="heatmapChoice" aria-label="heatmap choice">
                             <md-option ng-repeat="choice in heatmapChoiceList" ng-value="choice.value">{{choice.title}}</md-option>
                         </md-select>
                     </md-input-container>

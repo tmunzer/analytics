@@ -73,6 +73,7 @@ angular.module('analytics').factory("LocationsService", function ($http, $q, $ro
     var checked = [];
     var locations = {};
     var filter = "GENERIC";
+    var compareLocations = false;
     var isReady = false;
 
     function addParentRef(folder, parentId) {
@@ -178,6 +179,10 @@ angular.module('analytics').factory("LocationsService", function ($http, $q, $ro
             retrieve: retrieve,
             search: function (itemId) { return locations_search(locations, itemId); },
             isReady: function () { return isReady }
+        },
+        compareLocations: {
+            get: function(){return compareLocations},
+            set: function(val){compareLocations = val}
         }
     }
 });
