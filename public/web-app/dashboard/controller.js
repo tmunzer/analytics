@@ -73,6 +73,7 @@ angular.module('Dashboard').controller("WidgetCtrl", function ($scope, $location
 
     $scope.date = TimelineService.date;
     $scope.timeline = TimelineService.timeline;
+    $scope.locations = LocationsService.locations;
 
     $scope.topLocationStarted = false;
     $scope.passersByStarted = false;
@@ -123,7 +124,20 @@ angular.module('Dashboard').controller("WidgetCtrl", function ($scope, $location
             }
     }, true)
 
-
+    // update the charts when the selected locations change
+    $scope.$watch("selected.get()", function () {
+        if ($location.path() == "/dashboard")
+            if ($scope.date.isReady()) {
+                lastUpdateRequest = new Date();
+                var currentUpdateRequest = lastUpdateRequest;
+                setTimeout(function () {
+                    if (currentUpdateRequest == lastUpdateRequest) {
+                        updateWidgets();
+                        updateTopLocation();
+                    }
+                }, 2000)
+            }
+    })
     $scope.$watch("topLocationsChart", function () {
         var choice = $scope.topLocationsChart;
         displayTopLocation($scope.topLocationsChoices[choice].value, $scope.topLocationsChoices[choice].title, $scope.topLocationsChoices[choice].percentage);
