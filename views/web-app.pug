@@ -5,7 +5,9 @@ html
         meta(name="viewport" content="width=device-width, initial-scale=1")
 
 
+        link(rel='stylesheet' href='/css/ah-tm.loading.css')
     body.icons-docs(ng-app="analytics" ng-controller="UserCtrl as UserCtrl")
+        div(id="loading")
         div.modal.fade.bs-example-modal-lg(ng-controller="ModalCtrl")
                     script(type="text/ng-template" id="modalAboutContent.html")
                         md-dialog(aria-label="List dialog")
@@ -147,6 +149,22 @@ html
             </md-content>
             ng-view
 
+        script(type="text/javascript").
+            function fadeIn(element){    
+                setTimeout(function(){
+                    var i = 1;
+                    var f = 0.05;
+                    element.style.opacity = parseFloat(element.style.opacity) - (f * i * i);
+                    i++;
+                    if (element.style.opacity > 0 && i < 50) fadeIn(element)
+                    else element.parentNode.removeChild(element);;
+                    }, 20);
+            }
+            document.addEventListener("DOMContentLoaded", function(event) {
+                var element = document.getElementById("loading"); 
+                element.style.opacity = 1.0;                
+                fadeIn(element);
+            });
 
         script(src="/bower_components/angular/angular.js")
 
