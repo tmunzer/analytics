@@ -1,0 +1,145 @@
+body {
+    background-color: rgb(250,250,250);
+}
+
+md-sidenav {
+    min-width: 250px;
+    max-width: 250px;
+}
+
+.clearfix {
+    margin-top: 10px;
+}
+
+* {
+    outline: none;
+}
+
+md-icon,
+.card {
+    transition: all .2s ease-in-out;
+}
+
+a.link, a.link:visited {
+    color: rgb(102, 187, 106);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+/*============================================== /
+/ ================== ARTCILE ==================== /
+/ ============================================== */
+article {
+    margin: 15px;
+}
+
+article .title {
+    background-color: rgb(30, 136, 229);
+    padding: 10px;
+    text-align: left;
+    font-size: 20px;
+    font-weight: 200;
+    text-transform: uppercase;
+    color: white;
+}
+
+li {
+    list-style: none;
+}
+
+.main-container {
+    display: flex;
+}
+
+h3, .h3 {
+    background-color: rgb(30, 136, 229);
+    padding: 10px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 400;
+    text-transform: uppercase;
+    color: white;
+    margin: 1px 0;
+}
+
+.main-menu .md-button {
+    padding: 5px !important;
+    margin: 0 10px !important;
+    border-radius: 0;
+}
+
+.main-menu .md-button:hover {
+    border-top: 4px solid rgba(158, 158, 158, 0.2);
+}
+
+.main-menu .md-button.cur {
+    border-top: 4px solid rgb(76, 175, 80);
+}
+
+.header {
+    height: 70px;
+    width: 100%;
+}
+
+.header.fixed {
+    position: fixed;
+    top: 0;
+    z-index: 75;
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#1e88ef+0,1e88ef+25,0060c7+100 */
+    background: #1e88ef; /* Old browsers */
+    background: -moz-linear-gradient(45deg, #1e88ef 0%, #1e88ef 25%, #0060c7 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(45deg, #1e88ef 0%, #1e88ef 25%, #0060c7 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(45deg, #1e88ef 0%, #1e88ef 25%, #0060c7 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1e88ef', endColorstr='#0060c7', GradientType=1); /* IE6-9 fallback on horizontal gradient */
+
+}
+
+.header .md-button:hover {
+    border: none;
+}
+.highcharts-container {
+    width:100% !important;
+    height:100% !important;
+}
+md-sidenav {
+    position: fixed !important;
+    top: 70px !important;
+    background-color: rgb(250,250,250);
+}
+
+input.search-tool {
+    color: white;
+}
+
+md-icon.search-tool {
+    padding-top: 20px;
+}
+
+md-input-container.search-tool {
+    width: 100%;
+    padding-top: 20px;
+}
+
+.intl-tel-input {
+    display: table-cell;
+}
+
+.createPage .intl-tel-input {
+    display: flex;
+    padding-left: 150px;
+}
+
+.container {
+    background-color: white;
+}
+
+
+h3 .header-input {
+    min-width: 150px !important;
+    margin: 0 !important;
+    padding: 0 5px 2px !important;
+    color: black;
+}
+h3 .header-input md-select-value {
+    padding: 0px !important;
+}

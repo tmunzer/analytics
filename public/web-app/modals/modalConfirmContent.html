@@ -1,0 +1,23 @@
+<md-dialog aria-label="List dialog">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2 translate="modals.confirm"></h2>
+        </div>
+    </md-toolbar>
+    <md-dialog-content>
+        <div class="md-dialog-content">
+            <span translate="modals.removeApi" ng-show="action == 'removeApi'"></span><span> </span>
+            <span translate="modals.removeSchool" ng-show="action == 'removeSchool'"></span><span> </span>
+            <span translate="modals.removeClassroom" ng-show="action == 'removeClassroom'"></span><span> </span>
+            <span translate="modals.removeSchedule" ng-show="action == 'removeSchedule'"></span><span> </span>
+            <span translate="modals.removeUser" ng-show="action == 'removeUser'"></span><span> </span>
+            <span translate="modals.disableWifiForClassroom" ng-show="action == 'disableWifiForClassroom'"></span><span> </span>
+            <span translate="modals.wifiDeactivation" ng-show="action == 'disableLesson'"></span><span> </span>
+        </div>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+        <md-button ng-click="cancel()" translate="button.cancel_button" aria-label="cancel"></md-button>
+        <md-button ng-show="action.indexOf('remove')==0" ng-click="confirm()" class="md-raised md-primary" translate="button.remove_button" aria-label="ok"></md-button>
+        <md-button ng-show="action.indexOf('disable')==0" ng-click="confirm()" class="md-raised md-primary" translate="button.disable" aria-label="ok"></md-button>
+    </md-dialog-actions>
+</md-dialog>

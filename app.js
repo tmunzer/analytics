@@ -36,7 +36,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'static')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 
 var loginMethod = require('./config').login;
@@ -69,22 +69,26 @@ if (loginMethod) {
 } else {
   var login = require('./routes/login_api');
 }
-var oauth = require('./routes/oauth');
-var dashboard = require('./routes/dashboard');
-var details = require('./routes/details');
-var api = require('./routes/api');
-var compare = require('./routes/compare');
 
+//load routes
+var oauth = require('./routes/oauth');
+var api = require('./routes/api');
+var apiDashboard = require('./routes/api.dashboard');
+var apiDetails = require('./routes/api.details');
+var apiCompare = require('./routes/api.compare');
+var webApp = require("./routes/web-app");
+
+//assign routes to entry points
 app.use('/', login);
 app.use('/oauth/', oauth);
-app.use('/dashboard/', dashboard);
-app.use('/details/', details);
 app.use('/api/', api);
-app.use('/compare/', compare);
-
+app.use('/api/dashboard/', apiDashboard);
+app.use('/api/details/', apiDetails);
+app.use('/api/compare/', apiCompare);
+app.use('/web-app', webApp);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  res.redirect("/dashboard");
+  res.redirect("/web-app/");
 });
 
 // error handlers

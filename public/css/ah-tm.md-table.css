@@ -1,0 +1,7 @@
+.tm-selected, tbody .md-row:hover {
+background-color: #eee;
+}
+
+.md-table.small .md-row{
+    height: 35px !important;
+}

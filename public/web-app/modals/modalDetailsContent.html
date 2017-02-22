@@ -1,0 +1,40 @@
+<md-dialog aria-label="List dialog" class="details-modal">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>Detailed result for {{items.name}}</h2>
+        </div>
+    </md-toolbar>
+    <md-tabs>
+          <md-tab>
+            <md-tab-label>info</md-tab-label>
+            <md-tab-body layout="column">        
+            <md-dialog-content layout-padding>
+                <div><b>Endpoint:</b> {{items.endpoint}}</div>
+                <div><b>HTTP Status Code:</b> {{items.status}}</div>
+                <div><b>URL: </b><span>https://{{items.request.options.host}}{{items.request.options.path}}</span></div>
+            </md-dialog-content>
+            </md-tab-body>
+        </md-tab>
+        <md-tab>
+            <md-tab-label>request</md-tab-label>
+            <md-tab-body layout="column">    
+                <pre> {{ items.request | json }}</pre>
+            </md-tab-body>
+        </md-tab>
+        <md-tab>
+            <md-tab-label ng-show="items.response != null">response</md-tab-label>
+            <md-tab-body layout="column">    
+                <pre> {{ items.response | json }}</pre>
+            </md-tab>
+        </md-tab>
+        <md-tab>
+            <md-tab-label ng-show="items.error == null">error</md-tab-label>
+            <md-tab-body layout="column">            
+                <pre> {{ items.error | json }}</pre>
+            </md-tab-body>
+        </md-tab>
+    </md-tabs>
+    <md-dialog-actions layout="row ">
+        <md-button ng-click="close() " translate="button.close " class="md-raised md-primary " aria-label="close "></md-button>
+    </md-dialog-actions>
+</md-dialog>

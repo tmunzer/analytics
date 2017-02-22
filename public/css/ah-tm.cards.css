@@ -1,0 +1,49 @@
+/*============================================== /
+/ ================  LIST CARDS  =============== /
+/ ============================================== */
+.card-container {
+    margin-top: 15px;
+}
+
+.card-item {
+    float: left;
+    margin: 0 20px 15px 20px;
+    width: 250px;
+}
+.card {
+    transition: all 0.1s ease-in-out;
+}
+.card:hover {
+    border-color: #28B463;
+    transition: all 0.1s ease-in-out;
+}
+.card-selected {
+    border-color: #28B463;
+    background-color: #28B463;
+}
+.card {
+    padding: 10px 10px 10px 40px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    overflow: hidden;
+}
+.card-con {
+    overflow: hidden;
+}
+
+.card-con p {
+    margin: 0;
+}
+.card-selected .card-con .card-title {
+    color: #fff;
+}
+.card-selected .card-con .card-des {
+    color: #eee;
+}
+.card-title {
+    font-size: 14px;
+}
+.card-des {
+    color: #999;
+    font-size: smaller;
+}

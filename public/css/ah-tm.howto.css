@@ -1,0 +1,52 @@
+body {
+    margin: 0;
+}
+
+.howto-box {
+    padding: 14px 10px 16px;
+    position: relative;
+    margin: 20px auto 40px auto    ;
+    background-color: #f7f7f7;
+    box-shadow: 0 0 2px 0 #3d89bc;
+    z-index: 1;
+    width: 80%;
+    font-family: Helvetica,arial,san-serif;
+    font-weight: 100;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #333;
+}
+.howto-box img {
+    margin: 10px auto;
+    display: block;
+    box-shadow: 0 0 5px;
+}
+.howto-page .ah-logo {
+    margin-left: 21px;
+    margin-top: 19px;
+    width: 204px;
+}
+
+.howto-page .ah-growing-hives {
+    z-index: 0;
+    height: 842px;
+    width: 317px;
+    margin-right: 21px;
+    float: right;
+    background: url(/images/growing-hives.png) scroll right top no-repeat;
+    display: block;
+}
+
+.howto-page .page-footer span {
+    display: inline-block;
+    height: 20px;
+    border-left: 1px solid #6f6f6f;
+    margin-left: 2px;
+    margin-bottom: 50px;
+}
+
+.howto-page .page-footer {
+    font-size: 14px;
+    font-weight: 400;
+    color: #909090;
+}

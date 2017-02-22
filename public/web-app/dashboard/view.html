@@ -1,0 +1,259 @@
+<div class="main-container">
+    <md-content flex layout="column" class="main-view">
+        <article layout="column" layout-gt-sm="row">
+            <md-content flex-gt-sm="45" md-whiteframe="2" style="margin: 10px 0" class="dashboard-card container">
+                <h3>Maps</h3>
+                    <ul>
+                        <li>
+                            <div class="dashboard-card-icon" style="margin-bottom: 10px; margin-top: 10px">
+                                <span style="color: rgb(30, 136, 229);font-weight: bold;">{{maps.folders}}</span>
+                            </div>
+                            <span class="dashboard-span">
+                                <md-icon class="material-icons md-24">map</md-icon>
+                                <span> Folders</span>
+                            </span>
+                        </li>
+                        <li>
+                            <div class="dashboard-card-icon" style="margin-bottom: 10px; margin-top: 10px">                            
+                                <span style="color: rgb(30, 136, 229);font-weight: bold;">{{maps.buildings}}</span>
+                            </div>
+                            <span class="dashboard-span">
+                                <md-icon class="material-icons md-24">business</md-icon>
+                                <span> Buildings</span>
+                            </span>
+                        </li>
+                        <li>
+                            <div class="dashboard-card-icon" style="margin-bottom: 10px; margin-top: 10px">
+                                <span style="color: rgb(30, 136, 229);font-weight: bold;">{{maps.floors}}</span>
+                            </div>
+                            <span class="dashboard-span">
+                                <md-icon class="material-icons md-24">layers</md-icon>
+                                <span> Floors</span>
+                            </span>
+                        </li>
+                    </ul>
+            </md-content>
+            <span flex></span>
+            <md-content flex-gt-sm="45" md-whiteframe="2" style="margin: 10px 0" class="dashboard-card container">
+                <h3>Aerohive Devices</h3>
+                    <ul>
+                        <li>
+                            <div class="dashboard-card-icon" style="margin-bottom: 10px; margin-top: 10px">
+                                <span style="color: rgb(30, 136, 229);font-weight: bold;">{{devices.sensors}}</span>
+                            </div>
+                            <span class="dashboard-span">
+                                <md-icon class="material-icons md-24">track_changes</md-icon>
+                                <span> Sensors Mode</span>
+                            </span>
+                        </li>
+                        <li>
+                            <div class="dashboard-card-icon" style="margin-bottom: 10px; margin-top: 10px">                            
+                                <span style="color: rgb(30, 136, 229);font-weight: bold;">{{devices.connected}}</span>
+                            </div>
+                            <span class="dashboard-span">
+                                <md-icon class="material-icons md-24">link</md-icon>
+                                <span> Connected Devices</span>
+                            </span>
+                        </li>
+                        <li>
+                            <div class="dashboard-card-icon" style="margin-bottom: 10px; margin-top: 10px">
+                                <span style="color: rgb(30, 136, 229);font-weight: bold;">{{devices.devices}}</span>
+                            </div>
+                            <span class="dashboard-span">
+                                <md-icon class="material-icons md-24">network_wifi</md-icon>
+                                <span> Aerohive Devices</span>
+                            </span>
+                        </li>
+                    </ul>
+            </md-content>
+        </article>
+    
+
+
+        <section ng-controller="WidgetCtrl">
+            <article layout="column" layout-gt-sm="row">
+                <md-content flex-gt-sm="45" md-whiteframe="2" style="margin: 10px 0" class="container">
+                    <h3 style="height: 25px;">
+                        <span>TOP 5 LOCATIONS BY </span>                        
+                        <md-input-container class="header-input" style="background-color: rgb(255,255,255);color: #1e88e5;">
+                            <md-select ng-model="topLocationsChart" ng-selected="topLocationsChart" aria-label="top locations">
+                                <md-option ng-repeat="choice in topLocationsChoices" ng-value="choice.value">{{choice.title}}</md-option>
+                            </md-select>
+                        </md-input-container>
+                    </h3>
+                    <div ng-show="!topLocationStarted">
+                        <div style="text-align: center; line-height: 250px;">waiting</div>
+                    </div>
+                    <div class="entity-loading-widget" ng-show="topLocationStarted && !topLocationLoaded" 
+                    style="height: 250px;" layout="column" layout-align="space-around">
+                        <md-progress-circular md-mode="indeterminate" class="md-accent" style="margin: auto;">
+                        </md-progress-circular>
+                    </div>
+                    <div ng-show="topLocationStarted && topLocationLoaded" layout="row">
+                        <div flex="100">
+                            <div style="height: 250px;" id="topLocationChart"></div>
+                        </div>                        
+                    </div>
+                </md-content>
+                <span flex></span>
+                <md-content flex-gt-sm="45" md-whiteframe="2" style="margin: 10px 0" class="container">
+                    <h3>STOREFRONT CONVERSION</h3>
+                    <div ng-show="!storeFrontStarted">
+                        <div style="text-align: center; line-height: 250px;"> waiting</div>
+                    </div>
+                    <div class="entity-loading-widget" ng-show="storeFrontStarted && !storeFrontLoaded"
+                    style="height: 250px;" layout="column" layout-align="space-around">
+                        <md-progress-circular md-mode="indeterminate" class="md-accent" style="margin: auto;">
+                        </md-progress-circular>
+                    </div>
+                    <div ng-show="storeFrontStarted && storeFrontLoaded" layout="row">
+                        <div flex="50">
+                            <div style="height: 250px;" id="storeFrontChart"></div>
+                        </div>
+                        <div flex="50" style="margin-left:10px">
+                            <div class="topAppGroupTitle"> Progress Compared to</div>
+                            <div class="usageSection widget-section" md-whiteframe="4">
+                                <span ng-bind-html="getTrendHtml(storeFrontWeek)"></span>  
+                                <span class="num-label tagBlockTitle widget-info"> Previous Week</span>
+                            </div>
+                            <div class="usageSection widget-section" md-whiteframe="4">
+                                <span ng-bind-html="getTrendHtml(storeFrontMonth)"></span>  
+                                <span class="num-label tagBlockTitle widget-info"> Previous Month</span>
+                            </div>
+                            <div class="usageSection widget-section"  md-whiteframe="4">
+                                <span ng-bind-html="getTrendHtml(storeFrontYear)"></span>  
+                                <span class="num-label tagBlockTitle widget-info"> Previous Year</span>        
+                            </div>
+                        </div>
+                    </div>
+                </md-content>
+            </article>
+            <article layout="column" layout-gt-sm="row">
+                <md-content flex-gt-sm="45" md-whiteframe="2" style="margin: 10px 0" class="container">
+                    <h3>PASSERS BY</h3>
+                    <div ng-show="!passersByStarted">
+                        <div style="text-align: center; line-height: 250px;"> waiting</div>
+                    </div>
+                    <div class="entity-loading-widget"ng-show="passersByStarted && !passersByLoaded" style="height: 250px;" layout="column" layout-align="space-around">
+                        <md-progress-circular md-mode="indeterminate" class="md-accent" style="margin: auto;">
+                        </md-progress-circular>
+                    </div>
+                    <div ng-show="passersByStarted && passersByLoaded" layout="row">
+                        <div flex="50">
+                            <div style="height: 250px;" id="passersByChart"></div>
+                        </div>
+                        <div flex="50" style="margin-left:10px">
+                            <div class="topAppGroupTitle"> Progress Compared to</div>
+                            <div class="usageSection widget-section" md-whiteframe="4">
+                                <span ng-bind-html="getTrendHtml(passersByWeek)"></span>  
+                                <span class="num-label tagBlockTitle widget-info"> Previous Week</span>
+                            </div>
+                            <div class="usageSection widget-section" md-whiteframe="4">
+                                <span ng-bind-html="getTrendHtml(passersByMonth)"></span>  
+                                <span class="num-label tagBlockTitle widget-info"> Previous Month</span>
+                            </div>
+                            <div class="usageSection widget-section"  md-whiteframe="4">
+                                <span ng-bind-html="getTrendHtml(passersByYear)"></span>  
+                                <span class="num-label tagBlockTitle widget-info"> Previous Year</span>                         
+                            </div>
+                        </div>
+                    </div>
+                </md-content>
+                <span flex></span>
+                <md-content flex-gt-sm="45" md-whiteframe="2" style="margin: 10px 0" class="container">
+                    <h3>ENGAGED</h3>
+                    <div ng-show="!engagedStarted">
+                        <div style="text-align: center; line-height: 250px;"> waiting</div>
+                    </div>
+                    <div class="entity-loading-widget" ng-show="engagedStarted && !engagedLoaded" style="height: 250px;" layout="column" layout-align="space-around">
+                        <md-progress-circular md-mode="indeterminate" class="md-accent" style="margin: auto;">
+                        </md-progress-circular>
+                    </div>
+                    <div ng-show="engagedStarted && engagedLoaded" layout="row">
+                        <div flex="50">
+                            <div style="height: 250px; width: 100%" id="engagedChart"></div>
+                        </div>
+                        <div flex="50" style="margin-left:10px">
+                            <div class="topAppGroupTitle">Progress Compared to</div>
+                            <div class="usageSection widget-section" md-whiteframe="4">
+                                <span ng-bind-html="getTrendHtml(engagedWeek)"></span>  
+                                <span class="num-label tagBlockTitle widget-info"> Previous Week</span>
+                            </div>
+                            <div class="usageSection widget-section" md-whiteframe="4">
+                                <span ng-bind-html="getTrendHtml(engagedMonth)"></span>  
+                                <span class="num-label tagBlockTitle widget-info"> Previous Month</span>
+                            </div>
+                            <div class="usageSection widget-section"  md-whiteframe="4">
+                                <span ng-bind-html="getTrendHtml(engagedYear)"></span>  
+                                <span class="num-label tagBlockTitle widget-info"> Previous Year</span>
+                            </div>
+                        </div>
+                    </div>
+                </md-content>
+            </article>
+            <article layout="column" layout-gt-sm="row">
+                <md-content flex-gt-sm="45" md-whiteframe="2" style="margin: 10px 0" class="container">
+                    <h3>NEW CLIENTS</h3>
+                    <div ng-show="!newClientsStarted">
+                        <div style="text-align: center; line-height: 250px;"> waiting</div>
+                    </div>
+                    <div class="entity-loading-widget" ng-show="newClientsStarted && !newClientsLoaded" style="height: 250px;" layout="column" layout-align="space-around">
+                        <md-progress-circular md-mode="indeterminate" class="md-accent" style="margin: auto;">
+                        </md-progress-circular>
+                    </div>
+                    <div ng-show="newClientsStarted && newClientsLoaded" layout="row">
+                        <div flex="50">
+                            <div style="height: 250px;" id="newClientsChart"></div>
+                        </div>
+                        <div flex="50" style="margin-left:10px">
+                            <div class="topAppGroupTitle"> Progress Compared to</div>
+                            <div class="usageSection widget-section" md-whiteframe="4">
+                                <span ng-bind-html="getTrendHtml(newClientsWeek)"></span>  
+                                <span class="num-label tagBlockTitle widget-info"> Previous Week</span>
+                            </div>
+                            <div class="usageSection widget-section" md-whiteframe="4">
+                                <span ng-bind-html="getTrendHtml(newClientsMonth)"></span>  
+                                <span class="num-label tagBlockTitle widget-info"> Previous Month</span>
+                            </div>
+                            <div class="usageSection widget-section"  md-whiteframe="4">
+                                <span ng-bind-html="getTrendHtml(newClientsYear)"></span>  
+                                <span class="num-label tagBlockTitle widget-info"> Previous Year</span>
+                            </div>
+                        </div>
+                    </div>
+                </md-content>
+                <span flex></span>
+                <md-content flex-gt-sm="45" md-whiteframe="2" style="margin: 10px 0" class="container">
+                    <h3>RETURNING CLIENTS</h3>
+                    <div ng-show="!returningClientsStarted">
+                        <div style="text-align: center; line-height: 250px;"> waiting</div>
+                    </div>
+                    <div class="entity-loading-widget" ng-show="returningClientsStarted && !returningClientsLoaded" style="height: 250px;" layout="column" layout-align="space-around">
+                        <md-progress-circular md-mode="indeterminate" class="md-accent" style="margin: auto;">
+                        </md-progress-circular>
+                    </div>
+                    <div ng-show="returningClientsStarted && returningClientsLoaded" layout="row">
+                        <div flex="50">
+                            <div style="height: 250px;" id="returningClientsChart"></div>
+                        </div>
+                        <div flex="50" style="margin-left:10px">
+                            <div class="topAppGroupTitle"> Progress Compared to</div>
+                            <div class="usageSection widget-section" md-whiteframe="4">
+                                <span ng-bind-html="getTrendHtml(returningClientsWeek)"></span>  
+                                <span class="num-label tagBlockTitle widget-info"> Previous Week</span>
+                            </div>
+                            <div class="usageSection widget-section" md-whiteframe="4">
+                                <span ng-bind-html="getTrendHtml(returningClientsMonth)"></span>                            
+                                <span class="num-label tagBlockTitle widget-info"> Previous Month</span>
+                            </div>
+                            <div class="usageSection widget-section"  md-whiteframe="4">
+                                <span ng-bind-html="getTrendHtml(returningClientsYear)"></span>  
+                                <span class="num-label tagBlockTitle widget-info"> Previous Year</span>
+                            </div>
+                        </div>
+                    </div>
+                </md-content>
+            </article>
+        </section>
+    </md-content>
+</div>
