@@ -1,4 +1,7 @@
-angular.module("Compare").factory("CompareService", function ($http, $q) {
+angular.module("Compare").factory("ComparisonService", function ($http, $q) {
+    var comparison = "periods";
+
+
     function getPeriods(startTime, endTime, locationAnalytics) {
         var canceller = $q.defer();
         var request = $http({
@@ -12,7 +15,7 @@ angular.module("Compare").factory("CompareService", function ($http, $q) {
             timeout: canceller.promise
         });
         return httpReq(request);
-    }    
+    }
     function getPeriodsTimeline(startTime, endTime, locationAnalytics) {
         var canceller = $q.defer();
         var request = $http({
@@ -58,31 +61,36 @@ angular.module("Compare").factory("CompareService", function ($http, $q) {
         return httpReq(request);
     }
     function httpReq(request) {
-                var promise = request.then(
-                    function (response) {
-                        return response;
-                    },
-                    function (response) {
-                        return { error: response.data };
-                    });
+        var promise = request.then(
+            function (response) {
+                return response;
+            },
+            function (response) {
+                return { error: response.data };
+            });
 
-                promise.abort = function () {
-                    canceller.resolve();
-                };
-                promise.finally(function () {
-                    console.info("Cleaning up object references.");
-                    promise.abort = angular.noop;
-                    canceller = request = promise = null;
-                });
+        promise.abort = function () {
+            canceller.resolve();
+        };
+        promise.finally(function () {
+            console.info("Cleaning up object references.");
+            promise.abort = angular.noop;
+            canceller = request = promise = null;
+        });
 
-                return promise;
-            }
+        return promise;
+    }
 
 
     return {
-            getPeriods: getPeriods,
-            getPeriodsTimeline: getPeriodsTimeline,
-            getLocations: getLocations,
-            getLocationsTimeline: getLocationsTimeline
+        getPeriods: getPeriods,
+        getPeriodsTimeline: getPeriodsTimeline,
+        getLocations: getLocations,
+        getLocationsTimeline: getLocationsTimeline,
+        current: {
+            get: function () { return comparison },
+            set: function (val) { comparison = val }
         }
-    });
+    }
+});
+

@@ -89,13 +89,19 @@ analytics.controller("HeaderCtrl", function ($scope, $location) {
 
 });
 
-analytics.controller("LocationCtrl", function ($scope, $rootScope, $location, LocationsService) {
-
-    LocationsService.compareLocations.set(false);
+analytics.controller("LocationCtrl", function ($scope, $location, LocationsService, ComparisonService) {
     $scope.locationsSelected = LocationsService.selected.get();
+    $scope.currentComparison = ComparisonService.current;
+    $scope.locationFilter = LocationsService.filter.get();
+
     var lastUpdateRequest;
 
-
+    $scope.$watch("currentComparison.get()", function(){
+        $scope.compareLocations = $scope.currentComparison.get() == "locations";
+    })
+    $scope.$watch("locationFilter", function(){
+        LocationsService.filter.set($scope.locationFilter);
+    })
     $scope.locationTypeEnable = function (location) {
         if (location) {
             if (LocationsService.compareLocations.get() == false) return false;
@@ -125,7 +131,7 @@ analytics.controller("LocationCtrl", function ($scope, $rootScope, $location, Lo
         // if the user just checked the box
         else {
             LocationsService.checked.add(item.id);
-            if ($location.path() != "/compare" || $rootScope.compare != "locations")
+            if ($location.path() != "/compare" || ComparisonService.current.get() != "locations")
                 checkChilds(item);
         }
         // update the list of selected locations
@@ -177,9 +183,9 @@ analytics.controller("TimelineCtrl", function ($scope, TimelineService, Location
     $scope.selected = LocationsService.selected;
     $scope.locations = LocationsService.locations;
     $scope.timeline = TimelineService;
-    
 
-    $scope.period="week";
+
+    $scope.period = "week";
     $scope.range = 7;
     $scope.durations = {
         "day": [
@@ -254,7 +260,7 @@ analytics.controller("TimelineCtrl", function ($scope, TimelineService, Location
     }, true)
 
     // change the timeline values
-    $scope.$watch("timeline.date.get()", function(){
+    $scope.$watch("timeline.date.get()", function () {
         if ($scope.timeline.date.get().from != "" && $scope.timeline.date.get().to != "") $scope.date = $scope.timeline.date.get();
     }, true)
 
@@ -421,9 +427,9 @@ analytics.controller("TimelineCtrl", function ($scope, TimelineService, Location
         else min = max - (range * step);
         $scope.timelineChart.xAxis[0].setExtremes(min, max);
         TimelineService.date.set({
-                    from: $scope.timelineChart.xAxis[1].categories[min],
-                    to: $scope.timelineChart.xAxis[1].categories[max]
-                })
+            from: $scope.timelineChart.xAxis[1].categories[min],
+            to: $scope.timelineChart.xAxis[1].categories[max]
+        })
     }
 
 

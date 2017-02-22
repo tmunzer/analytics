@@ -18,7 +18,7 @@ angular.module('Dashboard').controller("DashboardCtrl", function ($scope, $locat
     // update the cards when the locations are loaded
     $scope.$watch("locations.isReady()", function () {
         if ($location.path() == "/dashboard")
-            if ($scope.locations.isReady()){
+            if ($scope.locations.isReady()) {
                 updateCardsRequest = new Date();
                 var currentUpdateRequest = updateCardsRequest;
                 setTimeout(function () {
@@ -45,7 +45,7 @@ angular.module('Dashboard').controller("DashboardCtrl", function ($scope, $locat
 
     function updateCards() {
         var data = {};
-        if (LocationsService.selected.get().length > 0) data = { locations:LocationsService.checked.get() };
+        if (LocationsService.selected.get().length > 0) data = { locations: LocationsService.checked.get() };
         var request = CardsService.update(data);
         request.then(function (promise) {
             if (promise && promise.error) {

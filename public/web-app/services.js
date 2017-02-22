@@ -15,7 +15,7 @@ angular.module('analytics').factory("TimelineService", function ($http, $q) {
             params: {
                 startTime: startTime.toISOString(),
                 endTime: endTime.toISOString(),
-                locations: JSON.stringify(selectedLocations)
+                locations: selectedLocations
             },
             timeout: canceller.promise
         });
@@ -186,3 +186,4 @@ angular.module('analytics').factory("LocationsService", function ($http, $q, $ro
         }
     }
 });
+

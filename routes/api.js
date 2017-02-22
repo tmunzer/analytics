@@ -14,10 +14,10 @@ function locationsFromQuery(req) {
     // if the "locations" parameter exists, and is not null, will filter the request based on the locations selected by the user
     // otherwise takes the "root" folder
     if (req.query.locations && req.query.locations.length > 0) {
-        locations = JSON.parse(req.query.locations);
+        locations = req.query.locations;
         if (locations.length == 0) locations = [req.session.locations.id];
     } else locations = [req.session.locations.id];
-    if (typeof locations == "number") locations = [locations];
+    if (typeof locations == "number" || typeof locations == "string") locations = [locations];
     return locations;
 }
 

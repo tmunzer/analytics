@@ -15,8 +15,8 @@ function locationsFromQuery(req) {
     // otherwise takes the "root" folder
     if (req.query.locations && req.query.locations.length > 0) {
         locations = req.query.locations;
-        if (locations.length == 0) locations = req.session.locations.id;
-    } else locations = req.session.locations.id;
+        if (locations.length == 0) locations = [req.session.locations.id];
+    } else locations = [req.session.locations.id];
     if (typeof locations == "number" || typeof locations == "string") locations = [locations];
     return locations;
 }
