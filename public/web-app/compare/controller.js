@@ -69,6 +69,7 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $location,
     $scope.bestWorstLocation = bestWorstLocation;
     var updateRequest;
 
+    $scope
     $scope.isCurrent = function (item) {
         if (ComparisonService.current.get() == item) return "md-primary";
     }
@@ -77,11 +78,16 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $location,
         ComparisonService.current.set(item);
         if (ComparisonService.current.get() == "locations") {
             LocationsService.compareLocations.set(true);
+            LocationsService.checked.reset();
             LocationsService.selected.reset();
         }
         else LocationsService.compareLocations.set(false);
         startUpdate();
     }
+    $scope.$watch("locationFilter.get()", function () {
+        LocationsService.checked.reset();
+        LocationsService.selected.reset();
+    }, true)
     $scope.$watch("lastTimelineChange()", function () {
         startUpdate();
     }, true)

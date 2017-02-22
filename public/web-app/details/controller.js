@@ -59,18 +59,15 @@ angular.module('Details').controller("DetailsCtrl", function ($scope, $location,
         }
     })
     $scope.$watch("date.get()", function (a, b) {
-        if ($location.path() == "/details")
-            if ($scope.date.isReady()) {
-                lastUpdateRequest = new Date();
-                var currentUpdateRequest = lastUpdateRequest;
-                setTimeout(function () {
-                    if (currentUpdateRequest == lastUpdateRequest) {
-                        updateDetails();
-                    }
-                }, 2000)
-            }
+        startUpdate();
     }, true)
     $scope.$watch("selected.get()", function () {
+        startUpdate();
+    }, true)
+
+    function startUpdate() {
+        $scope.heatmapStarted = false;
+        $scope.detailsLineStarted = false;
         if ($location.path() == "/details")
             if ($scope.date.isReady()) {
                 lastUpdateRequest = new Date();
@@ -81,7 +78,7 @@ angular.module('Details').controller("DetailsCtrl", function ($scope, $location,
                     }
                 }, 2000)
             }
-    }, true)
+    }
 
     function updateDetails() {
 

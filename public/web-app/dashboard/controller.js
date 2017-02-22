@@ -113,15 +113,16 @@ angular.module('Dashboard').controller("WidgetCtrl", function ($scope, $location
     $scope.$watch("lastTimelineChange()", function () {
         startUpdate();
     }, true)
+
     function startUpdate() {
         if ($location.path() == "/dashboard")
             if ($scope.date.isReady()) {
-                $scope.topLocationLoaded = false;
-                $scope.passersByLoaded = false;
-                $scope.engagedLoaded = false;
-                $scope.storeFrontLoaded = false;
-                $scope.newClientsLoaded = false;
-                $scope.returningClientsLoaded = false;
+                $scope.topLocationStarted = false;
+                $scope.passersByStarted= false;
+                $scope.engagedStarted = false;
+                $scope.storeFrontStarted = false;
+                $scope.newClientsStarted = false;
+                $scope.returningClientsStarted = false;
                 lastUpdateRequest = new Date();
                 var currentUpdateRequest = lastUpdateRequest;
                 setTimeout(function () {
@@ -132,6 +133,7 @@ angular.module('Dashboard').controller("WidgetCtrl", function ($scope, $location
                 }, 2000)
             }
     }
+
     $scope.$watch("topLocationsChart", function () {
         var choice = $scope.topLocationsChart;
         displayTopLocation($scope.topLocationsChoices[choice].value, $scope.topLocationsChoices[choice].title, $scope.topLocationsChoices[choice].percentage);

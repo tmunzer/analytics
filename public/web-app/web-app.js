@@ -90,12 +90,16 @@ analytics.controller("HeaderCtrl", function ($scope, $location) {
 });
 
 analytics.controller("LocationCtrl", function ($scope, $location, LocationsService, ComparisonService) {
-    $scope.locationsSelected = LocationsService.selected.get();
+    
+    $scope.checked = LocationsService.checked;
     $scope.currentComparison = ComparisonService.current;
     $scope.locationFilter = LocationsService.filter.get();
 
     var lastUpdateRequest;
 
+    $scope.$watch("checked.get()", function(){
+        
+    })
     $scope.$watch("currentComparison.get()", function(){
         $scope.compareLocations = $scope.currentComparison.get() == "locations";
     })
@@ -137,7 +141,6 @@ analytics.controller("LocationCtrl", function ($scope, $location, LocationsServi
         // update the list of selected locations
         LocationsService.selected.refresh();
 
-        $scope.locationsSelected = LocationsService.selected.get();
     };
 
 
