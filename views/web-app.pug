@@ -150,15 +150,15 @@ html
             ng-view
 
         script(type="text/javascript").
-            function fadeIn(element){    
+            function fadeIn(element){  
+                var i = 1;
+                var f = 0.5;  
                 setTimeout(function(){
-                    var i = 1;
-                    var f = 0.05;
                     element.style.opacity = parseFloat(element.style.opacity) - (f * i * i);
                     i++;
-                    if (element.style.opacity > 0 && i < 50) fadeIn(element)
-                    else element.parentNode.removeChild(element);;
-                    }, 20);
+                    if (element.style.opacity < 0 || i > 50) element.parentNode.removeChild(element);
+                    else fadeIn(element);
+                    }, 40);
             }
             document.addEventListener("DOMContentLoaded", function(event) {
                 var element = document.getElementById("loading"); 
