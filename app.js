@@ -13,19 +13,12 @@ var app = express();
 app.use('/bower_components', express.static('../bower_components'));
 
 app.use(session({
-  secret: 'Aerohive Analytics Ref APP Secret',
-  resave: false,
+  secret: 'HVkYpby3JwREkI5xdHDtVSRIzEnN',
+  resave: true,
   saveUninitialized: true,
-  //defines how long the session will live in milliseconds. After that, the cookie is invalidated and will need to be set again.
-  //duration: 1 * 60 * 1000,
-  // allows users to lengthen their session by interacting with the site
-  //activeDuration: 1 * 60 * 1000,
-  //prevents browser JavaScript from accessing cookies.
-  httpOnly: true,
-  //ensures cookies are only used over HTTPS
-  secure: true,
-  //deletes the cookie when the browser is closed. Ephemeral cookies are particularly important if you your app lends itself to use on public computers.
-  ephemeral: true
+  cookie: {
+    maxAge: 30 * 60 * 1000 // 30 minutes
+  }
 }));
 
 // view engine setup
