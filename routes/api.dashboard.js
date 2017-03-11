@@ -47,7 +47,7 @@ router.get('/cards/', function (req, res, next) {
 // route called to get the values for the charts on the dashboard
 router.get('/widgets/', function (req, res, next) {
     var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
-
+    var errors = [];
     var startTime, endTime, locations, locNowDone, locWeekDone, locMonthDone, locYearDone,
         startLastWeek, endLastWeek, startLastMonth, endLastMonth, startLastYear, endLastYear;
     var dataNow = {
@@ -113,7 +113,7 @@ router.get('/widgets/', function (req, res, next) {
                 endTime.toISOString(),
                 function (err, data) {
                     // if there is an error, send the error message to the web browser
-                    if (err) res.status(500).json({ error: err });
+                    if (err) errors.push(err);
                     else {
                         // otherwise, add the values for the period of time defined by the user to the values for all the locations
                         dataNow['uniqueClients'] += data['uniqueClients'];
@@ -145,7 +145,7 @@ router.get('/widgets/', function (req, res, next) {
                     endLastWeek.toISOString(),
                     function (err, data) {
                         // if there is an error, send the error message to the web browser
-                        if (err) res.status(500).json({ error: err });
+                        if (err) errors.push(err);
                         else {
                             // otherwise, add the values for previous week to the values for all the locations
                             dataLastWeek['uniqueClients'] += data['uniqueClients'];
@@ -179,7 +179,7 @@ router.get('/widgets/', function (req, res, next) {
                     endLastMonth.toISOString(),
                     function (err, data) {
                         // if there is an error, send the error message to the web browser
-                        if (err) res.status(500).json({ error: err });
+                        if (err) errors.push(err);
                         else {
                             // otherwise, add the values for previous month to the values for all the locations
                             dataLastMonth['uniqueClients'] += data['uniqueClients'];
@@ -212,7 +212,7 @@ router.get('/widgets/', function (req, res, next) {
                 endLastYear.toISOString(),
                 function (err, data) {
                     // if there is an error, send the error message to the web browser
-                    if (err) res.status(500).json({ error: err });
+                    if (err) errors.push(err);
                     else {
                         // otherwise, add the values for previous year to the values for all the locations
                         dataLastYear['uniqueClients'] += data['uniqueClients'];
@@ -235,8 +235,9 @@ router.get('/widgets/', function (req, res, next) {
             && locWeekDone == locations.length
             && locMonthDone == locations.length
             && locYearDone == locations.length) {
+                if (errors.length > 0) res.status(500).json({errors: errors});
             // if all locations/periods are done, send back the response to the web browser
-            res.status(200).json({
+            else res.status(200).json({
                 dataNow: dataNow,
                 dataLastWeek: dataLastWeek,
                 dataLastMonth: dataLastMonth,
@@ -249,7 +250,7 @@ router.get('/widgets/', function (req, res, next) {
 //api call to get the values for the "Best locations by" charts
 router.get("/widget-top/", function (req, res, next) {
     var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
-
+    var errors = [];
     var startTime, endTime, locDone, topLocations, locations, buildings;
     if (req.query.startTime && req.query.endTime) {
         // retrieve the start time and end time from the POST method
@@ -271,7 +272,7 @@ router.get("/widget-top/", function (req, res, next) {
                 startTime.toISOString(),
                 endTime.toISOString(),
                 function (err, data) {
-                    if (err) res.status(500).json({ error: err });
+                    if (err) errors.push(err);
                     else {
                         var storefront, name;
                         // calculate the storefront conversion
@@ -293,8 +294,10 @@ router.get("/widget-top/", function (req, res, next) {
                         };
                         locDone++;
                         // if all the locations are done, will send the response back to the web browser
-                        if (locDone == buildings.length) res.status(200).json({ topLocations: topLocations })
-
+                        if (locDone == buildings.length) {
+                            if (errors.length > 0 ) res.status(500).json({errors: errors});
+                            else res.status(200).json({ topLocations: topLocations })
+                        }
                     }
                 }.bind({ location: location }));
 

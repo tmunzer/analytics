@@ -33,7 +33,6 @@ router.get('/apLocationFolders/', function (req, res, next) {
     var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
 
     endpoints.configuration.location.getLocations(currentApi, devAccount, function (err, locations) {
-        console.log(err, locations);
         if (err) res.status(err.status).json({ error: err });
         else if (locations == null) res.json(
             {
@@ -59,7 +58,7 @@ router.get('/timeline/', function (req, res, next) {
 
     var startTime, endTime, timeUnit, locations, locDone;
     var timeline = [];
-
+    var errors = [];
     if (req.query.startTime && req.query.endTime) {
         // retrieve the start time and end time from the POST method
         startTime = new Date(req.query.startTime);
@@ -76,14 +75,12 @@ router.get('/timeline/', function (req, res, next) {
         // if the "locations" parameter exists, and is not null, will filter the request based on the locations selected by the user
         // otherwise takes the "root" folder
         var locations = locationsFromQuery(req);
-
         locDone = 0;
 
         // For each location, send the API call
         locations.forEach(function (location) {
             endpoints.clientlocation.clienttimeseries.GET(currentApi, devAccount, location, startTime.toISOString(), endTime.toISOString(), timeUnit, function (err, result) {
-                if (err && err.status) res.status(err.status).json({ error: err });
-                else if (err) res.status(500).json({ error: err });
+                if (err) errors.push(err);
                 else {
                     // will addition the number of "unique client" from each location to get an overall number of unique clients
                     for (var i in result['times']) {
@@ -94,7 +91,8 @@ router.get('/timeline/', function (req, res, next) {
                     locDone++;
                     // if all the locations are done, send back the response to the web browser
                     if (locDone == locations.length) {
-                        res.json({
+                        if (errors.length > 0) res.status(500).json({ errors: errors });
+                        else res.json({
                             data: timeline
                         });
                     }

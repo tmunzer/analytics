@@ -128,17 +128,16 @@ module.exports.DELETE = function (xapi, path, devAccount, callback) {
     httpRequest(options, callback);
 };
 
-function httpRequest(options, callback, body){
+function httpRequest(options, callback, body) {
     var result = {};
     result.request = {};
     result.result = {};
-
     result.request.options = options;
     var req = https.request(options, function (res) {
         result.result.status = res.statusCode;
-        console.info('STATUS: ' + result.result.status);
+        console.info('REQUEST QUERY: ' + options.path);
+        console.info('RESPONSE STATUS: ' + result.result.status);
         result.result.headers = JSON.stringify(res.headers);
-        console.info('HEADERS: ' + result.result.headers);
         res.setEncoding('utf8');
         var data = '';
         res.on('data', function (chunk) {
@@ -146,6 +145,8 @@ function httpRequest(options, callback, body){
         });
         res.on('end', function () {
             if (data != '') {
+                if (data.length > 400) console.info("RESPONSE DATA: " + data.substr(0, 400) + '...');
+                else console.info("RESPONSE DATA: " + data);                
                 var dataJSON = JSON.parse(data);
                 result.data = dataJSON.data;
                 result.error = dataJSON.error;
@@ -156,13 +157,13 @@ function httpRequest(options, callback, body){
                     break;
                 default:
                     var error = {};
-                    console.error(result);
                     if (result.error.status) error.status = result.error.status;
                     else error.status = result.result.status;
                     if (result.error.message) error.message = result.error.message;
                     else error.message = result.error;
                     if (result.error.code) error.code = result.error.code;
                     else error.code = "";
+                    console.error("REPSONSE ERROR: " + JSON.stringify(error));
                     callback(error, result.data);
                     break;
 
@@ -170,12 +171,13 @@ function httpRequest(options, callback, body){
         });
     });
     req.on('error', function (err) {
-        console.log(err);
+        console.error('REQUEST QUERY: ' + options.path);
+        console.error('REQUEST ERROR: ' + JSON.stringify(err));
         callback(err, null);
     });
 
 
-// write data to request body
+    // write data to request body
     req.write(body + '\n');
     req.end();
 

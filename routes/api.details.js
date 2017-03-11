@@ -29,6 +29,7 @@ router.get('/clienttimeseries/', function (req, res, next) {
     var startTime, endTime, timeUnit, locDone, locations, series, timeseries;
     series = [];
     timeseries = [];
+    errors: [];
     locDone = 0;
     if (req.query.startTime && req.query.endTime) {
         // retrieve the start time and end time from the POST method
@@ -56,7 +57,7 @@ router.get('/clienttimeseries/', function (req, res, next) {
                 endTime.toISOString(),
                 timeUnit,
                 function (err, result) {
-                    if (err) res.status(500).json({ error: err });
+                    if (err) errors.push(err);
                     else {
                         // create the array for the xAxis
                         series = result['times'];
@@ -74,7 +75,8 @@ router.get('/clienttimeseries/', function (req, res, next) {
                     locDone++;
                     // if all locations are done, send back the response to the web browser
                     if (locDone == locations.length) {
-                        res.status(200).send({ timeseries: timeseries });
+                        if (errors.length > 0) res.status(500).json({ errors: errors });
+                        else res.status(200).send({ timeseries: timeseries });
                     }
                 }
             )

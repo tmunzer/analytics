@@ -33,11 +33,12 @@ router.get('/locations/global', function (req, res, next) {
     var startTime, endTime, locations, locDone, averageDone, numLoc, polarReq;
     var locResult = [];
     var dataAverage = [];
+    var errors = [];
     if (req.query.startTime && req.query.endTime) {
         // retrieve the start time and end time from the POST method
         startTime = new Date(req.query.startTime);
         endTime = new Date(req.query.endTime);
-        
+
         // if the "locations" parameter exists, and is not null, will filter the request based on the locations selected by the user
         // otherwise takes the "root" folder
         locations = locationsFromQuery(req)
@@ -69,7 +70,7 @@ router.get('/locations/global', function (req, res, next) {
                 startTime.toISOString(),
                 endTime.toISOString(),
                 function (err, data) {
-                    if (err) res.status(500).json({ error: err });
+                    if (err) errors.push(err);
                     else {
                         // get the name of the location based on the locationID
                         var name = Location.getLocationName(req.session.locations, location);
@@ -103,9 +104,8 @@ router.get('/locations/global', function (req, res, next) {
             endTime.toISOString(),
             function (err, data) {
                 // if there is an error: send the error message to the web browser
-                if (err) res.status(500).json({ error: err });
+                if (err) errors.push(err);
                 else {
-                    console.log(data);
                     // for each number, divided it by the number of locations to get the average
                     dataAverage = {
                         uniqueClients: parseInt((data.uniqueClients / numLoc).toFixed(0)),
@@ -128,8 +128,9 @@ router.get('/locations/global', function (req, res, next) {
         function end() {
             // check if all locations are done, and if the average is done
             if (locDone == locations.length && averageDone) {
+                if (errors.length > 0) res.status(500).json({ errors: errors });
                 // send back the response to the web browser
-                res.json({
+                else res.json({
                     data: locResult,
                     average: dataAverage
                 })
@@ -145,6 +146,7 @@ router.get('/locations/timeline', function (req, res, next) {
     var startTime, endTime, timeUnit, location, locations, locDone;
     var series = [];
     var timeserie = [];
+    var errors = [];
     if (req.query.startTime && req.query.endTime) {
         // retrieve the start time and end time from the POST method
         startTime = new Date(req.query.startTime);
@@ -179,7 +181,7 @@ router.get('/locations/timeline', function (req, res, next) {
                 timeUnit,
                 function (err, data) {
                     // if there is an error, send the error message to the web browser
-                    if (err) res.status(500).json({ error: err });
+                    if (err) errors.push(err);
                     else {
                         var storeFrontClients, name;
                         // get the name of the location based on the locationID
@@ -211,7 +213,8 @@ router.get('/locations/timeline', function (req, res, next) {
             function end() {
                 // if all the locations are done, send back the response to the web browser
                 if (locDone == locations.length) {
-                    res.json({
+                    if (errors.length > 0) res.status(500).json({ errors: errors });
+                    else res.json({
                         timeserie: timeserie,
                         series: series
                     })
@@ -230,7 +233,7 @@ router.get("/periods/global", function (req, res, next) {
 
     var oneHour, oneDay, oneWeek, oneMonth, range, reqPeriods, i;
     var startTime, endTime, locations;
-
+    var errors = [];
     if (req.query.startTime && req.query.endTime) {
         // retrieve the start time and end time from the POST method
         startTime = new Date(req.query.startTime);
@@ -389,7 +392,7 @@ router.get("/periods/global", function (req, res, next) {
                     currentPeriod.end.toISOString(),
                     function (err, result) {
                         // if there is an error, send the error message to the web browser
-                        if (err) res.status(500).json({ error: err });
+                        if (err) errors.push(err);
                         else {
                             // add the values from this location to the value for this period of time
                             // the result is, for each period of time, the number of clients over all the selected locations
@@ -403,37 +406,40 @@ router.get("/periods/global", function (req, res, next) {
                             reqDone++;
                             // if all the locations and the periods are done
                             if (reqDone == reqTotal) {
-                                var dataAverage = {
-                                    "uniqueClients": 0,
-                                    "engagedClients": 0,
-                                    "passersbyClients": 0,
-                                    "associatedClients": 0,
-                                    "unassociatedClients": 0,
-                                    "newClients": 0,
-                                    "returningClients": 0
-                                };
-                                // calculate the average over all the periods
-                                reqPeriods.forEach(function (resultPeriod) {
-                                    dataAverage.uniqueClients += resultPeriod.uniqueClients;
-                                    dataAverage.engagedClients += resultPeriod.engagedClients;
-                                    dataAverage.passersbyClients += resultPeriod.passersbyClients;
-                                    dataAverage.associatedClients += resultPeriod.associatedClients;
-                                    dataAverage.unassociatedClients += resultPeriod.unassociatedClients;
-                                    dataAverage.newClients += resultPeriod.newClients;
-                                    dataAverage.returningClients += resultPeriod.returningClients;
-                                });
-                                dataAverage.uniqueClients = parseInt((dataAverage.uniqueClients / reqPeriods.length).toFixed(0));
-                                dataAverage.engagedClients = parseInt((dataAverage.engagedClients / reqPeriods.length).toFixed(0));
-                                dataAverage.passersbyClients = parseInt((dataAverage.passersbyClients / reqPeriods.length).toFixed(0));
-                                dataAverage.associatedClients = parseInt((dataAverage.associatedClients / reqPeriods.length).toFixed(0));
-                                dataAverage.unassociatedClients = parseInt((dataAverage.unassociatedClients / reqPeriods.length).toFixed(0));
-                                dataAverage.newClients = parseInt((dataAverage.newClients / reqPeriods.length).toFixed(0));
-                                dataAverage.returningClients = parseInt((dataAverage.returningClients / reqPeriods.length).toFixed(0));
-                                // send back the response to the web browser
-                                res.json({
-                                    average: dataAverage,
-                                    data: reqPeriods
-                                })
+                                if (errors.length > 0) res.status(500).json({ errors: errors });
+                                else {
+                                    var dataAverage = {
+                                        "uniqueClients": 0,
+                                        "engagedClients": 0,
+                                        "passersbyClients": 0,
+                                        "associatedClients": 0,
+                                        "unassociatedClients": 0,
+                                        "newClients": 0,
+                                        "returningClients": 0
+                                    };
+                                    // calculate the average over all the periods
+                                    reqPeriods.forEach(function (resultPeriod) {
+                                        dataAverage.uniqueClients += resultPeriod.uniqueClients;
+                                        dataAverage.engagedClients += resultPeriod.engagedClients;
+                                        dataAverage.passersbyClients += resultPeriod.passersbyClients;
+                                        dataAverage.associatedClients += resultPeriod.associatedClients;
+                                        dataAverage.unassociatedClients += resultPeriod.unassociatedClients;
+                                        dataAverage.newClients += resultPeriod.newClients;
+                                        dataAverage.returningClients += resultPeriod.returningClients;
+                                    });
+                                    dataAverage.uniqueClients = parseInt((dataAverage.uniqueClients / reqPeriods.length).toFixed(0));
+                                    dataAverage.engagedClients = parseInt((dataAverage.engagedClients / reqPeriods.length).toFixed(0));
+                                    dataAverage.passersbyClients = parseInt((dataAverage.passersbyClients / reqPeriods.length).toFixed(0));
+                                    dataAverage.associatedClients = parseInt((dataAverage.associatedClients / reqPeriods.length).toFixed(0));
+                                    dataAverage.unassociatedClients = parseInt((dataAverage.unassociatedClients / reqPeriods.length).toFixed(0));
+                                    dataAverage.newClients = parseInt((dataAverage.newClients / reqPeriods.length).toFixed(0));
+                                    dataAverage.returningClients = parseInt((dataAverage.returningClients / reqPeriods.length).toFixed(0));
+                                    // send back the response to the web browser
+                                    res.json({
+                                        average: dataAverage,
+                                        data: reqPeriods
+                                    })
+                                }
                             }
                         }
                     }.bind({ currentPeriod: currentPeriod }));
@@ -451,7 +457,7 @@ router.get('/periods/timeline', function (req, res, next) {
     var oneHour, oneDay, oneWeek, oneMonth, range, series, i;
     var startTime, endTime, timeUnit, locations;
     var timeserie = [];
-
+    var errors = [];
 
     if (req.query.startTime && req.query.endTime) {
         // retrieve the start time and end time from the POST method
@@ -549,7 +555,7 @@ router.get('/periods/timeline', function (req, res, next) {
                     timeUnit,
                     function (err, data) {
                         // if there is an error, send the error message to the web browser
-                        if (err) res.status(500).json({ error: err });
+                        if (err) errors.push(err);
                         else {
                             // if it is the first location done for this period of time, set the values
                             if (this.currentPeriod.data == null) this.currentPeriod.data = data.times;
@@ -568,22 +574,25 @@ router.get('/periods/timeline', function (req, res, next) {
                             reqDone++;
                             // if all the periods and all the locations are done
                             if (reqDone == reqTotal) {
-                                var storeFrontClients;
-                                series.forEach(function (currentPeriod) {
-                                    currentPeriod.data.forEach(function (currentData) {
-                                        // generate the "timeserie" array for the xAxis
-                                        timeserie.push(currentData.time);
-                                        // calculate and add the storefront conversion to the entry
-                                        if (currentData.uniqueClients == 0) storeFrontClients = 0;
-                                        else storeFrontClients = ((currentData.engagedClients / currentData.uniqueClients) * 100).toFixed(0);
-                                        currentData.storefrontClients = parseInt(storeFrontClients);
+                                if (errors.length > 0) res.status(500).json({ errors: errors });
+                                else {
+                                    var storeFrontClients;
+                                    series.forEach(function (currentPeriod) {
+                                        currentPeriod.data.forEach(function (currentData) {
+                                            // generate the "timeserie" array for the xAxis
+                                            timeserie.push(currentData.time);
+                                            // calculate and add the storefront conversion to the entry
+                                            if (currentData.uniqueClients == 0) storeFrontClients = 0;
+                                            else storeFrontClients = ((currentData.engagedClients / currentData.uniqueClients) * 100).toFixed(0);
+                                            currentData.storefrontClients = parseInt(storeFrontClients);
+                                        });
                                     });
-                                });
-                                // send back the response to the web browser
-                                res.json({
-                                    timeserie: timeserie,
-                                    series: series
-                                })
+                                    // send back the response to the web browser
+                                    res.json({
+                                        timeserie: timeserie,
+                                        series: series
+                                    })
+                                }
                             }
                         }
                     }.bind({ currentPeriod: currentPeriod }));

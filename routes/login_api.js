@@ -10,7 +10,7 @@ var apiServers = ["cloud-va.aerohive.com", "cloud-va2.aerohive.com", "cloud-ie.a
 /*================================================================
  DASHBOARD
  ================================================================*/
-router.get('/', function (req, res, next) {
+router.get('/', function (req, res, next) {  
   var errorcode;
   if (req.query.errorcode) errorcode = req.query["errorcode"];
   res.render('login_api', {
