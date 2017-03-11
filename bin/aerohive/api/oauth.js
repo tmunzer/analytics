@@ -22,8 +22,8 @@ module.exports.getPermanentToken = function(authCode, devAccount, callback){
     };
 
     var req = https.request(options, function(res) {
-        console.info('STATUS: ' + res.statusCode);
-        console.info('HEADERS: ' + JSON.stringify(res.headers));
+        console.info('\x1b[35mREQUEST QUERY\x1b[0m:', options.path);
+        console.info('\x1b[35mREQUEST STATUS\x1b[0m:',result.result.status);
         res.setEncoding('utf8');
         res.on('data', function (data) {
             callback(JSON.parse(data));
@@ -31,11 +31,12 @@ module.exports.getPermanentToken = function(authCode, devAccount, callback){
     });
 
     req.on('error', function(err) {
-        callback(err);
+        console.error("\x1b[31mREQUEST QUERY\x1b[0m:", options.path);
+        console.error("\x1b[31mREQUEST ERROR\x1b[0m:", JSON.stringify(err));
+        callback(err, null);
     });
 
 // write data to request body
-    req.write('data\n');
     req.write('data\n');
     req.end();
 };

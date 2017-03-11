@@ -8,19 +8,19 @@ var monitor = respawn(['node', 'www'], {
     sleep:1000            // time to sleep between restarts
 });
 monitor.on('spawn', function () {
-    console.log('application monitor started...');
+    console.info("\x1b[32mINFO\x1b[0m:",'application monitor started...');
 });
 
 monitor.on('exit', function (code, signal) {
-    console.log('process exited, code: ' + code + ' signal: ' + signal);
+    console.error("\x1b[31mEXIT\x1b[0m:", 'process exited, code: ' + code + ' signal: ' + signal);
 });
 
 monitor.on('stdout', function (data) {
-    console.log(data.toString());
+    console.info("\x1b[32mINFO\x1b[0m:",data.toString());
 });
 
 monitor.on('stderr', function (data) {
-    console.log('process error: '+ data.toString());
+    console.error("\x1b[31mERROR\x1b[0m:", 'process error: '+ data.toString());
 });
 
 monitor.start(); // spawn and watch

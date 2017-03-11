@@ -18,7 +18,7 @@ router.post('/login',
 );
 /* Handle Logout */
 router.get('/logout/', function (req, res) {
-    if (req.session.passport) console.log("User " + req.session.passport.user.email+ " is now logged out.");
+    if (req.session.passport) console.info("\x1b[32mINFO\x1b[0m:","User " + req.session.passport.user.email+ " is now logged out.");
     req.logout();
     req.session.destroy();
     res.redirect('/login/');
