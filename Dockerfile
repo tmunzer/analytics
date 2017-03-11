@@ -14,5 +14,9 @@ RUN cp -r /tmp/app /app && \
     rm -rf /tmp/app/ && \
     chmod a+x /app/docker-entrypoint.sh
 
+WORKDIR /app
+RUN npm install
+RUN bower install --allow-root
+
 EXPOSE 51362
 ENTRYPOINT /app/docker-entrypoint.sh 51362
