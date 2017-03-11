@@ -11,10 +11,10 @@ module.exports = function (passport) {
             // check in mongo if a user with username exists or not
             User.newLogin(username, password, function (err, user) {
                 if (err || !user) {
-                    console.info("info:","User " + username + ': Wrong login or password');
+                    console.info("\x1b[32minfo\x1b[0m:","User " + username + ': Wrong login or password');
                     return done(null, false, req.flash("message", "Wrong login or password"));
                 } else {
-                    console.info("info:","User " + user.email + " is now logged in");
+                    console.info("\x1b[32minfo\x1b[0m:","User " + user.email + " is now logged in");
                     req.session.xapi = {
                         owners: [],
                         ownerIndex: 0,

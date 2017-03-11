@@ -25,7 +25,7 @@ app.use(session({
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-app.use(logger('info: :remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length]', {
+app.use(logger('\x1b[32minfo\x1b[0m: :remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length]', {
   skip: function (req, res) { return res.statusCode < 400 && req.url != "/" && req.originalUrl.indexOf("/api") < 0}
 }));
 app.use(bodyParser.json());
@@ -42,7 +42,7 @@ if (loginMethod) {
 
     db.on('error', function (err) {
       if (err) throw err;
-      else console.info("info:","Connected to Database container!");
+      else console.info("\x1b[32minfo\x1b[0m:","Connected to Database container!");
     });
     mongoose.connect('mongodb://tac-mongo/tac');
     //===============PASSPORR=================

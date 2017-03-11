@@ -135,8 +135,8 @@ function httpRequest(options, callback, body) {
     result.request.options = options;
     var req = https.request(options, function (res) {
         result.result.status = res.statusCode;
-        console.info('REQUEST QUERY:', options.path);
-        console.info('REQUEST STATUS:',result.result.status);
+        console.info('\x1b[34mREQUEST QUERY\x1b[0m:', options.path);
+        console.info('\x1b[34mREQUEST STATUS\x1b[0m:',result.result.status);
         result.result.headers = JSON.stringify(res.headers);
         res.setEncoding('utf8');
         var data = '';
@@ -145,8 +145,8 @@ function httpRequest(options, callback, body) {
         });
         res.on('end', function () {
             if (data != '') {
-                if (data.length > 400) console.info("REQUEST DATA:", data.substr(0, 400) + '...');
-                else console.info("REQUEST DATA:", data);                
+                if (data.length > 400) console.info("\x1b[34mREQUEST DATA\x1b[0m:", data.substr(0, 400) + '...');
+                else console.info("\x1b[34mREQUEST DATA\x1b[0m:", data);                
                 var dataJSON = JSON.parse(data);
                 result.data = dataJSON.data;
                 result.error = dataJSON.error;
@@ -163,7 +163,7 @@ function httpRequest(options, callback, body) {
                     else error.message = result.error;
                     if (result.error.code) error.code = result.error.code;
                     else error.code = "";
-                    console.error("REQUEST ERROR:", JSON.stringify(error));
+                    console.error("\x1b[31mREQUEST ERROR\x1b[0m:", JSON.stringify(error));
                     callback(error, result.data);
                     break;
 
@@ -171,8 +171,8 @@ function httpRequest(options, callback, body) {
         });
     });
     req.on('error', function (err) {
-        console.error("REQUEST QUERY:", options.path);
-        console.error("REQUEST ERROR:", JSON.stringify(err));
+        console.error("\x1b[31mREQUEST QUERY\x1b[0m:", options.path);
+        console.error("\x1b[31mREQUEST ERROR\x1b[0m:", JSON.stringify(err));
         callback(err, null);
     });
 
