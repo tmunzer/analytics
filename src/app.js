@@ -25,7 +25,7 @@ app.use(session({
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-app.use(logger('\x1b[32mINFO\x1b[0m: :remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length]', {
+app.use(logger('info: :remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length]', {
   skip: function (req, res) { return res.statusCode < 400 && req.url != "/" && req.originalUrl.indexOf("/api") < 0}
 }));
 app.use(bodyParser.json());
@@ -33,7 +33,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-console.info("\x1b[32mINFO\x1b[0m:",": test");
 var loginMethod = require('./config').login;
 if (loginMethod) {
   if (loginMethod == "local") {
@@ -43,7 +42,7 @@ if (loginMethod) {
 
     db.on('error', function (err) {
       if (err) throw err;
-      else console.info("\x1b[32mINFO\x1b[0m:","Connected to Database container!");
+      else console.info("info:","Connected to Database container!");
     });
     mongoose.connect('mongodb://tac-mongo/tac');
     //===============PASSPORR=================

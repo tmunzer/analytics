@@ -61,7 +61,7 @@ router.get('/help/', function (req, res, next) {
 router.get('/logout/', function (req, res, next) {
   req.session.destroy(function (err) {
     if (err) {
-      console.error("\x1b[31mERROR\x1b[0m:", err);
+      console.error("ERROR:", err);
     }
     else {
       res.redirect('/');

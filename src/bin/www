@@ -65,11 +65,11 @@ function onError(error) {
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
-      console.error("\x1b[31mERROR\x1b[0m:", bind + ' requires elevated privileges');
+      console.error("ERROR:", bind + ' requires elevated privileges');
       process.exit(1);
       break;
     case 'EADDRINUSE':
-      console.error("\x1b[31mERROR\x1b[0m:", bind + ' is already in use');
+      console.error("ERROR:", bind + ' is already in use');
       process.exit(1);
       break;
     default:
@@ -86,5 +86,5 @@ function onListening() {
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-  console.info("\x1b[32mINFO\x1b[0m:",'Listening on ' + bind);
+  console.info("info:",'Listening on ' + bind);
 }
