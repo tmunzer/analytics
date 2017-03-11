@@ -4,7 +4,7 @@ LABEL fr.ah-lab.analytics.release-date="2017-03-11"
 
 RUN npm install -g bower
 
-COPY ./* /app/
+COPY ./src /app/
 
 WORKDIR /app
 
