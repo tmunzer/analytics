@@ -1,6 +1,12 @@
 # Analytics
 This is a free Reference APP built to provide somean example on how to use the Aerohive Cloud Service API and the Presence and Location APIs.
+
 This Reference APP provide some way to use the Presence Analytics data Aerohive is collecting through the Access Points.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
 ![Analytics](https://github.com/tmunzer/analytics/blob/master/analytics.png?raw=true)
 
 ## Install
