@@ -2,10 +2,13 @@
 This is a free Reference APP built to provide somean example on how to use the Aerohive Cloud Service API and the Presence and Location APIs.
 This Reference APP provide some way to use the Presence Analytics data Aerohive is collecting through the Access Points.
 ![Analytics](https://github.com/tmunzer/analytics/blob/master/analytics.png?raw=true)
+
 ## Install
 This Reference Application can be used as a standalone Application, or it can be deployed as a Docker Image.
+
 ### Standalone Application
 This Reference APP is built over NodeJS. 
+
 #### Deploy the Application
 * Install NodeJS LTS: https://nodejs.org/en/download/.
 * Clone this repo.
@@ -14,6 +17,7 @@ This Reference APP is built over NodeJS.
 * Install bower packages (`bower install` from the project folder).
 * Go to `src/bin` folder into the project.
 * Start the APP with `www`. You can also use `src/bin/monitor.js` to monitor the NodeJS server and restart it if something went wrong.
+
 #### Manage HTTPS at the application level
 If you want to use OAuth authentication, the application will need to use HTTPS. To do so, you can use a reverse Proxy (NGINX, Apache, ...) and manage the certificates at the reverse proxy level, or you can start the application with `www_with_https`. In this case:
 * Create a `cert` folder into the `src` project folder.
@@ -23,6 +27,7 @@ If you want to use OAuth authentication, the application will need to use HTTPS.
 ### Docker Image
 You can easily deploy this application with [Docker](https://www.docker.com/). The image is publicly available on Docker Hub at https://hub.docker.com/r/tmunzer/analytics/.
 In this case, you can choose to manually deploy the image and create the container, or you can use the automation script (for Linux).
+
 #### Automation Script
 The Automation script will allow you to easily 
 * Configure your application (ACS parameters)
@@ -30,6 +35,7 @@ The Automation script will allow you to easily
 * Download and Deploy dependencies, like NGINX container
 * Download, Deploy, Update the application container
 To use this script, just download it here, and run it in a terminal.
+
 #### Manual deployment
 If you are manually deploying this container, you will need to a reverse proxy to manage HTTPS.
 
