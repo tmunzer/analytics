@@ -34,7 +34,7 @@ The Automation script will allow you to easily
 * Manage HTTPS certificates with self-signed certificates or with let's encrypt image (the script will automatically download and deploy the let's encrypt container if needed)
 * Download and Deploy dependencies, like NGINX container
 * Download, Deploy, Update the application container
-To use this script, just download it here, and run it in a terminal.
+To use this script, just download it [here](https://github.com/tmunzer/analytics/releases/download/1.1/analytics.sh), and run it in a terminal.
 
 #### Manual deployment
 If you are manually deploying this container, you will need to a reverse proxy to manage HTTPS.
