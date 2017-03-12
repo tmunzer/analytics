@@ -86,5 +86,5 @@ function onListening() {
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-  console.info("\x1b[32minfo\x1b[0m:",'Listening on ' + bind);
+  console.info("\x1b[32minfo\x1b[0m:", 'Listening on ' + bind);
 }
