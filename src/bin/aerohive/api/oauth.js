@@ -23,7 +23,7 @@ module.exports.getPermanentToken = function (authCode, devAccount, callback) {
 
     var req = https.request(options, function (res) {
         console.info('\x1b[34mREQUEST QUERY\x1b[0m:', options.path);
-        console.info('\x1b[34mREQUEST STATUS\x1b[0m:', result.result.status);
+        console.info('\x1b[34mREQUEST STATUS\x1b[0m:', res.result.status);
         res.setEncoding('utf8');
         res.on('data', function (data) {
             callback(JSON.parse(data));
