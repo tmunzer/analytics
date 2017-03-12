@@ -14,7 +14,6 @@ This Reference APP is built over NodeJS.
 * Install bower packages (`bower install` from the project folder).
 * Go to `src/bin` folder into the project.
 * Start the APP with `www`. You can also use `src/bin/monitor.js` to monitor the NodeJS server and restart it if something went wrong.
-
 #### Manage HTTPS at the application level
 If you want to use OAuth authentication, the application will need to use HTTPS. To do so, you can use a reverse Proxy (NGINX, Apache, ...) and manage the certificates at the reverse proxy level, or you can start the application with `www_with_https`. In this case:
 * Create a `cert` folder into the `src` project folder.
@@ -33,4 +32,5 @@ The Automation script will allow you to easily
 To use this script, just download it here, and run it in a terminal.
 #### Manual deployment
 If you are manually deploying this container, you will need to a reverse proxy to manage HTTPS.
+
 `docker create -v <path_to_config.js>/config.js:/app/config.js:ro --name="<container_name>" -p 51362:80 tmunzer/analytics`
