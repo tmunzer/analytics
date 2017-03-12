@@ -1,0 +1,21 @@
+extends layout
+
+
+block sub-tabs
+    - var compare_period = ""
+    - var compare_location = ""
+    case compare_page
+        when "period"
+            - var compare_period = "cur"
+        when "location"
+            - var compare_location = "cur"
+    ul.sub-dashboard
+        li(class = compare_location)            
+            a(href="/compare/location/") 
+                div Locations
+        li(class = compare_period)
+            a(href="/compare/period/") 
+                div Periods
+
+block dashboard-cards
+

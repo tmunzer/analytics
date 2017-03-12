@@ -1,0 +1,86 @@
+doctype html5
+html
+    head
+        title= title
+        meta(name="viewport" content="width=device-width, initial-scale=1")
+
+        link(rel='stylesheet' href='/css/ah-tm.tags.css')
+        link(rel="stylesheet" href="/bower_components/angular-material/angular-material.min.css")
+        script(src="/bower_components/angular/angular.min.js")
+        script(src="/web-app/ng-sanitize.js")
+        script(src="/bower_components/angular-aria/angular-aria.js")
+        script(src="/bower_components/angular-animate/angular-animate.min.js")
+        script(src="/bower_components/angular-material/angular-material.js")
+        script(src="/bower_components/angular-messages/angular-messages.js")
+        script(src="/i18n/login_api/en.js")
+        script(src="/i18n/login_api/fr.js")
+        script(src="/bower_components/angular-translate/angular-translate.min.js")
+        script(src="/web-app/ng-sanitize.js")
+
+        script(src="/web-app/login_api.js")
+
+        link(rel='stylesheet' href='/css/ah-tm.login.css')
+
+    body
+        div(ng-app="login" ng-controller="LoginCtrl")
+            div.logo
+                img(src="/images/login_page_logo.png" alt="Aerohive" class="ah-logo")
+            div.page-footer
+                span(style="border: none;") © 2016 Aerohive Networks. All Rights Reserved.
+
+            
+            div.page-title
+                h1 Welcome to the #{title} Application
+                h2 Follow the instruction below to get started
+            div.page-login(layout="column" layout-align="center center" layout-gt-sm="row" layout-align-gt-sm="center start")
+                
+                div.box.container(style="width: 450px;")
+                    div.inside(md-whiteframe="5" style="width: 100%")
+                        md-toolbar
+                            div.md-toolbar-tools
+                                h2(translate="OAUTH.TITLE")
+                        md-content(layout="column")
+                            form(id="OAuth" action="https://cloud.aerohive.com/thirdpartylogin" method="get")
+                                input(type="hidden" name="client_id" value= client_id)
+                                input(type="hidden" name="redirect_uri" value= redirect_uri)
+                                div(style="margin: 30px;text-align: left;")
+                                    span(translate="OAUTH.TEXT1")
+                                div(style="margin: 30px;text-align: left;")
+                                    span(translate="OAUTH.TEXT2")
+                                    span=" "
+                                    a.link(href="https://en.wikipedia.org/wiki/OAuth" target="_blank" translate="OAUTH.WIKI")
+                                    span .
+                                div(style="width: 100%; text-align: center;")
+                                    md-button.md-raised.md-primary(type="submit" translate="OAUTH.OAUTH_BUTTON" aria-label="connect OAuth")
+
+
+                div.box(style="width: 450px;")
+                    div.inside(md-whiteframe="5" style="width: 100%" )                    
+                            md-toolbar
+                                div.md-toolbar-tools
+                                    h2(translate="TOKEN.TITLE")
+                            md-content(layout="column" layout-padding)
+                                md-input-container
+                                    label(for="vpcUrlOl" translate="TOKEN.SERVER")
+                                    md-select(id="vpcUrlOl" name="vpcUrl" ng-model="vpcUrl")
+                                        each apiServer in apiServers
+                                            md-option(value=apiServer)= apiServer
+                                form(id="ATOl" action="/" method="post")
+                                    input(type="hidden" name="vpcUrl" value='{{vpcUrl}}')
+                                    md-input-container.md-block.flex-gt-sm
+                                        label(for="OwnerIDOl" translate="TOKEN.OWNERID")
+                                        input(required="required" autocorrect="off" autocapitalize="none" id="ownerIdOl" name="ownerId" type="text")
+                                    md-input-container.md-block.flex-gt-sm
+                                        label(for="accessTokenOl" translate="TOKEN.TOKEN")
+                                        input(required="required" id="accessTokenOl" name="accessToken" type="text")
+                                    div(style="float: right")
+                                        md-button.md-raised.md-primary(type="submit" translate="TOKEN.CONNECT" aria-label="connect Token")
+                                div
+                                    span(translate="TOKEN.HOWTO")
+                                    span=" "
+                                    a.link(href="/howto/" target='_blank' translate="TOKEN.HERE")
+                                    span .
+
+
+
+

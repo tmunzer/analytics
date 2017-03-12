@@ -1,0 +1,16 @@
+<md-content flex-gt-sm="45" md-whiteframe="2" style="margin: 10px 0" class="container">
+    <h3 style="height: 25px;">
+        <span>{{title}}</span>                        
+    </h3>
+    <div id="wait">
+            <div style="text-align: center; line-height: 250px;" flex>waiting</div>        
+    </div>
+    <div class="entity-loading-widget" id="load" style="height: 250px;" layout="column" layout-align="space-around">
+        <md-progress-circular md-mode="indeterminate" class="md-accent" style="margin: auto;"/>        
+    </div>
+    <div layout="row" id="chart">
+        <div flex="100">
+            <div style="height: 250px;" id="{{containerid}}"></div>
+        </div>                        
+    </div>
+</md-content>

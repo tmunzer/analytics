@@ -1,0 +1,30 @@
+<md-dialog aria-label="List dialog">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2 translate="layout.details"></h2>
+        </div>
+    </md-toolbar>
+    <md-dialog-content>
+        <md-table-container>
+            <table md-table>
+                <tbody md-tbody>
+                    <tr md-row>
+                        <th md-cell style="padding: 5px 10px;text-align: start;" translate="layout.hmngServer"></th>
+                        <td md-cell style="padding: 5px 10px;">{{items.server}}</td>
+                    </tr>
+                    <tr md-row>
+                        <th md-cell style="padding: 5px 10px;text-align: start;" translate="layout.ownerId"></th>
+                        <td md-cell style="padding: 5px 10px;">{{items.ownerId}}</td>
+                    </tr>
+                    <tr md-row>
+                        <th md-cell style="padding: 5px 10px;text-align: start;" translate="layout.accessToken"></th>
+                        <td md-cell style="padding: 5px 10px;">{{items.accessToken}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </md-table-container>        
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+        <md-button class="md-raised md-primary" ng-click="close()" translate="button.close" aria-label="close"></md-button>
+    </md-dialog-actions>
+</md-dialog>
