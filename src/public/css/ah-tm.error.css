@@ -1,0 +1,70 @@
+body { 
+    margin: 0;
+    background-color:rgb(250,250,250);
+}
+.header {
+    height: 70px;
+    width: 100%;
+}
+
+.header.fixed {
+    position: fixed;
+    top: 0;
+    z-index: 75;
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#1e88ef+0,1e88ef+25,0060c7+100 */
+    background: #1e88ef; /* Old browsers */
+    background: -moz-linear-gradient(45deg, #1e88ef 0%, #1e88ef 25%, #0060c7 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(45deg, #1e88ef 0%, #1e88ef 25%, #0060c7 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(45deg, #1e88ef 0%, #1e88ef 25%, #0060c7 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1e88ef', endColorstr='#0060c7', GradientType=1); /* IE6-9 fallback on horizontal gradient */
+}
+
+/* =================LOGO======================= */
+.logo {
+    width: 200px;
+    text-align: center;
+    height: 75px;
+    vertical-align: middle;
+    margin: auto;
+    float: left;
+}
+
+
+.ah-logo {
+    margin-left: 21px;
+    margin-top: 19px;
+    width: 204px;
+}
+
+
+
+.page-footer {
+    font-size: 14px;
+    font-weight: 400;
+    color: #909090;
+    position: fixed;
+    bottom: 10px;
+    right: 21px;
+}
+
+.page-footer span {
+    display: inline-block;
+    height: 20px;
+    border-left: 1px solid #6f6f6f;
+    margin-left: 2px;
+}
+
+.container {
+    text-align: center;
+}
+
+.details {
+    margin: auto;
+    display: inline-block;
+    text-align: left;
+}
+
+.ending {
+    margin: 10px;
+    color: gray;
+}
