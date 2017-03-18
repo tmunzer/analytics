@@ -37,7 +37,7 @@ router.get('/reg', function (req, res) {
                         accessToken: data.data[owner].accessToken
                     })
                 }
-                res.redirect('/dashboard/');
+                res.redirect('/web-app/');
             }
         });
     } else
