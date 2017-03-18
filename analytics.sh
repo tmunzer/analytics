@@ -17,6 +17,7 @@ function create_app_container
       $DOCKER create \
       --security-opt label:disable \
       -v $PERSISTANT_FOLDER/$APP_NAME/config.js:/app/config.js:ro \
+      --link $DB_NAME:mongo \
       --name="$APP_NAME" \
       --restart="on-failure:5" \
       -e "VIRTUAL_HOST=$NODEJS_VHOST" \
@@ -59,9 +60,9 @@ EMAIL_SRV_ENABLE=false
 # =========================================================
 # mongoDB server configuration
 # uncomment if needed by the app
-#DB_FOLDER="mongoDB"
-#DB_NAME="ah-mongo"
-#DB_IMG="mongo"
+DB_FOLDER="mongoDB"
+DB_NAME="ah-mongo"
+DB_IMG="mongo"
 
 # =========================================================
 # NGINX server configuration

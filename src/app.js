@@ -1,9 +1,9 @@
 
 var path = require('path');
-
 var express = require('express');
 var parseurl = require('parseurl');
 var session = require('express-session');
+var MongoDBStore = require('connect-mongodb-session')(session);
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
@@ -15,6 +15,10 @@ app.use('/bower_components', express.static('../bower_components'));
 app.use(session({
   secret: 'HVkYpby3JwREkI5xdHDtVSRIzEnN',
   resave: true,
+  store: new MongoDBStore({
+    uri: 'mongodb://' + mongoConfig.host + '/express-session',
+    collection: 'analytics'
+  }),
   saveUninitialized: true,
   cookie: {
     maxAge: 30 * 60 * 1000 // 30 minutes
@@ -80,9 +84,12 @@ app.use('/api/dashboard/', apiDashboard);
 app.use('/api/details/', apiDetails);
 app.use('/api/compare/', apiCompare);
 app.use('/web-app', webApp);
+
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
-  res.redirect("/web-app/");
+app.use(function(req, res, next) {
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
 });
 
 // error handlers
@@ -98,16 +105,18 @@ if (app.get('env') === 'development') {
     });
   });
 }
-
 // production error handler
 // no stacktraces leaked to user
 app.use(function (err, req, res, next) {
+  if (err.status == 404) err.message = "The requested url "+req.originalUrl+" was not found on this server.";
   res.status(err.status || 500);
   res.render('error', {
+    status: err.status,
     message: err.message,
     error: {}
   });
 });
+
 
 
 module.exports = app;
