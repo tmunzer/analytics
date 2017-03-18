@@ -12,6 +12,7 @@ var bodyParser = require('body-parser');
 var app = express();
 app.use('/bower_components', express.static('../bower_components'));
 
+var mongoConfig = require('./config').mongoConfig;
 app.use(session({
   secret: 'HVkYpby3JwREkI5xdHDtVSRIzEnN',
   resave: true,
