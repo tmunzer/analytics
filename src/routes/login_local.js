@@ -4,14 +4,14 @@ var passport = require('passport');
 
 /* GET home page. */
 router.get('/login/', function (req, res, next) {
-    if (req.session.passport) res.redirect('/dashboard/');
+    if (req.session.passport) res.redirect('/web-app/');
     else res.render('login_local', {title: 'Admin Login'});
 
 });
 /* Handle Login POST */
 router.post('/login',
     passport.authenticate('login', {
-        successRedirect: '/dashboard/',
+        successRedirect: '/web-app/',
         failureRedirect: '/login/',
         failureFlash: true
     })

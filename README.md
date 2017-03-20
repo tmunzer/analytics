@@ -1,6 +1,12 @@
 # Analytics
 This is a free Reference APP built to provide somean example on how to use the Aerohive Cloud Service API and the Presence and Location APIs.
+
 This Reference APP provide some way to use the Presence Analytics data Aerohive is collecting through the Access Points.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
 ![Analytics](https://github.com/tmunzer/analytics/blob/master/analytics.png?raw=true)
 
 ## Install
@@ -34,9 +40,9 @@ The Automation script will allow you to easily
 * Manage HTTPS certificates with self-signed certificates or with let's encrypt image (the script will automatically download and deploy the let's encrypt container if needed)
 * Download and Deploy dependencies, like NGINX container
 * Download, Deploy, Update the application container
-To use this script, just download it [here](https://github.com/tmunzer/analytics/releases/download/1.1/analytics.sh), and run it in a terminal.
+To use this script, just download it [here](https://raw.githubusercontent.com/tmunzer/analytics/master/analytics.sh), and run it in a terminal.
 
 #### Manual deployment
 If you are manually deploying this container, you will need to a reverse proxy to manage HTTPS.
 
-`docker create -v <path_to_config.js>/config.js:/app/config.js:ro --name="<container_name>" -p 51362:80 tmunzer/analytics`
+`docker create -v <path_to_config.js>/config.js:/app/config.js:ro --link <mongoDB_container_name>:mongo --name="<container_name>" -p 51362:80 tmunzer/analytics`
