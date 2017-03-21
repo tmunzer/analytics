@@ -26,11 +26,11 @@ function locationsFromQuery(req) {
 router.get('/clienttimeseries/', function (req, res, next) {
     var currentApi = req.session.xapi.owners[req.session.xapi.ownerIndex];
 
-    var startTime, endTime, timeUnit, locDone, locations, series, timeseries;
-    series = [];
-    timeseries = [];
-    errors: [];
-    locDone = 0;
+    var startTime, endTime, timeUnit, locations;
+    var series = [];
+    var timeseries = [];
+    var errors = [];
+    var locDone = 0;
     if (req.query.startTime && req.query.endTime) {
         // retrieve the start time and end time from the POST method
         startTime = new Date(req.query.startTime);
