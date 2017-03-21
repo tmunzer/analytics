@@ -20,6 +20,7 @@ function create_app_container
       --link $DB_NAME:mongo \
       --name="$APP_NAME" \
       --restart="on-failure:5" \
+      --memory=128m \
       -e "VIRTUAL_HOST=$NODEJS_VHOST" \
       -e "LETSENCRYPT_HOST=$NODEJS_VHOST" \
       -e "LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL" \
