@@ -10,7 +10,7 @@ var apiServers = ["cloud-va.aerohive.com", "cloud-va2.aerohive.com", "cloud-ie.a
 /*================================================================
  DASHBOARD
  ================================================================*/
-router.get('/', function (req, res, next) {  
+router.get('/', function (req, res, next) {
   var errorcode;
   if (req.query.errorcode) errorcode = req.query["errorcode"];
   res.render('login_api', {
@@ -51,7 +51,11 @@ router.post('/', function (req, res, next) {
 });;
 
 router.get('/howto/', function (req, res, next) {
-  res.render('howto', { title: 'Analytics' });
+  res.render('howto', {
+    title: 'Analytics',
+    clientID: devAccount.clientID,
+    apiServers: apiServers
+  });
 });
 
 router.get('/help/', function (req, res, next) {

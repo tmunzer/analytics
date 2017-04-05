@@ -37,8 +37,8 @@ html
                                 br
                                 span Currenty, the possible choices are:
                                 ul(style="list-style: inside none disc; padding-left: 30px;")
-                                    li cloud-va.aerohive.com
-                                    li cloud-ie.aerohive.com
+                                    for apiServer in apiServers
+                                        li= apiServer
                                 h4
                                     span 3. Get your Owner ID
                                 span On your HiveManager NG interface, click on the
@@ -64,7 +64,7 @@ html
                                 img(src="/images/howto/howto_4.png" style="width: 800px;")
                                 span On the popup window, enter the
                                 b=' Client ID '
-                                b(style="color: rgb(54, 148, 209)")=' f4d129a2 '
+                                b(style="color: rgb(54, 148, 209)")= clientID
                                 span to generate a new
                                 b=' AccessToken '
                                 h4
