@@ -142,11 +142,7 @@ html
                             b {{date.from | date : 'short'}}
                             span(style="font-weight: normal;")=" to " 
                             b {{date.to | date : 'short'}}
-                    
-                
-
-
-            </md-content>
+                                            
             ng-view
 
         script(type="text/javascript").
@@ -190,10 +186,10 @@ html
         script(src="/bower_components/angular-bootstrap/ui-bootstrap.js")
         script(src="/bower_components/angular-translate/angular-translate.min.js")
         script(src="/bower_components/angular-sanitize/angular-sanitize.min.js")
-        script(src="/bower_components/highcharts-ng/dist/highcharts-ng.min.js")
         script(language="JavaScript" type="text/javascript" src='/js/highstock.js') 
         script(language="JavaScript" type="text/javascript" src='/js/highcharts-more.js')
         script(language="JavaScript" type="text/javascript" src='/js/modules/heatmap.js')
+        script(src="/bower_components/highcharts-ng/dist/highcharts-ng.min.js")
         
 
         script(src="/web-app/web-app.js")
