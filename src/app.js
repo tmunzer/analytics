@@ -23,7 +23,8 @@ app.use(session({
   saveUninitialized: true,
   cookie: {
     maxAge: 30 * 60 * 1000 // 30 minutes
-  }
+  },
+  rolling: true
 }));
 
 // view engine setup
