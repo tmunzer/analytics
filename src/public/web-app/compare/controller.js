@@ -1,4 +1,4 @@
-angular.module('Compare').controller("CompareCtrl", function ($scope, $location, $sce, LocationsService, TimelineService, LocationsService, ComparisonService) {
+angular.module('Compare').controller("CompareCtrl", function ($scope, $location, $sce, TimelineService, LocationsService, ComparisonService) {
     $scope.locationFilter = LocationsService.filter;
     $scope.date = TimelineService.date;
     $scope.lastTimelineChange = TimelineService.timeline.lastChange;
@@ -20,12 +20,12 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $location,
     $scope.lineStarted = false;
     $scope.lineLoaded = false;
 
-    $scope.storefrontLineData;
-    $scope.engagedLineData;
-    $scope.passersbyLineData;
-    $scope.uniqueLineData;
-    $scope.associatedLineData;
-    $scope.unassociatedLineData;
+    $scope.storefrontLineData = null;
+    $scope.engagedLineData = null;
+    $scope.passersbyLineData = null;
+    $scope.uniqueLineData = null;
+    $scope.associatedLineData = null;
+    $scope.unassociatedLineData = null;
     $scope.lineCategories = [];
 
     var bestWorstLocation = {
@@ -65,14 +65,13 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $location,
             worst: "",
             worstValue: null
         }
-    }
+    };
     $scope.bestWorstLocation = bestWorstLocation;
     var updateRequest;
-
-    $scope
+    
     $scope.isCurrent = function (item) {
         if (ComparisonService.current.get() == item) return "md-primary";
-    }
+    };
 
     $scope.changeComparison = function (item) {
         ComparisonService.current.set(item);
@@ -83,17 +82,17 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $location,
         }
         else LocationsService.compareLocations.set(false);
         startUpdate();
-    }
+    };
     $scope.$watch("locationFilter.get()", function () {
         LocationsService.checked.reset();
         LocationsService.selected.reset();
-    }, true)
+    }, true);
     $scope.$watch("lastTimelineChange()", function () {
         startUpdate();
-    }, true)
+    }, true);
     $scope.$watch("date.get()", function (a, b) {
         startUpdate();
-    }, true)
+    }, true);
 
     function startUpdate() {
         if ($location.path() == "/compare") {
@@ -111,7 +110,7 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $location,
                         updateCharts();
                         updateTimelines();
                     }
-                }, 2000)
+                }, 2000);
             }
         }
     }
@@ -314,7 +313,7 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $location,
                     if (ComparisonService.current.get() == "locations") $scope.table = getLocationsTable($scope.bestWorstLocation);
                     $scope.tableLoaded = true;
                 }
-            })
+            });
         }
     }
 
@@ -348,7 +347,7 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $location,
             request.then(function (promise) {
                 if (promise && promise.error) console.log(promise.error);
                 else {
-                    var tmpUnique, tmpStorefront, tmpEngaged, tmpPassersBy, tmpAssociated, tmpUnassociated, tmpNew, tmpReturning, timeserie;
+                    var tmpUnique, tmpStorefront, tmpEngaged, tmpPassersBy, tmpAssociated, tmpUnassociated, tmpNew, tmpReturning;
                     var seriesUnique = [];
                     var seriesStorefront = [];
                     var seriesEngaged = [];
@@ -451,7 +450,7 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $location,
                     $scope.lineCategories = timeserie;
 
                 }
-            })
+            });
         }
     }
 
@@ -472,6 +471,8 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $location,
         }
 
         series.forEach(function (serie) {
+            $scope.bestWorstLocation[serie].best = "N/A";
+            $scope.bestWorstLocation[serie].worst = "N/A";
             if ($scope.bestWorstLocation[serie].bestValue == null || $scope.bestWorstLocation[serie].bestValue < currentSerie[serie]) {
                 $scope.bestWorstLocation[serie].bestValue = currentSerie[serie];
                 $scope.bestWorstLocation[serie].best = currentSerie.serie;
@@ -583,7 +584,7 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $location,
             else htmlString =
                 '<span style="color: gray"><i class="fa fa-caret-right fa-lg" style="margin: auto;"></i> ' + percentage.toFixed(0) + '%</span>';
         }
-        return htmlString
+        return htmlString;
     }
 
 

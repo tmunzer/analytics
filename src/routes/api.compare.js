@@ -41,7 +41,7 @@ router.get('/locations/global', function (req, res, next) {
 
         // if the "locations" parameter exists, and is not null, will filter the request based on the locations selected by the user
         // otherwise takes the "root" folder
-        locations = locationsFromQuery(req)
+        locations = locationsFromQuery(req);
         // Only take into account the type of locations defined by the user
         if (req.query.locationFilter) {
             switch (req.query.locationFilter) {
@@ -125,7 +125,7 @@ router.get('/locations/global', function (req, res, next) {
         );
 
 
-        function end() {
+        var end = function() {
             // check if all locations are done, and if the average is done
             if (locDone == locations.length && averageDone) {
                 if (errors.length > 0) res.status(500).json({
@@ -135,9 +135,9 @@ router.get('/locations/global', function (req, res, next) {
                 else res.json({
                     data: locResult,
                     average: dataAverage
-                })
+                });
             }
-        }
+        };
     }
 });
 
@@ -166,7 +166,7 @@ router.get('/locations/timeline', function (req, res, next) {
 
         // if the "locations" parameter exists, and is not null, will filter the request based on the locations selected by the user
         // otherwise takes the "root" folder
-        locations = locationsFromQuery(req)
+        locations = locationsFromQuery(req);
 
         locDone = 0;
 
@@ -199,7 +199,7 @@ router.get('/locations/timeline', function (req, res, next) {
                         if (timeserie.length == 0) {
                             data.times.forEach(function (entry) {
                                 timeserie.push(entry.time);
-                            })
+                            });
                         }
                         //timeserie = data.times["time"];
                         // add the array of values from this location to the final array
@@ -222,7 +222,7 @@ router.get('/locations/timeline', function (req, res, next) {
                     else res.json({
                         timeserie: timeserie,
                         series: series
-                    })
+                    });
                 }
             }
         });
@@ -290,7 +290,7 @@ router.get("/periods/global", function (req, res, next) {
                     "unassociatedClients": 0,
                     "newClients": 0,
                     "returningClients": 0
-                })
+                });
             }
         }
         // if the time range is less than one week
@@ -324,7 +324,7 @@ router.get("/periods/global", function (req, res, next) {
                     "unassociatedClients": 0,
                     "newClients": 0,
                     "returningClients": 0
-                })
+                });
             }
         }
         // if the time range is less than one month
@@ -358,7 +358,7 @@ router.get("/periods/global", function (req, res, next) {
                     "unassociatedClients": 0,
                     "newClients": 0,
                     "returningClients": 0
-                })
+                });
             }
         }
         // otherwise
@@ -392,7 +392,7 @@ router.get("/periods/global", function (req, res, next) {
                     "unassociatedClients": 0,
                     "newClients": 0,
                     "returningClients": 0
-                })
+                });
             }
         }
 
@@ -461,7 +461,7 @@ router.get("/periods/global", function (req, res, next) {
                                     res.json({
                                         average: dataAverage,
                                         data: reqPeriods
-                                    })
+                                    });
                                 }
                             }
                         }
@@ -531,7 +531,7 @@ router.get('/periods/timeline', function (req, res, next) {
                     start: startDay,
                     end: endDay,
                     data: null
-                })
+                });
             }
         }
         // define the array of periods to compare.
@@ -553,7 +553,7 @@ router.get('/periods/timeline', function (req, res, next) {
                     start: startWeek,
                     end: endWeek,
                     data: null
-                })
+                });
             }
         }
         // define the array of periods to compare.
@@ -621,8 +621,6 @@ router.get('/periods/timeline', function (req, res, next) {
                         // if there is an error, send the error message to the web browser
                         if (err) console.log(err); //errors.push(err);
                         else {
-                            console.log("==============");
-                            console.log(JSON.stringify(data).substr(0, 400));
                             // if it is the first location done for this period of time, set the values
                             if (this.currentPeriod.data == null) this.currentPeriod.data = data.times;
                             // otherwise add the new values to the values from the previous location
