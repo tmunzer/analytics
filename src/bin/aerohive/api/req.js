@@ -147,25 +147,31 @@ function httpRequest(options, callback, body) {
             if (data != '') {
                 if (data.length > 400) console.info("\x1b[34mRESPONSE DATA\x1b[0m:", data.substr(0, 400) + '...');
                 else console.info("\x1b[34mRESPONSE DATA\x1b[0m:", data);
-                var dataJSON = JSON.parse(data);
-                result.data = dataJSON.data;
-                result.error = dataJSON.error;
-            }
-            switch (result.result.status) {
-                case 200:
-                    callback(null, result.data);
-                    break;
-                default:
-                    var error = {};
-                    if (result.error.status) error.status = result.error.status;
-                    else error.status = result.result.status;
-                    if (result.error.message) error.message = result.error.message;
-                    else error.message = result.error;
-                    if (result.error.code) error.code = result.error.code;
-                    else error.code = "";
-                    console.error("\x1b[31mRESPONSE ERROR\x1b[0m:", JSON.stringify(error));
-                    callback(error, result.data);
-                    break;
+                try {
+                    var dataJSON = JSON.parse(data);
+                    result.data = dataJSON.data;
+                    result.error = dataJSON.error;
+                } catch (error) {
+                    result.data = null;
+                    result.error = {};
+                } finally {
+                    switch (result.result.status) {
+                        case 200:
+                            callback(null, result.data);
+                            break;
+                        default:
+                            var error = {};
+                            if (result.error.status) error.status = result.error.status;
+                            else error.status = result.result.status;
+                            if (result.error.message) error.message = result.error.message;
+                            else error.message = result.error;
+                            if (result.error.code) error.code = result.error.code;
+                            else error.code = "";
+                            console.error("\x1b[31mRESPONSE ERROR\x1b[0m:", JSON.stringify(error));
+                            callback(error, result.data);
+                            break;
+                    }
+                }
 
             }
         });

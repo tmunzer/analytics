@@ -360,7 +360,7 @@ angular.module('Compare').controller("CompareCtrl", function ($scope, $location,
                     var timeserie = [];
 
                     promise.data.timeserie.forEach(function (time) {
-                        timeserie.push(new Date(time));
+                        if (time != null) timeserie.push(new Date(time));
                     });
                     promise.data.series.forEach(function (currentSerie) {
                         tmpUnique = [];

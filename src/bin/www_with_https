@@ -40,14 +40,6 @@ httpsServer.on('error', onError);
 httpsServer.on('listening', onListening);
 
 /**
- * Create socket.io
- */
-global.io = require('socket.io')(httpsServer);
-var sharedsession = require("express-socket.io-session");
-io.use(sharedsession(session, {
-    autoSave:true
-}));
-/**
  * Normalize a port into a number, string, or false.
  */
 
