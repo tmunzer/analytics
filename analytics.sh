@@ -864,7 +864,7 @@ function create_mongo_container
     echo -e "${INFOC}INFO${NC}: $DB_NAME container not present. Creating it..."
     $DOCKER create \
     --name $DB_NAME \
-    -v $DB_FOLDER:/data/db \
+    -v $DB_FOLDER:/data/db:Z \
     $DB_IMG
     if [ $? -eq 0 ]
     then
