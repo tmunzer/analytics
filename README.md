@@ -1,3 +1,6 @@
+# NO LONGER MAINTAINED
+As of August 30, 2019 this project is no longer maintained. It should still (probably) work, but I am no longer providing support, fixing issues, or adding new features.
+
 # Analytics
 This is a free Reference APP built to provide somean example on how to use the Aerohive Cloud Service API and the Presence and Location APIs.
 
